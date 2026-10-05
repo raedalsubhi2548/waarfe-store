@@ -1,4 +1,4 @@
-import { SOCIAL } from '../components/Footer.jsx'
+import { SOCIAL, BrandIcon } from '../components/Social.jsx'
 import Icon from '../components/Icon.jsx'
 import { WHATSAPP, waLink } from '../lib/format.js'
 
@@ -12,9 +12,9 @@ export default function Contact() {
           <strong>واتساب</strong>
           <span dir="ltr">+{WHATSAPP}</span>
         </a>
-        {SOCIAL.map((s) => (
+        {SOCIAL.filter((s) => s.name !== 'واتساب').map((s) => (
           <a key={s.href} className="contact-card" href={s.href} target="_blank" rel="noreferrer">
-            <Icon name="external" size={22} /><strong>{s.name}</strong><span dir="ltr">{s.href.replace(/^https:\/\/(www\.)?/, '')}</span>
+            <span className="brand-ic" style={{ color: '#' + s.icon.hex }}><BrandIcon icon={s.icon} size={24} /></span><strong>{s.name}</strong><span dir="ltr">{s.href.replace(/^https:\/\/(www\.)?/, '')}</span>
           </a>
         ))}
       </div>

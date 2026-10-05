@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../../state.jsx'
-import ProductCard from '../../components/ProductCard.jsx'
+import ServiceRow from '../../components/ServiceRow.jsx'
 
 export default function Wishlist() {
   const { wishlist, byId, user } = useApp()
@@ -11,7 +11,7 @@ export default function Wishlist() {
   return (
     <>
       {!user && <p className="note-demo"><Link to="/login?next=/account/wishlist" className="link-u">سجّل دخولك</Link> عشان تحفظ أمنياتك في حسابك وتشوفها من أي جهاز.</p>}
-      <div className="grid">{items.map((p) => <ProductCard key={p.id} p={p} />)}</div>
+      <ul className="slist">{items.map((p) => <ServiceRow key={p.id} p={p} showCategory />)}</ul>
     </>
   )
 }

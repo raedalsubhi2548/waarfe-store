@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useApp } from '../state.jsx'
 import Icon from '../components/Icon.jsx'
-import ProductCard from '../components/ProductCard.jsx'
+import ServiceRow from '../components/ServiceRow.jsx'
 import { Qty } from '../components/CartDrawer.jsx'
 import { money, effectivePrice, parseDescription, waLink } from '../lib/format.js'
 import NotFound from './NotFound.jsx'
@@ -79,7 +79,7 @@ export default function Product() {
         {related.length > 0 && (
           <section className="section-tight">
             <h2 className="h-sec">من نفس القسم</h2>
-            <div className="grid">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
+            <ul className="slist">{related.map((r) => <ServiceRow key={r.id} p={r} />)}</ul>
           </section>
         )}
       </div>

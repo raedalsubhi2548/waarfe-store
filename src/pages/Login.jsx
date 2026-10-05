@@ -3,7 +3,6 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { api, isDemo } from '../lib/api.js'
 import { DEMO_ADMIN } from '../lib/local.js'
 import { useApp } from '../state.jsx'
-import { Mark } from '../components/Logo.jsx'
 
 export default function Login() {
   const { user, authReady, notify } = useApp()
@@ -29,7 +28,7 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <div className="auth-art" aria-hidden="true"><Mark size={220} /></div>
+      <div className="auth-art" aria-hidden="true"><img src="/logo.png" alt="" width="600" height="580" /></div>
       <div className="auth-card">
         <h1>{mode === 'in' ? 'تسجيل الدخول' : 'حساب جديد'}</h1>
         <p className="muted">{mode === 'in' ? 'تابع طلباتك وأمنياتك من مكان واحد.' : 'سجّل مرة وحدة، وتابع كل طلباتك من حسابك.'}</p>

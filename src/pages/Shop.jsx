@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useApp } from '../state.jsx'
-import ProductCard from '../components/ProductCard.jsx'
+import ServiceRow from '../components/ServiceRow.jsx'
 import Icon from '../components/Icon.jsx'
 import { effectivePrice } from '../lib/format.js'
 
@@ -67,10 +67,8 @@ export default function Shop() {
             </label>
           </div>
           <p className="muted result-count">{list.length} خدمة</p>
-          <div className="grid grid-3">
-            {!catalogReady && Array.from({ length: 6 }, (_, i) => <div key={i} className="pcard skeleton" />)}
-            {list.map((p) => <ProductCard key={p.id} p={p} />)}
-          </div>
+          {!catalogReady && <div className="skeleton tall" />}
+          <ul className="slist">{list.map((p) => <ServiceRow key={p.id} p={p} showCategory={!categoryId} />)}</ul>
           {catalogReady && list.length === 0 && (
             <div className="empty">
               <p>ما فيه خدمة تطابق بحثك. امسح البحث أو اختر قسماً آخر.</p>
