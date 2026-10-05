@@ -99,7 +99,7 @@ function Core() {
                 <h3 className="font-display text-[15px] font-bold leading-7 text-primary sm:text-lg"><Link to={`/p/${p.id}`} className="hover:underline">{p.name}</Link></h3>
                 <p className="mt-1 line-clamp-2 hidden text-sm leading-7 text-muted-foreground sm:block">{p.summary}</p>
                 <div className="mt-auto flex items-center justify-between gap-2 pt-4">
-                  <span className="tabular font-display text-lg font-bold text-primary">{money(effectivePrice(p))}</span>
+                  <span className="tabular whitespace-nowrap font-display text-base font-bold text-primary sm:text-lg">{money(effectivePrice(p))}</span>
                   <Button size="sm" onClick={() => addToCart(p.id)} aria-label={`أضف ${p.name} للسلة`}>أضف</Button>
                 </div>
               </div>
