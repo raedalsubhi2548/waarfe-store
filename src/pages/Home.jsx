@@ -11,15 +11,8 @@ import { Badge } from '@/components/ui/badge'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import { Waybill, Ticket, Barcode, useStopCounts, servicesLabel } from '@/components/home/Waybill.jsx'
 import ServiceTicket from '@/components/home/ServiceTicket.jsx'
-
-// Placeholder shown only until Raed supplies real material. Never rendered as a fact.
-function Pending({ label, className }) {
-  return (
-    <div className={cn('grid place-items-center rounded-lg border-2 border-dashed border-border-strong bg-sunken/60 p-4 text-center text-sm text-muted-foreground', className)}>
-      <span><b className="block font-display text-primary">بانتظار المحتوى</b>{label}</span>
-    </div>
-  )
-}
+import { WorkGallery, StoreCases } from '@/components/home/WorkGallery.jsx'
+import { WORK, FEATURED, PROOF } from '@/data/work.js'
 
 function SectionHead({ title, lead, action }) {
   return (
@@ -179,24 +172,35 @@ export default function Home() {
         </section>
       )}
 
-      {/* ---------- Proof ---------- */}
+      {/* ---------- Proof: numbers, portfolio, reviews ---------- */}
       <section className="py-16 sm:py-20">
-        <div className="container-w"><SectionHead title="وش قالوا عن وارف" lead="تقييمات منشورة من عملاء متجرنا في سلة." /></div>
-        <Reviews />
-        <div className="container-w mt-14">
-          <h3 className="mb-4 font-display text-xl font-bold text-primary">متاجر سلّمناها</h3>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Pending className="aspect-[4/3]" label="صور 13 متجر من معرض الأعمال" />
-            <Pending className="aspect-[4/3]" label="Private Blend، خزاز، حَلَه…" />
-            <Pending className="hidden aspect-[4/3] sm:grid" label="روابط الصور المباشرة" />
-            <Pending className="hidden aspect-[4/3] sm:grid" label="أو ملفات PDF للأعمال" />
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-3">
-            <Pending label="عدد المتاجر المنفّذة" />
-            <Pending label="عدد العملاء" />
-            <Pending label="رقم ثالث تختاره" />
+        <div className="container-w">
+          <dl className="grid grid-cols-3 divide-x divide-x-reverse divide-border-strong rounded-xl bg-inverse px-2 py-6 text-on-inverse sm:px-6 sm:py-8">
+            {PROOF.map((s) => (
+              <div key={s.label} className="px-2 text-center sm:px-6">
+                <dt className="sr-only">{s.label}</dt>
+                <dd className="tabular font-display text-3xl font-bold text-accent sm:text-display-md" dir={s.ltr ? 'ltr' : undefined}>{s.value}</dd>
+                <dd className="mt-1 text-xs leading-6 text-on-inverse/80 sm:text-sm">{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div className="mt-16">
+            <SectionHead
+              title="من أعمالنا"
+              lead="بنرات وتصاميم سوّيناها لمتاجر عملائنا. اضغط أي تصميم وشوفه بحجمه الكامل."
+              action={<Link to="/work" className="font-semibold text-primary underline underline-offset-4">كل الأعمال ({WORK.length})</Link>}
+            />
+            <WorkGallery items={FEATURED} />
+            <div className="mt-10">
+              <h3 className="mb-4 font-display text-xl font-bold text-primary">متاجر سلّمناها كاملة</h3>
+              <StoreCases />
+            </div>
           </div>
         </div>
+
+        <div className="container-w mt-16"><SectionHead title="وش قالوا عن وارف" lead="تقييمات منشورة من عملاء متجرنا في سلة." /></div>
+        <Reviews />
       </section>
 
       {/* ---------- Store banner (real asset from Salla) ---------- */}

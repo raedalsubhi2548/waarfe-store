@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, PackageSearch } from 'lucide-react'
+import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, PackageSearch, Images } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import Icon from '@/components/Icon.jsx'
@@ -40,6 +40,7 @@ export default function SiteHeader() {
         <nav className="ms-6 hidden flex-1 items-center gap-1 lg:flex" aria-label="الرئيسية">
           <NavLink to="/" end className={link}>الرئيسية</NavLink>
           <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
+          <NavLink to="/work" className={link}>أعمالنا</NavLink>
           <NavLink to="/account" className={link}>تتبّع طلبك</NavLink>
           <NavLink to="/contact" className={link}>تواصل</NavLink>
         </nav>
@@ -81,6 +82,7 @@ export default function SiteHeader() {
           </ul>
           <ul className="mt-5 grid border-t border-border pt-3 text-[15px] font-semibold">
             <li><Link to="/shop" className="flex min-h-12 items-center gap-3 text-foreground"><Search className="size-5 text-primary" />كل الخدمات</Link></li>
+            <li><Link to="/work" className="flex min-h-12 items-center gap-3 text-foreground"><Images className="size-5 text-primary" />أعمالنا</Link></li>
             <li><Link to="/account" className="flex min-h-12 items-center gap-3 text-foreground"><PackageSearch className="size-5 text-primary" />تتبّع طلبك</Link></li>
             <li><Link to="/account/wishlist" className="flex min-h-12 items-center gap-3 text-foreground"><Heart className="size-5 text-primary" />أمنياتي</Link></li>
             <li><Link to={accountTo} className="flex min-h-12 items-center gap-3 text-foreground"><User className="size-5 text-primary" />{user ? 'حسابي' : 'تسجيل الدخول'}</Link></li>

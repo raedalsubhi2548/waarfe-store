@@ -13,6 +13,7 @@ const Order = lazy(() => import('./pages/Order.jsx'))
 const Login = lazy(() => import('./pages/Login.jsx'))
 const Contact = lazy(() => import('./pages/Contact.jsx'))
 const Policies = lazy(() => import('./pages/Policies.jsx'))
+const Work = lazy(() => import('./pages/Work.jsx'))
 import NotFound from './pages/NotFound.jsx'
 const AccountLayout = lazy(() => import('./pages/account/AccountLayout.jsx'))
 const MyOrders = lazy(() => import('./pages/account/Orders.jsx'))
@@ -44,6 +45,7 @@ export default function App() {
             <Route path="login" element={<Login />} />
             <Route path="contact" element={<Contact />} />
             <Route path="policies" element={<Policies />} />
+            <Route path="work" element={<Work />} />
             <Route path="account" element={<AccountLayout />}>
               <Route index element={<MyOrders />} />
               <Route path="wishlist" element={<Wishlist />} />
