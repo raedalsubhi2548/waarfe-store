@@ -35,7 +35,8 @@ create trigger on_auth_user_created after insert on auth.users
 create or replace function public.protect_role() returns trigger
 language plpgsql as $$
 begin
-  if new.role is distinct from old.role and not public.is_admin() then
+  -- auth.uid() is null for the SQL editor and service role, which may change roles
+  if new.role is distinct from old.role and auth.uid() is not null and not public.is_admin() then
     new.role := old.role;
   end if;
   return new;
