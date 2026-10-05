@@ -62,9 +62,9 @@ export function WorkGallery({ items, className }) {
 /** Delivered full-store designs: a browser frame that scrolls the whole store on hover/focus. */
 export function StoreCases({ compact = false }) {
   return (
-    <ul className="grid gap-4 sm:grid-cols-3">
+    <ul className={compact ? '-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0' : 'grid gap-4 sm:grid-cols-3'}>
       {STORE_PDFS.map((s) => (
-        <li key={s.id}>
+        <li key={s.id} className={compact ? 'w-[72%] shrink-0 snap-start sm:w-auto' : undefined}>
           <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border transition-shadow duration-300 hover:shadow-card focus-visible:shadow-card">
             <div className="flex items-center gap-1.5 border-b border-border bg-sunken px-3 py-2" aria-hidden="true">
               <span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-accent" />

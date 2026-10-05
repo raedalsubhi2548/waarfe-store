@@ -41,8 +41,8 @@ export default function Storefront3D() {
   ]
   return (
     <div className="relative mx-auto aspect-[6/5] w-full max-w-[600px] [perspective:1600px]" aria-label="متاجر صممتها وارف تعرض على جوالات" role="img">
-      <div className="absolute inset-[6%] rounded-full bg-[radial-gradient(closest-side,rgb(215_198_118/0.5),transparent)] blur-2xl" aria-hidden="true" />
-      <div className="absolute inset-x-[16%] bottom-[2%] h-[9%] rounded-[50%] bg-primary/30 blur-2xl" aria-hidden="true" />
+      <div className="absolute inset-[4%] bg-[radial-gradient(closest-side,rgb(215_198_118/0.42),transparent)]" aria-hidden="true" />
+      <div className="absolute inset-x-[12%] bottom-[0%] h-[12%] bg-[radial-gradient(closest-side,rgb(9_56_46/0.28),transparent)]" aria-hidden="true" />
 
       <div ref={stage} className="absolute inset-0 [transform-style:preserve-3d] motion-safe:animate-[float_7s_ease-in-out_infinite]"
         style={{ '--rx': '6deg', '--ry': '-8deg', transform: 'rotateX(var(--rx)) rotateY(var(--ry))' }}>
@@ -59,11 +59,11 @@ export default function Storefront3D() {
           </div>
         ))}
 
-        <div className="absolute start-[-1%] bottom-[14%] flex items-center gap-2 rounded-full bg-background/95 py-2 ps-2 pe-4 shadow-card ring-1 ring-border backdrop-blur [transform:translateZ(150px)]">
+        <div className="absolute start-[4%] bottom-[12%] flex items-center gap-2 rounded-full bg-background py-1.5 ps-1.5 pe-3 shadow-card ring-1 ring-border [transform:translateZ(110px)] sm:start-[-1%] sm:py-2 sm:ps-2 sm:pe-4 sm:[transform:translateZ(150px)]">
           <span className="grid size-8 place-items-center rounded-full bg-primary text-accent"><Check className="size-4" strokeWidth={3} /></span>
           <span className="text-sm font-bold text-primary"><span className="tabular">+200</span> طلب منفّذ</span>
         </div>
-        <div className="absolute end-[0%] bottom-[24%] flex items-center gap-2 rounded-full bg-primary py-2 ps-3 pe-4 text-on-inverse shadow-card [transform:translateZ(130px)]">
+        <div className="absolute end-[5%] bottom-[26%] flex items-center gap-2 rounded-full bg-primary py-1.5 ps-2.5 pe-3 text-on-inverse shadow-card [transform:translateZ(100px)] sm:end-[0%] sm:py-2 sm:ps-3 sm:pe-4 sm:[transform:translateZ(130px)]">
           <span className="flex gap-0.5 text-accent">{[0, 1, 2, 3, 4].map((i) => <Star key={i} className="size-3.5" fill="currentColor" strokeWidth={0} />)}</span>
           <span className="tabular text-sm font-bold">5.0</span>
           <span className="text-xs opacity-80">في سلة</span>

@@ -63,11 +63,11 @@ export default function Home() {
               متجرك في سلة،<br />بتصميم يبيع.
             </h1>
             <p className="mt-4 max-w-[38ch] text-lg leading-9 text-muted-foreground">نصمم متجرك ونجهّزه للبيع من يومين إلى 6 أيام.</p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-7 flex gap-2 sm:gap-3">
               {flagship && (
-                <Button asChild size="lg"><Link to={`/p/${flagship.id}`}>صمّم متجري <span className="tabular text-accent">{money(effectivePrice(flagship))}</span></Link></Button>
+                <Button asChild size="lg" className="flex-1 px-4 sm:flex-none sm:px-8"><Link to={`/p/${flagship.id}`}>صمّم متجري <span className="tabular text-accent">{money(effectivePrice(flagship))}</span></Link></Button>
               )}
-              <Button asChild size="lg" variant="outline"><Link to="/work">شوف أعمالنا</Link></Button>
+              <Button asChild size="lg" variant="outline" className="px-4 sm:px-8"><Link to="/work">أعمالنا</Link></Button>
             </div>
           </div>
           <div className="motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)]"><Storefront3D /></div>
