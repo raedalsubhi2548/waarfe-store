@@ -560,7 +560,7 @@ h1, h2, h3, h4 { font-weight: 700; letter-spacing: -.01em; }
 .banner img { width: 100%; height: auto; display: block; }
 a.banner { transition: transform .4s var(--ease), box-shadow .4s; }
 a.banner:hover { box-shadow: 0 30px 60px -36px rgba(9, 56, 46, .6); }
-.hero-banner { aspect-ratio: 1376 / 768; max-height: 640px; }
+.hero-banner { aspect-ratio: 1376 / 768; width: 100%; }
 .hero-banner img { height: 100%; object-fit: cover; }
 
 /* category doors */
