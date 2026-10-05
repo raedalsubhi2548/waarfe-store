@@ -240,6 +240,23 @@ begin
   end if;
 end $$;
 
+-- ---------- explicit grants (works even with "Automatically expose new tables" turned off) ----------
+grant usage on schema public to anon, authenticated, service_role;
+grant select on public.categories, public.products to anon, authenticated;
+grant insert, update, delete on public.categories, public.products to authenticated;
+grant select, insert, update, delete on public.product_files, public.coupons to authenticated;
+grant select, update on public.profiles to authenticated;
+grant select on public.orders to authenticated;
+grant select, insert, delete on public.wishlists to authenticated;
+grant all on all tables in schema public to service_role;
+grant usage, select on all sequences in schema public to service_role;
+grant execute on function public.is_admin() to anon, authenticated;
+grant execute on function public.check_coupon(text) to anon, authenticated;
+grant execute on function public.place_order(jsonb, jsonb, text, text, text) to authenticated;
+grant execute on function public.set_order_status(uuid, text, text) to authenticated;
+grant execute on function public.admin_customers() to authenticated;
+grant execute on function public.set_product_file(text, text) to authenticated;
+
 -- ---------- storage ----------
 insert into storage.buckets (id, name, public) values ('products', 'products', true) on conflict (id) do nothing;
 insert into storage.buckets (id, name, public) values ('downloads', 'downloads', false) on conflict (id) do nothing;
