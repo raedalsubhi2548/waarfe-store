@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom'
+import { Compass } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 export default function NotFound() {
   return (
-    <div className="page wrap center-page">
-      <h1>الصفحة غير موجودة</h1>
-      <p className="muted">الرابط قديم أو فيه خطأ. ارجع للخدمات وكمّل من هناك.</p>
-      <Link to="/shop" className="btn btn-primary">تصفّح الخدمات</Link>
+    <div className="container-w grid justify-items-center gap-4 py-24 text-center">
+      <span className="grid size-16 place-items-center rounded-full bg-sunken text-primary"><Compass className="size-7" /></span>
+      <h1 className="font-display text-display-sm font-bold text-primary">الصفحة غير موجودة</h1>
+      <p className="max-w-md text-muted-foreground">الرابط قديم أو فيه خطأ. ارجع للخدمات وكمّل من هناك.</p>
+      <Button asChild><Link to="/shop">تصفّح الخدمات</Link></Button>
     </div>
   )
 }

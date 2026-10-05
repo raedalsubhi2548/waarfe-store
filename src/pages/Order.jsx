@@ -1,24 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { api } from '../lib/api.js'
-import { useApp } from '../state.jsx'
-import Icon from '../components/Icon.jsx'
-import { ORDER_STATUSES } from '../data/seed.js'
-import { money, dateTime, waLink } from '../lib/format.js'
+import { Check, Clock, Download, MessageCircle } from 'lucide-react'
+import { api } from '@/lib/api.js'
+import { useApp } from '@/state.jsx'
+import { cn } from '@/lib/utils'
+import { money, dateTime, waLink } from '@/lib/format.js'
+import { Button } from '@/components/ui/button'
+import { Panel, OrderTracker, StatusPill, statusLabel, Skeleton, Empty } from '@/components/ui/kit.jsx'
 
+export { statusLabel }
+export const StatusTrack = OrderTracker
 const BANK_INFO = import.meta.env.VITE_BANK_INFO || ''
-export const statusLabel = (s) => ORDER_STATUSES.find((x) => x.id === s)?.label || s
-const FLOW = ['pending', 'paid', 'in_progress', 'review', 'completed']
-
-export function StatusTrack({ status }) {
-  if (status === 'cancelled') return <p className="pill pill-cancelled">ملغي</p>
-  const at = FLOW.indexOf(status)
-  return (
-    <ol className="track">
-      {FLOW.map((s, i) => <li key={s} className={i < at ? 'done' : i === at ? 'now' : ''}><i />{statusLabel(s)}</li>)}
-    </ol>
-  )
-}
 
 function DownloadButton({ orderId, productId }) {
   const { notify } = useApp()
@@ -27,7 +19,7 @@ function DownloadButton({ orderId, productId }) {
     setBusy(true)
     try { window.open(await api.downloadUrl(orderId, productId), '_blank', 'noopener') } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
   }
-  return <button className="btn btn-gold dl-btn" onClick={go} disabled={busy}><Icon name="download" size={16} />{busy ? 'لحظة…' : 'تحميل الملف'}</button>
+  return <Button variant="accent" size="sm" className="mt-2 h-9" onClick={go} disabled={busy}><Download />{busy ? 'لحظة…' : 'تحميل الملف'}</Button>
 }
 
 export default function Order() {
@@ -47,60 +39,69 @@ export default function Order() {
     return () => { alive = false }
   }, [id, authReady, user?.id, params])
 
-  if (order === undefined || verifying) return <div className="page wrap pad-xl center-page"><p className="muted">{verifying ? 'نتأكد من عملية الدفع…' : 'جاري التحميل…'}</p></div>
-  if (!order) return <div className="page wrap center-page"><h1>ما لقينا الطلب</h1><p className="muted">تأكد إنك مسجّل دخول بنفس الحساب اللي طلبت فيه.</p><Link className="btn btn-primary" to="/account">طلباتي</Link></div>
+  if (order === undefined || verifying) return <div className="container-w grid gap-4 py-14"><p className="text-center text-muted-foreground">{verifying ? 'نتأكد من عملية الدفع…' : 'جاري التحميل…'}</p><Skeleton className="h-72" /></div>
+  if (!order) return <div className="container-w py-14"><Empty title="ما لقينا الطلب" action={<Button asChild><Link to="/account">طلباتي</Link></Button>}>تأكد إنك مسجّل دخول بنفس الحساب اللي طلبت فيه.</Empty></div>
 
   const paid = order.status !== 'pending' && order.status !== 'cancelled'
   return (
-    <div className="page wrap pad-top order-page">
-      {isNew && (
-        <div className={'order-banner' + (paid ? '' : ' wait')}>
-          <span className="ob-icon"><Icon name={paid ? 'check' : 'clock'} size={28} /></span>
+    <div className="container-w py-10 sm:py-14">
+      {isNew ? (
+        <div className={cn('mb-8 flex items-center gap-4 rounded-xl p-6 sm:p-8', paid ? 'bg-inverse text-on-inverse' : 'bg-sunken')}>
+          <span className={cn('grid size-14 shrink-0 place-items-center rounded-full', paid ? 'bg-accent text-accent-foreground' : 'bg-surface text-primary')}>{paid ? <Check className="size-7" strokeWidth={3} /> : <Clock className="size-7" />}</span>
           <div>
-            <h1>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
-            <p>رقم الطلب #{order.number}. {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع. تقدر تتواصل معنا لإكمالها.'}</p>
+            <h1 className={cn('font-display text-2xl font-bold sm:text-3xl', !paid && 'text-primary')}>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
+            <p className={cn('mt-1', paid ? 'text-on-inverse/80' : 'text-muted-foreground')}>
+              <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع. تواصل معنا لإكمالها.'}
+            </p>
           </div>
         </div>
+      ) : (
+        <h1 className="tabular mb-8 font-display text-display-sm font-bold text-primary">طلب #{order.number}</h1>
       )}
-      {!isNew && <h1 className="h-page">طلب #{order.number}</h1>}
 
-      <div className="order-grid">
-        <div className="panel">
-          <h2 className="panel-h">حالة الطلب</h2>
-          <StatusTrack status={order.status} />
+      <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
+        <Panel title="حالة الطلب" action={<StatusPill status={order.status} />}>
+          <OrderTracker status={order.status} />
           {order.status === 'pending' && order.paymentMethod === 'bank' && (
-            <div className="bank-box">
-              <h3>التحويل البنكي</h3>
-              {BANK_INFO ? <p className="pre">{BANK_INFO}</p> : <p>بنرسل لك بيانات الحساب على واتساب.</p>}
-              <a className="btn btn-primary" href={waLink(`السلام عليكم، طلبي رقم #${order.number} بقيمة ${money(order.total)}، أبي أرسل إيصال التحويل`)} target="_blank" rel="noreferrer">
-                <Icon name="whatsapp" size={18} />أرسل الإيصال على واتساب
-              </a>
+            <div className="mt-6 grid justify-items-start gap-3 rounded-lg bg-sunken p-5">
+              <h3 className="font-display font-bold text-primary">التحويل البنكي</h3>
+              {BANK_INFO ? <p className="whitespace-pre-line">{BANK_INFO}</p> : <p className="text-muted-foreground">بنرسل لك بيانات الحساب على واتساب.</p>}
+              <Button asChild><a href={waLink(`السلام عليكم، طلبي رقم #${order.number} بقيمة ${money(order.total)}، أبي أرسل إيصال التحويل`)} target="_blank" rel="noreferrer"><MessageCircle />أرسل الإيصال على واتساب</a></Button>
             </div>
           )}
-          <h3 className="sub-h">السجل</h3>
-          <ul className="history">
+          <h3 className="mt-8 mb-3 font-display font-bold text-primary">السجل</h3>
+          <ol className="relative grid gap-4 border-s-2 border-border-strong ps-5">
             {[...(order.history || [])].reverse().map((h, i) => (
-              <li key={i}><strong>{statusLabel(h.status)}</strong><span className="muted">{dateTime(h.at)}</span>{h.note && <p>{h.note}</p>}</li>
+              <li key={i} className="relative">
+                <span className={cn('absolute -start-[27px] top-1.5 size-3 rounded-full ring-4 ring-surface', i === 0 ? 'bg-accent' : 'bg-primary')} />
+                <div className="flex flex-wrap items-baseline justify-between gap-2"><b>{statusLabel(h.status)}</b><span className="tabular text-xs text-muted-foreground">{dateTime(h.at)}</span></div>
+                {h.note && <p className="mt-1 text-sm text-muted-foreground">{h.note}</p>}
+              </li>
             ))}
-          </ul>
-        </div>
-        <aside className="summary">
-          <h2>تفاصيل الطلب</h2>
-          <ul className="sum-lines">
+          </ol>
+        </Panel>
+
+        <Panel title="تفاصيل الطلب">
+          <ul className="grid gap-4">
             {order.items.map((it) => (
-              <li key={it.productId}>
-                <img src={it.image} alt="" />
-                <span>{it.name}{it.qty > 1 && <em> × {it.qty}</em>}{it.note && <small className="muted block">{it.note}</small>}
-                  {it.digital && paid && <DownloadButton orderId={order.id} productId={it.productId} />}</span>
-                <strong>{money(it.price * it.qty)}</strong>
+              <li key={it.productId} className="flex gap-3 text-sm">
+                <img src={it.image} alt="" className="size-12 rounded-sm object-cover" />
+                <div className="flex-1">
+                  <p className="leading-6">{it.name}{it.qty > 1 && <span className="text-muted-foreground"> × {it.qty}</span>}</p>
+                  {it.note && <p className="text-xs text-muted-foreground">{it.note}</p>}
+                  {it.digital && paid && <DownloadButton orderId={order.id} productId={it.productId} />}
+                </div>
+                <strong className="tabular">{money(it.price * it.qty)}</strong>
               </li>
             ))}
           </ul>
-          {order.discount > 0 && <div className="row-between good"><span>خصم {order.coupon}</span><span>− {money(order.discount)}</span></div>}
-          <div className="row-between total"><span>الإجمالي</span><strong>{money(order.total)}</strong></div>
-          <p className="muted small">{order.paymentMethod === 'card' ? 'الدفع: بطاقة / Apple Pay' : 'الدفع: تحويل بنكي'} — {dateTime(order.createdAt)}</p>
-          <Link to="/account" className="btn btn-ghost btn-block">كل طلباتي</Link>
-        </aside>
+          <dl className="mt-5 grid gap-2 border-t border-border pt-4">
+            {order.discount > 0 && <div className="flex justify-between text-success"><dt>خصم {order.coupon}</dt><dd className="tabular">− {money(order.discount)}</dd></div>}
+            <div className="flex items-baseline justify-between"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-bold text-primary">{money(order.total)}</dd></div>
+          </dl>
+          <p className="mt-2 text-xs text-muted-foreground">{order.paymentMethod === 'card' ? 'بطاقة / Apple Pay' : 'تحويل بنكي'} · <span className="tabular">{dateTime(order.createdAt)}</span></p>
+          <Button asChild variant="outline" className="mt-5 w-full"><Link to="/account">كل طلباتي</Link></Button>
+        </Panel>
       </div>
     </div>
   )

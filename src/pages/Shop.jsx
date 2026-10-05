@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { useApp } from '../state.jsx'
-import ServiceRow from '../components/ServiceRow.jsx'
-import Icon from '../components/Icon.jsx'
-import { effectivePrice } from '../lib/format.js'
+import { Search } from 'lucide-react'
+import { useApp } from '@/state.jsx'
+import { cn } from '@/lib/utils'
+import Icon from '@/components/Icon.jsx'
+import ServiceTicket from '@/components/home/ServiceTicket.jsx'
+import { PageHead, Empty, Input, Select, Skeleton } from '@/components/ui/kit.jsx'
+import { Button } from '@/components/ui/button'
+import { effectivePrice } from '@/lib/format.js'
 
 const SORTS = [
   { id: 'featured', label: 'المقترح' },
@@ -33,50 +37,43 @@ export default function Shop() {
   }, [products, categoryId, q, sort])
 
   const set = (k, v) => { const n = new URLSearchParams(params); v ? n.set(k, v) : n.delete(k); setParams(n, { replace: true }) }
+  const chip = (on) => cn('inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border-[1.5px] px-4 text-sm font-semibold transition-colors', on ? 'border-primary bg-primary text-primary-foreground' : 'border-border-strong text-primary hover:border-primary')
 
   return (
-    <div className="page">
-      <section className="page-hero">
-        <div className="wrap">
-          <nav className="crumbs" aria-label="المسار"><Link to="/">الرئيسية</Link><Icon name="chevron" size={14} /><span>{cat ? cat.name : 'كل الخدمات'}</span></nav>
-          <h1>{cat ? cat.name : q ? `نتائج «${q}»` : 'كل الخدمات'}</h1>
-          {cat?.blurb && <p>{cat.blurb}</p>}
-        </div>
-      </section>
-      <div className="wrap shop-layout">
-        <aside className="shop-side" aria-label="الأقسام">
-          <h2 className="side-title">الأقسام</h2>
-          <ul className="side-cats">
-            <li><Link to={'/shop' + (q ? `?q=${q}` : '')} className={!categoryId ? 'on' : ''}>كل الخدمات <i>{products.length}</i></Link></li>
-            {categories.map((c) => (
-              <li key={c.id}><Link to={`/c/${c.id}`} className={categoryId === c.id ? 'on' : ''}><Icon name={c.icon} size={18} />{c.name}<i>{products.filter((p) => p.categoryId === c.id).length}</i></Link></li>
-            ))}
-          </ul>
-        </aside>
-        <div>
-          <div className="shop-bar">
-            <label className="field-inline search-inline">
-              <Icon name="search" size={18} />
-              <input value={q} onChange={(e) => set('q', e.target.value)} placeholder="ابحث داخل الخدمات" aria-label="بحث" />
-            </label>
-            <label className="field-inline">
-              <span>ترتيب</span>
-              <select value={sort} onChange={(e) => set('sort', e.target.value)}>
-                {SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-              </select>
-            </label>
-          </div>
-          <p className="muted result-count">{list.length} خدمة</p>
-          {!catalogReady && <div className="skeleton tall" />}
-          <ul className="slist">{list.map((p) => <ServiceRow key={p.id} p={p} showCategory={!categoryId} />)}</ul>
-          {catalogReady && list.length === 0 && (
-            <div className="empty">
-              <p>ما فيه خدمة تطابق بحثك. امسح البحث أو اختر قسماً آخر.</p>
-              <button className="btn btn-ghost" onClick={() => setParams({})}>مسح البحث</button>
-            </div>
-          )}
-        </div>
+    <div className="container-w py-10 sm:py-14 [--notch:var(--background)]">
+      <PageHead
+        crumbs={<><Link to="/" className="hover:underline">الرئيسية</Link><span>/</span><span>{cat ? cat.name : 'كل الخدمات'}</span></>}
+        title={cat ? cat.name : q ? `نتائج «${q}»` : 'كل الخدمات'}
+        lead={cat?.blurb || 'كل خدمات وارف بأسعار ثابتة. اختر القسم أو ابحث باسم الخدمة.'}
+      />
+
+      <nav className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]" aria-label="الأقسام">
+        <Link to={'/shop' + (q ? `?q=${encodeURIComponent(q)}` : '')} className={chip(!categoryId)}>الكل <span className="tabular opacity-70">{products.length}</span></Link>
+        {categories.map((c) => (
+          <Link key={c.id} to={`/c/${c.id}`} className={chip(categoryId === c.id)}>
+            <Icon name={c.icon} size={16} />{c.name}<span className="tabular opacity-70">{products.filter((p) => p.categoryId === c.id).length}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <div className="mb-6 flex flex-wrap items-center gap-3">
+        <label className="relative min-w-[240px] flex-1 sm:max-w-md">
+          <Search className="pointer-events-none absolute top-1/2 start-4 size-5 -translate-y-1/2 text-muted-foreground" />
+          <Input value={q} onChange={(e) => set('q', e.target.value)} placeholder="ابحث داخل الخدمات" aria-label="بحث" className="rounded-full ps-12" />
+        </label>
+        <Select value={sort} onChange={(e) => set('sort', e.target.value)} aria-label="ترتيب" className="w-auto rounded-full">
+          {SORTS.map((s) => <option key={s.id} value={s.id}>ترتيب: {s.label}</option>)}
+        </Select>
+        <span className="tabular ms-auto text-sm text-muted-foreground">{list.length} خدمة</span>
       </div>
+
+      {!catalogReady ? (
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{Array.from({ length: 8 }, (_, i) => <Skeleton key={i} className="aspect-[4/5]" />)}</div>
+      ) : list.length === 0 ? (
+        <Empty icon={Search} title="ما فيه خدمة تطابق بحثك" action={<Button variant="outline" onClick={() => setParams({})}>مسح البحث</Button>}>امسح البحث أو اختر قسماً آخر.</Empty>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">{list.map((p) => <ServiceTicket key={p.id} p={p} />)}</div>
+      )}
     </div>
   )
 }
