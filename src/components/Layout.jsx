@@ -1,8 +1,12 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import Header from './Header.jsx'
-import Footer from './Footer.jsx'
+import SiteHeader from './site/SiteHeader.jsx'
+import SiteFooter from './site/SiteFooter.jsx'
 import CartDrawer from './CartDrawer.jsx'
+
+export function PageFallback() {
+  return <div className="container-w py-16"><div className="h-80 animate-pulse rounded-xl bg-sunken" /></div>
+}
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -10,9 +14,9 @@ export default function Layout() {
   return (
     <>
       <a href="#main" className="skip">انتقل للمحتوى</a>
-      <Header />
-      <main id="main"><Outlet /></main>
-      <Footer />
+      <SiteHeader />
+      <main id="main"><Suspense fallback={<PageFallback />}><Outlet /></Suspense></main>
+      <SiteFooter />
       <CartDrawer />
     </>
   )

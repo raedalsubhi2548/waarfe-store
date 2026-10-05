@@ -1,32 +1,35 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { DirectionProvider } from '@radix-ui/react-direction'
 import { AppProvider } from './state.jsx'
-import Layout from './components/Layout.jsx'
+import Layout, { PageFallback } from './components/Layout.jsx'
 import Toast from './components/Toast.jsx'
 import Home from './pages/Home.jsx'
 import Shop from './pages/Shop.jsx'
 import Product from './pages/Product.jsx'
-import Cart from './pages/Cart.jsx'
-import Checkout from './pages/Checkout.jsx'
-import Order from './pages/Order.jsx'
-import Login from './pages/Login.jsx'
-import Contact from './pages/Contact.jsx'
-import Policies from './pages/Policies.jsx'
+const Cart = lazy(() => import('./pages/Cart.jsx'))
+const Checkout = lazy(() => import('./pages/Checkout.jsx'))
+const Order = lazy(() => import('./pages/Order.jsx'))
+const Login = lazy(() => import('./pages/Login.jsx'))
+const Contact = lazy(() => import('./pages/Contact.jsx'))
+const Policies = lazy(() => import('./pages/Policies.jsx'))
 import NotFound from './pages/NotFound.jsx'
-import AccountLayout from './pages/account/AccountLayout.jsx'
-import MyOrders from './pages/account/Orders.jsx'
-import Wishlist from './pages/account/Wishlist.jsx'
-import Profile from './pages/account/Profile.jsx'
-import AdminLayout from './pages/admin/AdminLayout.jsx'
-import Overview from './pages/admin/Overview.jsx'
-import AdminOrders from './pages/admin/Orders.jsx'
-import Products from './pages/admin/Products.jsx'
-import ProductForm from './pages/admin/ProductForm.jsx'
-import Categories from './pages/admin/Categories.jsx'
-import Customers from './pages/admin/Customers.jsx'
-import Coupons from './pages/admin/Coupons.jsx'
+const AccountLayout = lazy(() => import('./pages/account/AccountLayout.jsx'))
+const MyOrders = lazy(() => import('./pages/account/Orders.jsx'))
+const Wishlist = lazy(() => import('./pages/account/Wishlist.jsx'))
+const Profile = lazy(() => import('./pages/account/Profile.jsx'))
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout.jsx'))
+const Overview = lazy(() => import('./pages/admin/Overview.jsx'))
+const AdminOrders = lazy(() => import('./pages/admin/Orders.jsx'))
+const Products = lazy(() => import('./pages/admin/Products.jsx'))
+const ProductForm = lazy(() => import('./pages/admin/ProductForm.jsx'))
+const Categories = lazy(() => import('./pages/admin/Categories.jsx'))
+const Customers = lazy(() => import('./pages/admin/Customers.jsx'))
+const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
 
 export default function App() {
   return (
+    <DirectionProvider dir="rtl">
     <AppProvider>
       <BrowserRouter>
         <Routes>
@@ -48,7 +51,7 @@ export default function App() {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
-          <Route path="admin" element={<AdminLayout />}>
+          <Route path="admin" element={<Suspense fallback={<PageFallback />}><AdminLayout /></Suspense>}>
             <Route index element={<Overview />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="products" element={<Products />} />
@@ -61,5 +64,6 @@ export default function App() {
         <Toast />
       </BrowserRouter>
     </AppProvider>
+    </DirectionProvider>
   )
 }

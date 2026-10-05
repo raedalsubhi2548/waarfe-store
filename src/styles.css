@@ -20,8 +20,8 @@
   --warn: #9a6a06;
   --bad: #a3322b;
 
-  --display: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
-  --body: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+  --display: 'Readex Pro', 'Almarai', system-ui, sans-serif;
+  --body: 'Almarai', 'Readex Pro', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
 
   --r-img: 18px;
   --r-card: 22px;
