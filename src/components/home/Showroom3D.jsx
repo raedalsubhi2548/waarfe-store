@@ -50,11 +50,6 @@ export default function Showroom3D() {
             <div className="absolute inset-0 [backface-visibility:hidden]">
               <Phone pdfId={id} at={at} drift={6} size={360} eager={i < 3} />
             </div>
-            {/* back of the phone */}
-            <div className="absolute inset-0 grid place-items-center rounded-[clamp(18px,13%,30px)] bg-gradient-to-br from-[#0f3a30] to-[#071d18] ring-1 ring-accent/25 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-              <span className="absolute top-[5%] start-[8%] grid size-[22%] place-items-center rounded-[28%] bg-black/30 ring-1 ring-accent/30"><span className="size-[40%] rounded-full bg-black/60 ring-2 ring-accent/40" /></span>
-              <span className="grid size-[46%] place-items-center rounded-full bg-background p-[9%] shadow-[0_0_40px_rgb(215_198_118/0.25)]"><img src="/logo.png" alt="" className="w-full" /></span>
-            </div>
           </div>
         ))}
       </div>

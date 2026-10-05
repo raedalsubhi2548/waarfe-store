@@ -183,7 +183,7 @@ function Stores() {
           </div>
           <Link to="/work" className="group inline-flex h-11 items-center gap-2 text-sm font-bold"><span className="border-b-2 border-accent pb-0.5">كل المتاجر</span><ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /></Link>
         </div>
-        <ul className="grid grid-cols-3 items-end gap-3 sm:gap-8 lg:px-16">
+        <ul className="mx-auto grid max-w-4xl grid-cols-3 items-end gap-3 sm:gap-8 lg:gap-12">
           {STORE_PDFS.map((s, i) => (
             <li key={s.id} className={cn(i === 1 && '-translate-y-4 sm:-translate-y-8')}>
               <Link to="/work" className="group block focus-visible:outline-none" aria-label={`متجر ${s.name}`}>
