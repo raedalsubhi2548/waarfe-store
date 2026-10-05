@@ -29,14 +29,14 @@ export default function Reviews() {
         ))}
       </div>
 
-      <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+      <ul className="columns-2 gap-3 sm:gap-4 lg:columns-3">
         {list.map((r, i) => (
-          <li key={r.name + i} className="mb-4 break-inside-avoid">
-            <figure className="rounded-lg bg-surface p-5 shadow-hairline ring-1 ring-border">
-              <div className="flex items-center justify-between"><Stars className="text-accent-text" /><Quote className="size-5 text-accent/60" /></div>
-              <blockquote className="mt-3 whitespace-pre-line leading-8">{r.text}</blockquote>
-              <figcaption className="mt-4 flex items-center gap-3 border-t border-border pt-4 text-sm">
-                <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken font-display font-bold text-primary">{r.name.charAt(0)}</span>
+          <li key={r.name + i} className="mb-3 break-inside-avoid sm:mb-4">
+            <figure className="rounded-lg bg-surface p-3.5 shadow-hairline ring-1 ring-border sm:p-5">
+              <div className="flex items-center justify-between"><Stars className="text-accent-text [&_svg]:size-3 sm:[&_svg]:size-4" /><Quote className="size-4 text-accent/60 sm:size-5" /></div>
+              <blockquote className="mt-3 whitespace-pre-line text-sm leading-7 sm:text-base sm:leading-8">{r.text}</blockquote>
+              <figcaption className="mt-4 flex items-center gap-2.5 border-t border-border pt-3 text-xs sm:gap-3 sm:pt-4 sm:text-sm">
+                <span className="grid size-8 shrink-0 sm:size-9 place-items-center rounded-full bg-sunken font-display font-bold text-primary">{r.name.charAt(0)}</span>
                 <span><b className="block text-primary">{r.name}</b>{r.city && <span className="text-muted-foreground">{r.city}</span>}</span>
               </figcaption>
             </figure>

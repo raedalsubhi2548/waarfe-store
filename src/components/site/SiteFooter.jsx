@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
 import Icon from '@/components/Icon.jsx'
 import Social from '@/components/Social.jsx'
+import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
 import { WHATSAPP, waLink } from '@/lib/format.js'
 
@@ -39,9 +40,7 @@ export default function SiteFooter() {
           </nav>
           <div className="col-span-2 sm:col-span-1">
             <h2 className={col}>طرق الدفع</h2>
-            <ul className="flex flex-wrap gap-2">
-              {['مدى', 'Apple Pay', 'Visa', 'Mastercard', 'تحويل بنكي'].map((m) => <li key={m} className="rounded-xs border border-accent/30 px-2.5 py-1 text-xs">{m}</li>)}
-            </ul>
+            <PayIcons size="sm" />
           </div>
         </div>
 

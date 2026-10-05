@@ -48,4 +48,7 @@
 @keyframes rise-in { from { opacity: 0; transform: translateY(10px); } }
 @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -10px; } }
 @keyframes screen-scroll { 0%,6% { translate: 0 -2.6%; } 94%,100% { translate: 0 calc(-97.5% + 100cqh); } }
+@keyframes drift { from { translate: 0 var(--from); } to { translate: 0 var(--to); } }
+@keyframes spin-ring { to { rotate: y 360deg; } }
+@keyframes plan { 0%,8% { scale: 0 1; } 30%,80% { scale: 1 1; } 100% { scale: 1 1; opacity: 0; } }
 @keyframes marquee { to { transform: translateX(50%); } }

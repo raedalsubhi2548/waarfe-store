@@ -55,8 +55,9 @@ export const ALL_REVIEWS = [
   { name: 'حامد', city: 'الجموم', text: 'شكرا على التعامل المميز والراقي من افضل التجارب العمل معكم جميل 👍🏻' },
 ]
 
-// Shown on the homepage strip: short, specific ones first.
-export const HOME_REVIEWS = [2, 3, 6, 8, 4, 9, 11, 5].map((i) => ALL_REVIEWS[i])
+// Homepage: one featured review + four short ones.
+export const FEATURED_REVIEW = ALL_REVIEWS[1]
+export const HOME_REVIEWS = [2, 3, 6, 8].map((i) => ALL_REVIEWS[i])
 
-// Real best-sellers from the Salla store (units sold, all time, Oct 2026), mapped to catalog ids.
-export const MOST_REQUESTED = ['salla-store-design', 'add-product-options', 'add-products', 'pixel-integration', 'logo-design', 'google-tools-integration', 'tabby-registration', 'tmara-registration']
+// The three core services Raed wants up front (store design is also the #1 seller on Salla).
+export const CORE_SERVICES = ['salla-store-design', 'landing-page-design', 'google-tools-integration']

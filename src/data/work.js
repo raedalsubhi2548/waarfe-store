@@ -73,5 +73,5 @@ export const PROOF = [
   { value: '2–6', label: 'أيام لتسليم متجر سلة', ltr: true },
 ]
 
-// Homepage preview: a few wide banners (16:9 / 21:9) that read well in a strip.
-export const PREVIEW = [8, 2, 21, 4, 25, 10].map((i) => WORK[i])
+// Homepage preview of banners & social posts (mixed ratios for a calm masonry).
+export const PREVIEW = [1, 8, 15, 21, 32, 25, 37, 9].map((i) => WORK[i])
