@@ -59,19 +59,23 @@ export function WorkGallery({ items, className }) {
   )
 }
 
-/** Delivered full-store designs (PDF case files on Drive). */
-export function StoreCases() {
+/** Delivered full-store designs: a browser frame that scrolls the whole store on hover/focus. */
+export function StoreCases({ compact = false }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-3">
       {STORE_PDFS.map((s) => (
         <li key={s.id}>
-          <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border transition-shadow hover:shadow-card">
-            <div className="aspect-[4/3] overflow-hidden bg-sunken">
-              <img src={pdfThumb(s.id, 800)} alt="" loading="lazy" className="size-full object-cover object-top transition-transform duration-700 ease-emphasized group-hover:scale-[1.03]" />
+          <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border transition-shadow duration-300 hover:shadow-card focus-visible:shadow-card">
+            <div className="flex items-center gap-1.5 border-b border-border bg-sunken px-3 py-2" aria-hidden="true">
+              <span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-accent" />
+              <span className="ms-2 h-4 flex-1 rounded-full bg-surface" />
+            </div>
+            <div className={`relative overflow-hidden bg-sunken [container-type:size] ${compact ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
+              <img src={pdfThumb(s.id, 800)} alt={`تصميم متجر ${s.name}`} loading="lazy" className="w-full transition-[translate] duration-[9000ms] ease-in-out group-hover:[translate:0_calc(-100%+100cqh)] group-focus-visible:[translate:0_calc(-100%+100cqh)]" />
             </div>
             <div className="flex items-center justify-between gap-3 p-4">
               <span className="flex items-center gap-2 font-display font-semibold text-primary"><FileText className="size-4 text-accent-text" />{s.name}</span>
-              <span className="flex items-center gap-1 text-sm text-muted-foreground">ملف المتجر<ExternalLink className="size-3.5" /></span>
+              <span className="flex items-center gap-1 text-sm text-muted-foreground">المتجر كامل<ExternalLink className="size-3.5" /></span>
             </div>
           </a>
         </li>

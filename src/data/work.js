@@ -69,6 +69,9 @@ export const pdfView = (id) => `https://drive.google.com/file/d/${id}/view`
 // Verified against the Salla store (orders_list total, 2026-10-06). Reviews total pending Raed's confirmation.
 export const PROOF = [
   { value: '+200', label: 'طلب نفّذناه في متجرنا على سلة' },
-  { value: '45', label: 'تصميم في معرض الأعمال' },
+  { value: '5.0', label: 'تقييم عملائنا المنشور في سلة' },
   { value: '2–6', label: 'أيام لتسليم متجر سلة', ltr: true },
 ]
+
+// Homepage preview: a few wide banners (16:9 / 21:9) that read well in a strip.
+export const PREVIEW = [8, 2, 21, 4, 25, 10].map((i) => WORK[i])

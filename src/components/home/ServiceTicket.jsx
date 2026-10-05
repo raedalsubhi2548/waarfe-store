@@ -6,7 +6,7 @@ import { money, effectivePrice } from '@/lib/format.js'
 import { Badge } from '@/components/ui/badge'
 
 /** A service as a ticket stub: image, perforation, name, price, add. */
-export default function ServiceTicket({ p, className }) {
+export default function ServiceTicket({ p, className, rank }) {
   const { addToCart, toggleWish, wishlist } = useApp()
   const wished = wishlist.includes(p.id)
   const sale = p.salePrice && p.salePrice < p.price
@@ -14,7 +14,12 @@ export default function ServiceTicket({ p, className }) {
     <article className={cn('group relative flex flex-col rounded-[var(--ticket-radius)] bg-surface shadow-hairline ring-1 ring-border transition-shadow duration-300 hover:shadow-card', className)}>
       <Link to={`/p/${p.id}`} className="relative block overflow-hidden rounded-t-[var(--ticket-radius)] bg-sunken">
         <img src={p.image} alt="" loading="lazy" decoding="async" width="500" height="500" className="aspect-square w-full object-cover transition-transform duration-700 ease-emphasized group-hover:scale-[1.03]" />
-        {p.badge && <Badge variant="green" className="absolute top-3 start-3">{p.badge}</Badge>}
+        {rank ? (
+          <span className="absolute top-3 start-3 flex items-center gap-1 rounded-full bg-primary py-1 ps-1 pe-2.5 text-xs font-bold text-on-inverse shadow-hairline">
+            <span className="tabular grid size-5 place-items-center rounded-full bg-accent text-[11px] text-accent-foreground">{rank}</span>
+            {rank === 1 ? 'الأكثر طلباً' : 'مطلوب'}
+          </span>
+        ) : p.badge && <Badge variant="green" className="absolute top-3 start-3">{p.badge}</Badge>}
       </Link>
       <button
         type="button"

@@ -67,7 +67,7 @@ export default function SiteHeader() {
         <SheetContent side="start" className="overflow-y-auto p-5">
           <SheetTitle className="sr-only">أقسام المتجر</SheetTitle>
           <SheetDescription className="sr-only">تصفّح أقسام وارف وروابط حسابك</SheetDescription>
-          <img src="/logo.png" alt="وارف" width="600" height="580" className="h-12 w-auto" />
+          <Link to="/" className="self-start pe-14"><img src="/logo.png" alt="وارف" width="600" height="580" className="h-14 w-auto" /></Link>
           <p className="mt-6 mb-2 text-xs font-bold text-muted-foreground">أقسام المتجر</p>
           <ul className="grid gap-2">
             {categories.map((c) => (
