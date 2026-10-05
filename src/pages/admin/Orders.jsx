@@ -1,96 +1,176 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { api } from '../../lib/api.js'
-import { useApp } from '../../state.jsx'
-import Icon from '../../components/Icon.jsx'
-import { ORDER_STATUSES } from '../../data/seed.js'
-import { money, dateTime } from '../../lib/format.js'
-import { statusLabel, StatusTrack } from '../Order.jsx'
+import { MessageCircle, Mail, Phone, CreditCard, Landmark, Inbox, ChevronLeft, Copy } from 'lucide-react'
+import { api } from '@/lib/api.js'
+import { useApp } from '@/state.jsx'
+import { ORDER_STATUSES } from '@/data/seed.js'
+import { money, dateTime } from '@/lib/format.js'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
+import { Field, Select, Textarea, Skeleton, StatusPill, OrderTracker, statusLabel } from '@/components/ui/kit.jsx'
+import { AdminHead, SearchBox, Segments, TableCard, Table, Th, Td } from '@/components/admin/ui.jsx'
 
-function OrderPanel({ order, onClose, onSaved }) {
+const waPhone = (p) => (p || '').replace(/\D/g, '').replace(/^0/, '966')
+
+function OrderDetail({ order, onSaved }) {
   const { notify } = useApp()
   const [status, setStatus] = useState(order.status)
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
-  const phone = (order.customer?.phone || '').replace(/\D/g, '').replace(/^0/, '966')
+  const phone = waPhone(order.customer?.phone)
   const save = async () => {
     setBusy(true)
     try { await api.updateOrderStatus(order.id, status, note); notify('تم تحديث حالة الطلب'); setNote(''); onSaved() } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
   }
+  const sub = order.items.reduce((s, it) => s + it.price * it.qty, 0)
   return (
-    <div className="drawer-wrap open">
-      <div className="drawer-scrim" onClick={onClose} />
-      <aside className="drawer wide" role="dialog" aria-modal="true" aria-label={`طلب ${order.number}`}>
-        <header className="drawer-head"><h2>طلب #{order.number}</h2><button className="icon-btn" onClick={onClose} aria-label="إغلاق"><Icon name="close" /></button></header>
-        <div className="drawer-body stack">
-          <StatusTrack status={order.status} />
-          <section className="panel tight">
-            <h3 className="sub-h">العميل</h3>
-            <p><strong>{order.customer?.name}</strong></p>
-            <p className="muted" dir="ltr">{order.customer?.email}</p>
-            <p className="muted" dir="ltr">{order.customer?.phone}</p>
-            {phone && <a className="btn btn-ghost" href={`https://wa.me/${phone}?text=${encodeURIComponent(`السلام عليكم ${order.customer?.name || ''}، معك وارف بخصوص طلبك رقم #${order.number}`)}`} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={18} />راسل العميل</a>}
-          </section>
-          <section className="panel tight">
-            <h3 className="sub-h">الخدمات</h3>
-            <ul className="sum-lines">
-              {order.items.map((it) => <li key={it.productId}><img src={it.image} alt="" /><span>{it.name}{it.qty > 1 && <em> × {it.qty}</em>}{it.note && <small className="muted block">{it.note}</small>}</span><strong>{money(it.price * it.qty)}</strong></li>)}
-            </ul>
-            {order.notes && <p className="note-box">{order.notes}</p>}
-            {order.discount > 0 && <div className="row-between good"><span>خصم {order.coupon}</span><span>− {money(order.discount)}</span></div>}
-            <div className="row-between total"><span>الإجمالي</span><strong>{money(order.total)}</strong></div>
-            <p className="muted small">{order.paymentMethod === 'card' ? 'بطاقة / Apple Pay' : 'تحويل بنكي'}</p>
-          </section>
-          <section className="panel tight stack">
-            <h3 className="sub-h">تحديث الحالة</h3>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="الحالة">{ORDER_STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
-            <textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} placeholder="ملاحظة تظهر للعميل في سجل الطلب (اختياري)" aria-label="ملاحظة" />
-            <button className="btn btn-primary" onClick={save} disabled={busy || (status === order.status && !note)}>{busy ? 'جاري الحفظ…' : 'حفظ الحالة'}</button>
-          </section>
-          <ul className="history">{[...(order.history || [])].reverse().map((h, i) => <li key={i}><strong>{statusLabel(h.status)}</strong><span className="muted">{dateTime(h.at)}</span>{h.note && <p>{h.note}</p>}</li>)}</ul>
+    <div className="grid gap-5">
+      <div className="rounded-lg bg-surface p-4 ring-1 ring-border"><OrderTracker status={order.status} /></div>
+
+      <section className="rounded-lg bg-surface p-4 ring-1 ring-border">
+        <h3 className="mb-3 text-xs font-bold text-muted-foreground">العميل</h3>
+        <p className="font-display text-lg font-bold text-primary">{order.customer?.name}</p>
+        <div className="mt-2 grid gap-1.5 text-sm">
+          {order.customer?.email && <a href={`mailto:${order.customer.email}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary"><Mail className="size-4" /><span dir="ltr">{order.customer.email}</span></a>}
+          {order.customer?.phone && <a href={`tel:${order.customer.phone}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary"><Phone className="size-4" /><span dir="ltr">{order.customer.phone}</span></a>}
         </div>
-      </aside>
+        {phone && (
+          <Button asChild variant="outline" size="sm" className="mt-3 w-full">
+            <a href={`https://wa.me/${phone}?text=${encodeURIComponent(`السلام عليكم ${order.customer?.name || ''}، معك وارف بخصوص طلبك رقم #${order.number}`)}`} target="_blank" rel="noreferrer"><MessageCircle className="size-4" />راسل العميل على واتساب</a>
+          </Button>
+        )}
+      </section>
+
+      <section className="rounded-lg bg-surface p-4 ring-1 ring-border">
+        <h3 className="mb-3 text-xs font-bold text-muted-foreground">الخدمات</h3>
+        <ul className="grid gap-3">
+          {order.items.map((it) => (
+            <li key={it.productId} className="grid grid-cols-[48px_1fr_auto] items-start gap-3">
+              <img src={it.image} alt="" className="size-12 rounded-md object-cover" />
+              <div className="min-w-0 text-sm"><p className="font-semibold leading-6">{it.name}{it.qty > 1 && <span className="tabular text-muted-foreground"> × {it.qty}</span>}</p>{it.note && <p className="mt-1 rounded bg-sunken px-2 py-1 text-xs leading-6 text-muted-foreground">{it.note}</p>}</div>
+              <strong className="tabular text-sm text-primary">{money(it.price * it.qty)}</strong>
+            </li>
+          ))}
+        </ul>
+        {order.notes && <p className="mt-3 rounded-md border-s-4 border-accent bg-accent/10 p-3 text-sm leading-7">{order.notes}</p>}
+        <dl className="mt-4 grid gap-1.5 border-t border-dashed border-border-strong pt-3 text-sm">
+          <div className="flex justify-between"><dt className="text-muted-foreground">المجموع</dt><dd className="tabular">{money(sub)}</dd></div>
+          {order.discount > 0 && <div className="flex justify-between text-success"><dt>خصم <span dir="ltr">{order.coupon}</span></dt><dd className="tabular">− {money(order.discount)}</dd></div>}
+          <div className="flex justify-between pt-1 font-display text-base font-bold text-primary"><dt>الإجمالي</dt><dd className="tabular">{money(order.total)}</dd></div>
+        </dl>
+        <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+          {order.paymentMethod === 'card' ? <><CreditCard className="size-4" />بطاقة / Apple Pay</> : <><Landmark className="size-4" />تحويل بنكي</>}
+          {order.tapId && <span className="ms-auto font-mono" dir="ltr">{order.tapId}</span>}
+        </p>
+      </section>
+
+      <section className="grid gap-3 rounded-lg bg-surface p-4 ring-1 ring-border">
+        <h3 className="text-xs font-bold text-muted-foreground">تحديث الحالة</h3>
+        <div className="flex flex-wrap gap-2">
+          {ORDER_STATUSES.map((s) => (
+            <button key={s.id} type="button" onClick={() => setStatus(s.id)} aria-pressed={status === s.id}
+              className={cn('h-9 rounded-full px-3 text-xs font-bold ring-1 transition-colors', status === s.id ? 'bg-primary text-on-inverse ring-primary' : 'ring-border hover:ring-primary')}>{s.label}</button>
+          ))}
+        </div>
+        <Field label="ملاحظة للعميل" hint="تظهر في سجل الطلب عند العميل (اختياري)"><Textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} /></Field>
+        <Button onClick={save} disabled={busy || (status === order.status && !note)}>{busy ? 'جاري الحفظ…' : 'حفظ التحديث'}</Button>
+      </section>
+
+      {order.history?.length > 0 && (
+        <section>
+          <h3 className="mb-3 text-xs font-bold text-muted-foreground">السجل</h3>
+          <ol className="relative grid gap-4 border-s-2 border-border ps-5">
+            {[...order.history].reverse().map((h, i) => (
+              <li key={i} className="relative">
+                <span className={cn('absolute -start-[27px] top-1.5 size-3 rounded-full ring-4 ring-background', i === 0 ? 'bg-accent' : 'bg-border-strong')} />
+                <p className="text-sm font-bold text-primary">{statusLabel(h.status)}</p>
+                <p className="text-xs text-muted-foreground">{dateTime(h.at)}</p>
+                {h.note && <p className="mt-1 text-sm leading-7">{h.note}</p>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   )
 }
 
 export default function Orders() {
+  const { notify } = useApp()
   const [orders, setOrders] = useState(null)
   const [params, setParams] = useSearchParams()
-  const [filter, setFilter] = useState('')
   const [q, setQ] = useState('')
+  const filter = params.get('status') || ''
   const load = () => api.allOrders().then(setOrders).catch(() => setOrders([]))
   useEffect(() => { load() }, [])
   const openId = params.get('open')
   const open = orders?.find((o) => o.id === openId)
-  const shown = useMemo(() => (orders || []).filter((o) => (!filter || o.status === filter) && (!q || String(o.number).includes(q) || (o.customer?.name || '').includes(q) || (o.customer?.phone || '').includes(q))), [orders, filter, q])
+  const setParam = (k, v) => { const n = new URLSearchParams(params); v ? n.set(k, v) : n.delete(k); setParams(n) }
+  const shown = useMemo(() => (orders || []).filter((o) => (!filter || o.status === filter) && (!q || String(o.number).includes(q) || (o.customer?.name || '').includes(q) || (o.customer?.phone || '').includes(q) || (o.customer?.email || '').includes(q))), [orders, filter, q])
+  const count = (id) => (orders || []).filter((o) => o.status === id).length
+  const copyCsv = async () => {
+    const rows = [['رقم', 'العميل', 'الجوال', 'الحالة', 'الإجمالي', 'التاريخ'], ...shown.map((o) => [o.number, o.customer?.name, o.customer?.phone, statusLabel(o.status), o.total, o.createdAt])]
+    try { await navigator.clipboard.writeText(rows.map((r) => r.join('\t')).join('\n')); notify('نُسخت الطلبات، الصقها في Excel') } catch { notify('ما قدرنا ننسخ', 'err') }
+  }
 
   return (
     <>
-      <header className="admin-head"><h1>الطلبات</h1></header>
-      <div className="tabs small" role="tablist">
-        <button role="tab" aria-selected={!filter} onClick={() => setFilter('')}>الكل <i>{orders?.length || 0}</i></button>
-        {ORDER_STATUSES.map((s) => <button key={s.id} role="tab" aria-selected={filter === s.id} onClick={() => setFilter(s.id)}>{s.label} <i>{(orders || []).filter((o) => o.status === s.id).length}</i></button>)}
+      <AdminHead title="الطلبات" lead={orders ? `${orders.length} طلب` : undefined} action={orders?.length > 0 && <Button variant="outline" size="sm" onClick={copyCsv}><Copy className="size-4" />نسخ الجدول</Button>} />
+      <div className="mb-4 grid gap-3">
+        <Segments value={filter} onChange={(v) => setParam('status', v)} options={[{ id: '', label: 'الكل', count: orders?.length || 0 }, ...ORDER_STATUSES.map((s) => ({ id: s.id, label: s.label, count: count(s.id) }))]} />
+        <SearchBox value={q} onChange={setQ} placeholder="رقم الطلب، اسم العميل، الجوال أو البريد" className="max-w-md" />
       </div>
-      <div className="admin-filters"><label className="field-inline search-inline"><Icon name="search" size={18} /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="رقم الطلب، اسم العميل، أو الجوال" aria-label="بحث" /></label></div>
-      {!orders ? <div className="skeleton tall" /> : shown.length === 0 ? <div className="panel"><p className="muted">ما فيه طلبات هنا.</p></div> : (
-        <div className="panel flush">
-          <table className="table">
-            <thead><tr><th>الطلب</th><th>العميل</th><th>الخدمات</th><th>الحالة</th><th>الإجمالي</th><th>التاريخ</th></tr></thead>
-            <tbody>{shown.map((o) => (
-              <tr key={o.id} className="clickable" onClick={() => setParams({ open: o.id })} tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setParams({ open: o.id })}>
-                <td><strong>#{o.number}</strong></td>
-                <td>{o.customer?.name}<div className="muted small" dir="ltr">{o.customer?.phone}</div></td>
-                <td className="clip">{o.items.map((i) => i.name).join('، ')}</td>
-                <td><span className={`pill pill-${o.status}`}>{statusLabel(o.status)}</span></td>
-                <td>{money(o.total)}</td>
-                <td className="muted">{dateTime(o.createdAt)}</td>
-              </tr>
-            ))}</tbody>
-          </table>
-        </div>
+
+      {!orders ? <Skeleton className="h-96" /> : shown.length === 0 ? (
+        <div className="grid justify-items-center gap-2 rounded-lg border-2 border-dashed border-border-strong py-16 text-center"><Inbox className="size-8 text-muted-foreground" /><p className="text-muted-foreground">ما فيه طلبات هنا.</p></div>
+      ) : (
+        <>
+          <ul className="grid gap-2 md:hidden">
+            {shown.map((o) => (
+              <li key={o.id}>
+                <button onClick={() => setParam('open', o.id)} className="grid w-full grid-cols-[1fr_auto] items-center gap-2 rounded-lg bg-surface p-4 text-start shadow-hairline ring-1 ring-border">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2"><strong className="tabular text-primary">#{o.number}</strong><StatusPill status={o.status} /></div>
+                    <p className="mt-1 truncate text-sm">{o.customer?.name} · <span className="text-muted-foreground">{dateTime(o.createdAt)}</span></p>
+                  </div>
+                  <div className="flex items-center gap-1"><strong className="tabular text-sm text-primary">{money(o.total)}</strong><ChevronLeft className="size-4 text-muted-foreground" /></div>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <TableCard className="hidden md:block">
+            <Table>
+              <thead><tr><Th>الطلب</Th><Th>العميل</Th><Th>الخدمات</Th><Th>الدفع</Th><Th>الحالة</Th><Th>الإجمالي</Th><Th>التاريخ</Th></tr></thead>
+              <tbody>{shown.map((o) => (
+                <tr key={o.id} className="cursor-pointer hover:bg-sunken/50 focus-visible:bg-sunken" onClick={() => setParam('open', o.id)} tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && setParam('open', o.id)}>
+                  <Td><strong className="tabular text-primary">#{o.number}</strong></Td>
+                  <Td><p className="font-semibold">{o.customer?.name}</p><p className="text-xs text-muted-foreground" dir="ltr">{o.customer?.phone}</p></Td>
+                  <Td className="max-w-56"><p className="truncate">{o.items.map((i) => i.name).join('، ')}</p></Td>
+                  <Td className="text-muted-foreground">{o.paymentMethod === 'card' ? <CreditCard className="size-4" aria-label="بطاقة" /> : <Landmark className="size-4" aria-label="تحويل" />}</Td>
+                  <Td><StatusPill status={o.status} /></Td>
+                  <Td className="tabular font-semibold">{money(o.total)}</Td>
+                  <Td className="whitespace-nowrap text-muted-foreground">{dateTime(o.createdAt)}</Td>
+                </tr>
+              ))}</tbody>
+            </Table>
+          </TableCard>
+        </>
       )}
-      {open && <OrderPanel key={open.id + open.status} order={open} onClose={() => setParams({})} onSaved={load} />}
+
+      <Sheet open={!!open} onOpenChange={(o) => !o && setParam('open', '')}>
+        <SheetContent side="end" className="w-[min(520px,100vw)] overflow-y-auto">
+          {open && (
+            <>
+              <div className="sticky top-0 z-10 border-b border-border bg-background/95 px-5 py-4 pe-16 backdrop-blur">
+                <SheetTitle className="tabular font-display text-xl font-bold text-primary">طلب #{open.number}</SheetTitle>
+                <SheetDescription className="text-sm text-muted-foreground">{dateTime(open.createdAt)}</SheetDescription>
+              </div>
+              <div className="p-5"><OrderDetail key={open.id + open.status} order={open} onSaved={load} /></div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </>
   )
 }

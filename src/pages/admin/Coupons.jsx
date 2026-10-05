@@ -1,46 +1,70 @@
 import { useEffect, useState } from 'react'
-import { api } from '../../lib/api.js'
-import { useApp } from '../../state.jsx'
-import Icon from '../../components/Icon.jsx'
-import { money, date } from '../../lib/format.js'
+import { Plus, Trash2, TicketPercent, Copy } from 'lucide-react'
+import { api } from '@/lib/api.js'
+import { useApp } from '@/state.jsx'
+import { money, date } from '@/lib/format.js'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Field, Input, Select, Panel, Skeleton, Switch } from '@/components/ui/kit.jsx'
+import { AdminHead, IconBtn, useConfirm } from '@/components/admin/ui.jsx'
+
+const BLANK = { code: '', type: 'percent', value: '', expiresAt: '' }
 
 export default function Coupons() {
   const { notify } = useApp()
+  const confirm = useConfirm()
   const [list, setList] = useState(null)
-  const [f, setF] = useState({ code: '', type: 'percent', value: '', expiresAt: '' })
+  const [f, setF] = useState(BLANK)
   const load = () => api.listCoupons().then(setList).catch(() => setList([]))
   useEffect(() => { load() }, [])
   const add = async (e) => {
     e.preventDefault()
-    try { await api.saveCoupon({ ...f, value: Number(f.value), active: true, expiresAt: f.expiresAt || null }); setF({ code: '', type: 'percent', value: '', expiresAt: '' }); load(); notify('أُضيف الكود') } catch (er) { notify(er.message, 'err') }
+    try { await api.saveCoupon({ ...f, value: Number(f.value), active: true, expiresAt: f.expiresAt || null }); setF(BLANK); load(); notify('أُضيف الكود') } catch (er) { notify(er.message, 'err') }
   }
-  const toggle = async (c) => { await api.saveCoupon({ ...c, active: !c.active }); load() }
-  const del = async (c) => { if (window.confirm(`حذف الكود ${c.code}؟`)) { await api.deleteCoupon(c.code); load() } }
+  const toggle = async (c) => { try { await api.saveCoupon({ ...c, active: !c.active }); load() } catch (e) { notify(e.message, 'err') } }
+  const del = async (c) => {
+    if (!(await confirm({ title: `حذف الكود ${c.code}؟`, body: 'العملاء ما يقدرون يستخدمونه بعد الحذف.' }))) return
+    try { await api.deleteCoupon(c.code); load(); notify('حُذف الكود') } catch (e) { notify(e.message, 'err') }
+  }
+  const copy = async (code) => { try { await navigator.clipboard.writeText(code); notify('نُسخ الكود') } catch { /* ignore */ } }
+  const expired = (c) => c.expiresAt && new Date(c.expiresAt) < new Date()
+
   return (
     <>
-      <header className="admin-head"><h1>كوبونات الخصم</h1></header>
-      <form className="panel coupon-form" onSubmit={add}>
-        <label className="field"><span>الكود</span><input required value={f.code} onChange={(e) => setF({ ...f, code: e.target.value.toUpperCase() })} dir="ltr" placeholder="RAMADAN" /></label>
-        <label className="field"><span>النوع</span><select value={f.type} onChange={(e) => setF({ ...f, type: e.target.value })}><option value="percent">نسبة %</option><option value="fixed">مبلغ ثابت</option></select></label>
-        <label className="field"><span>القيمة</span><input required type="number" min="1" max={f.type === 'percent' ? 100 : undefined} value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} dir="ltr" /></label>
-        <label className="field"><span>ينتهي (اختياري)</span><input type="date" value={f.expiresAt} onChange={(e) => setF({ ...f, expiresAt: e.target.value })} /></label>
-        <button className="btn btn-primary"><Icon name="plus" size={18} />أضف الكود</button>
-      </form>
-      {!list ? <div className="skeleton tall" /> : list.length === 0 ? <div className="panel"><p className="muted">ما فيه أكواد. أضف أول كود من فوق.</p></div> : (
-        <div className="panel flush">
-          <table className="table">
-            <thead><tr><th>الكود</th><th>الخصم</th><th>ينتهي</th><th>الحالة</th><th><span className="sr">حذف</span></th></tr></thead>
-            <tbody>{list.map((c) => (
-              <tr key={c.code}>
-                <td dir="ltr"><strong>{c.code}</strong></td>
-                <td>{c.type === 'percent' ? `${c.value}%` : money(c.value)}</td>
-                <td className="muted">{c.expiresAt ? date(c.expiresAt) : 'بدون'}</td>
-                <td><button className={'switch' + (c.active ? ' on' : '')} onClick={() => toggle(c)} aria-pressed={c.active}><i />{c.active ? 'فعّال' : 'موقوف'}</button></td>
-                <td><button className="icon-btn danger" onClick={() => del(c)} aria-label="حذف"><Icon name="trash" size={18} /></button></td>
-              </tr>
-            ))}</tbody>
-          </table>
-        </div>
+      <AdminHead title="كوبونات الخصم" lead="أكواد يكتبها العميل في صفحة الدفع. الخصم يُحسب على السيرفر." />
+      <Panel title="كود جديد" className="mb-6">
+        <form onSubmit={add} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_auto] lg:items-end">
+          <Field label="الكود"><Input required value={f.code} onChange={(e) => setF({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, '') })} dir="ltr" placeholder="RAMADAN" className="font-mono" /></Field>
+          <Field label="النوع"><Select value={f.type} onChange={(e) => setF({ ...f, type: e.target.value })}><option value="percent">نسبة %</option><option value="fixed">مبلغ ثابت (ر.س)</option></Select></Field>
+          <Field label="القيمة"><Input required type="number" min="1" max={f.type === 'percent' ? 100 : undefined} value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} dir="ltr" className="tabular" /></Field>
+          <Field label="ينتهي (اختياري)"><Input type="date" value={f.expiresAt} onChange={(e) => setF({ ...f, expiresAt: e.target.value })} /></Field>
+          <Button className="sm:col-span-2 lg:col-span-1"><Plus className="size-4" />أضف</Button>
+        </form>
+      </Panel>
+
+      {!list ? <Skeleton className="h-48" /> : list.length === 0 ? (
+        <div className="grid justify-items-center gap-2 rounded-lg border-2 border-dashed border-border-strong py-14 text-center"><TicketPercent className="size-8 text-muted-foreground" /><p className="text-muted-foreground">ما فيه أكواد. أضف أول كود من فوق.</p></div>
+      ) : (
+        <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {list.map((c) => (
+            <li key={c.code} className={cn('relative flex overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border', (!c.active || expired(c)) && 'opacity-70')}>
+              <div className="grid w-28 shrink-0 place-items-center bg-primary p-4 text-center text-accent">
+                <span className="tabular font-display text-2xl font-bold leading-none">{c.type === 'percent' ? `${c.value}%` : c.value}</span>
+                <span className="text-xs text-on-inverse/80">{c.type === 'percent' ? 'خصم' : 'ر.س خصم'}</span>
+              </div>
+              <span className="absolute start-[104px] -top-2.5 size-5 rounded-full bg-background" aria-hidden="true" />
+              <span className="absolute start-[104px] -bottom-2.5 size-5 rounded-full bg-background" aria-hidden="true" />
+              <div className="flex min-w-0 flex-1 flex-col gap-2 border-s-2 border-dashed border-border-strong p-4">
+                <button onClick={() => copy(c.code)} className="flex items-center gap-2 self-start font-mono text-lg font-bold text-primary hover:underline" dir="ltr" aria-label={`نسخ ${c.code}`}>{c.code}<Copy className="size-3.5 text-muted-foreground" /></button>
+                <p className="text-xs text-muted-foreground">{c.expiresAt ? (expired(c) ? `انتهى ${date(c.expiresAt)}` : `ينتهي ${date(c.expiresAt)}`) : 'بدون تاريخ انتهاء'}{c.type === 'fixed' && ` · ${money(c.value)}`}</p>
+                <div className="mt-auto flex items-center justify-between">
+                  <Switch checked={c.active} onChange={() => toggle(c)} label={c.active ? 'فعّال' : 'موقوف'} />
+                  <IconBtn tone="danger" onClick={() => del(c)} aria-label="حذف"><Trash2 className="size-4" /></IconBtn>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
       )}
     </>
   )

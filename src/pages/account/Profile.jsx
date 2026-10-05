@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { api } from '../../lib/api.js'
-import { useApp } from '../../state.jsx'
+import { api } from '@/lib/api.js'
+import { useApp } from '@/state.jsx'
+import { Button } from '@/components/ui/button'
+import { Field, Input, Panel } from '@/components/ui/kit.jsx'
 
 export default function Profile() {
   const { user, notify } = useApp()
@@ -11,11 +13,13 @@ export default function Profile() {
     try { await api.updateProfile(form); notify('تم حفظ بياناتك') } catch (e2) { notify(e2.message, 'err') } finally { setBusy(false) }
   }
   return (
-    <form className="panel narrow stack" onSubmit={save}>
-      <label className="field"><span>الاسم</span><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></label>
-      <label className="field"><span>رقم الجوال</span><input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} dir="ltr" /></label>
-      <label className="field"><span>البريد الإلكتروني</span><input value={user?.email || ''} readOnly dir="ltr" /></label>
-      <button className="btn btn-primary" disabled={busy}>{busy ? 'جاري الحفظ…' : 'حفظ التغييرات'}</button>
-    </form>
+    <Panel title="بياناتي" className="max-w-xl">
+      <form className="grid gap-4" onSubmit={save}>
+        <Field label="الاسم"><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required autoComplete="name" /></Field>
+        <Field label="رقم الجوال" hint="نستخدمه للتواصل معك بخصوص طلباتك"><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} dir="ltr" inputMode="tel" autoComplete="tel" /></Field>
+        <Field label="البريد الإلكتروني" hint="لتغيير البريد تواصل معنا"><Input value={user?.email || ''} readOnly dir="ltr" /></Field>
+        <Button disabled={busy} className="justify-self-start">{busy ? 'جاري الحفظ…' : 'حفظ التغييرات'}</Button>
+      </form>
+    </Panel>
   )
 }

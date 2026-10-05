@@ -11,13 +11,13 @@ Input.displayName = 'Input'
 export const Textarea = React.forwardRef(({ className, ...p }, ref) => <textarea ref={ref} className={cn(control, 'min-h-24 py-3 leading-7', className)} {...p} />)
 Textarea.displayName = 'Textarea'
 export const Select = React.forwardRef(({ className, children, ...p }, ref) => (
-  <select ref={ref} className={cn(control, 'h-12 cursor-pointer appearance-none bg-[length:16px] bg-[position:left_14px_center] bg-no-repeat ps-3.5 pe-10', className)} style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309382e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")" }} {...p}>{children}</select>
+  <select ref={ref} className={cn(control, 'h-12 cursor-pointer appearance-none read-only:bg-surface read-only:text-foreground bg-[length:16px] bg-[position:left_14px_center] bg-no-repeat ps-3.5 pe-10', className)} style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2309382e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")" }} {...p}>{children}</select>
 ))
 Select.displayName = 'Select'
 
 export function Field({ label, hint, error, className, children }) {
   return (
-    <label className={cn('grid gap-1.5', className)}>
+    <label className={cn('grid content-start gap-1.5', className)}>
       <span className="text-sm font-bold text-foreground">{label}</span>
       {children}
       {hint && !error && <span className="text-xs leading-6 text-muted-foreground">{hint}</span>}

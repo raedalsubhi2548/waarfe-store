@@ -1,9 +1,6 @@
-/* Layer order: legacy page styles sit below Tailwind components/utilities,
-   so new token-driven components always win without !important. */
-@layer theme, base, legacy, components, utilities;
+@layer theme, base, components, utilities;
 
 @import "tailwindcss";
-@import "./styles.css" layer(legacy);
 @import "./styles/tokens.css";
 
 @layer base {
@@ -20,6 +17,15 @@
   :focus-visible { outline: 2.5px solid var(--ring); outline-offset: 3px; }
   ::selection { background: var(--accent); color: var(--accent-foreground); }
   button:not(:disabled), [role="button"] { cursor: pointer; }
+}
+
+@layer components {
+  .skip { position: absolute; inset-inline-start: 1rem; top: -60px; z-index: 100; background: var(--accent); color: var(--accent-foreground); padding: .5rem 1rem; border-radius: 999px; font-weight: 700; }
+  .skip:focus { top: 1rem; }
+  .social { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .social a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--p-radius-md); background: var(--primary); color: var(--accent); transition: background-color .2s, color .2s, transform .2s; }
+  .social a:hover { background: var(--brand); color: #fff; transform: translateY(-2px); }
+  .foot-social a { width: 40px; height: 40px; background: rgb(254 251 242 / .08); }
 }
 
 @layer utilities {
