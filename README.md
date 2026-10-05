@@ -40,7 +40,7 @@
 | `SUPABASE_SERVICE_ROLE_KEY` | service_role key | **سري** — للسيرفر فقط |
 | `TAP_SECRET_KEY` | `sk_live_...` أو `sk_test_...` | من لوحة Tap → goSell → API Keys |
 | `SITE_URL` | `https://waarfe-store.vercel.app` | رابط موقعك بدون / في الآخر |
-| `VITE_WHATSAPP` | `966555488045` | رقم الواتساب في الأزرار |
+| `VITE_WHATSAPP` | `966545607555` | رقم الواتساب في الأزرار |
 | `VITE_BANK_INFO` | اسم البنك والآيبان | اختياري — يظهر للعميل عند اختيار التحويل البنكي |
 
 3. **Redeploy** بعد إضافة المتغيرات.
