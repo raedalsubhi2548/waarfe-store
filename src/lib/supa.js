@@ -1,7 +1,8 @@
 // Live backend: Supabase (auth + Postgres + storage). Schema in supabase/schema.sql.
 import { createClient } from '@supabase/supabase-js'
 
-const url = import.meta.env.VITE_SUPABASE_URL
+// accept the URL with or without a trailing /rest/v1/ (common copy-paste from the dashboard)
+const url = (import.meta.env.VITE_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const sb = url && key ? createClient(url, key) : null
 

@@ -1,7 +1,7 @@
 // Shared helpers for the Vercel serverless functions. Secrets live only here (server side).
 import { createClient } from '@supabase/supabase-js'
 
-export const admin = createClient(process.env.VITE_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+export const admin = createClient((process.env.VITE_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, ''), process.env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 })
 export const TAP = 'https://api.tap.company/v2'
