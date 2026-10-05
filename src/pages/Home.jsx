@@ -46,14 +46,14 @@ function Hero() {
         <h1 className="mx-auto mt-6 max-w-3xl text-balance font-display text-[2.6rem] font-bold leading-[1.15] sm:text-display-lg lg:text-display-xl motion-safe:animate-[rise-in_620ms_var(--p-ease-emphasized)]">
           متجرك في سلة، <span className="text-accent">بتصميم يبيع.</span>
         </h1>
-        <p className="mx-auto mt-4 max-w-[34ch] text-lg leading-8 text-on-inverse/75 motion-safe:animate-[rise-in_720ms_var(--p-ease-emphasized)]">نصمم متجرك ونجهّزه للبيع من يومين إلى 6 أيام.</p>
+        <p className="mx-auto mt-4 max-w-[40ch] text-balance text-lg leading-8 text-on-inverse/75 motion-safe:animate-[rise-in_720ms_var(--p-ease-emphasized)]">نصمم متجرك ونجهّزه للبيع من يومين إلى 6 أيام.</p>
         <div className="mt-7 flex justify-center gap-3 motion-safe:animate-[rise-in_820ms_var(--p-ease-emphasized)]">
           <Button asChild size="lg" variant="accent" className="px-7"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
           <Button asChild size="lg" variant="ghost" className="border border-on-inverse/25 px-6 text-on-inverse hover:bg-white/10 hover:text-on-inverse"><Link to="/work">شوف أعمالنا</Link></Button>
         </div>
       </div>
       <div className="relative mt-6 sm:mt-10"><Showroom3D /></div>
-      <p className="-mt-6 pb-8 text-center text-xs text-on-inverse/45 sm:-mt-10"><Hand className="me-1 inline size-3.5" />اسحب وشوف متاجر سلّمناها</p>
+      <p className="pb-8 text-center text-xs text-on-inverse/45"><Hand className="me-1 inline size-3.5" />اسحب وشوف متاجر سلّمناها</p>
     </section>
   )
 }

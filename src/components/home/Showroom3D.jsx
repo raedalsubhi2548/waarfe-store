@@ -21,7 +21,7 @@ export default function Showroom3D() {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
     const AUTO = reduce ? 0 : 0.09
     let angle = -8, vel = AUTO, drag = false, lastX = 0, raf = 0, visible = true
-    const paint = () => { r.style.transform = `rotateX(-7deg) rotateY(${angle}deg)` }
+    const paint = () => { r.style.transform = `rotateX(-9deg) rotateY(${angle}deg)` }
     const loop = () => {
       if (!drag) { vel += (AUTO - vel) * 0.025; angle += vel }
       paint()
@@ -38,16 +38,16 @@ export default function Showroom3D() {
   }, [])
 
   return (
-    <div ref={wrap} className="relative mx-auto h-[calc(var(--w)*2.75)] w-full cursor-grab touch-pan-y select-none [--w:clamp(118px,27vw,196px)] [perspective:1500px] [perspective-origin:50%_35%] active:cursor-grabbing"
+    <div ref={wrap} className="relative mx-auto h-[calc(var(--w)*3.25)] w-full cursor-grab touch-pan-y select-none [--w:clamp(108px,24vw,170px)] [perspective:1600px] [perspective-origin:50%_30%] [mask-image:linear-gradient(to_right,transparent,black_14%,black_86%,transparent)] active:cursor-grabbing"
       role="img" aria-label="متاجر سلة صممتها وارف تدور في معرض ثلاثي الأبعاد">
       {/* stage floor: concentric gold rings seen in perspective */}
-      <div className="pointer-events-none absolute inset-x-[-10%] top-[calc(var(--w)*2.05)] h-[calc(var(--w)*2.4)] [transform:rotateX(78deg)] [transform-origin:50%_0] bg-[repeating-radial-gradient(circle_at_50%_0,rgb(215_198_118/0.22)_0_1px,transparent_1px_34px)] [mask-image:radial-gradient(ellipse_at_50%_0,black_10%,transparent_65%)]" aria-hidden="true" />
-      <div className="pointer-events-none absolute inset-x-[15%] top-[calc(var(--w)*1.85)] h-[calc(var(--w)*0.7)] bg-[radial-gradient(closest-side,rgb(215_198_118/0.35),transparent)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-[-10%] top-[calc(var(--w)*2.7)] h-[calc(var(--w)*2.4)] [transform:rotateX(78deg)] [transform-origin:50%_0] bg-[repeating-radial-gradient(circle_at_50%_0,rgb(215_198_118/0.22)_0_1px,transparent_1px_34px)] [mask-image:radial-gradient(ellipse_at_50%_0,black_10%,transparent_65%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-x-[15%] top-[calc(var(--w)*2.45)] h-[calc(var(--w)*0.8)] bg-[radial-gradient(closest-side,rgb(215_198_118/0.35),transparent)]" aria-hidden="true" />
 
-      <div ref={ring} className="absolute top-[calc(var(--w)*0.15)] left-1/2 h-[calc(var(--w)*2.17)] w-[var(--w)] [transform-style:preserve-3d]" style={{ marginLeft: 'calc(var(--w) / -2)' }}>
+      <div ref={ring} className="absolute top-[calc(var(--w)*0.45)] left-1/2 h-[calc(var(--w)*2.17)] w-[var(--w)] [transform-style:preserve-3d]" style={{ marginLeft: 'calc(var(--w) / -2)' }}>
         {SLOTS.map(([id, at], i) => (
-          <div key={i} className="absolute inset-0 [transform-style:preserve-3d]" style={{ transform: `rotateY(${(360 / N) * i}deg) translateZ(calc(var(--w) * 1.32))` }}>
-            <div className="absolute inset-0 [backface-visibility:hidden] [-webkit-box-reflect:below_14px_linear-gradient(transparent_62%,rgb(255_255_255/0.16))]">
+          <div key={i} className="absolute inset-0 [transform-style:preserve-3d]" style={{ transform: `rotateY(${(360 / N) * i}deg) translateZ(calc(var(--w) * 2.05))` }}>
+            <div className="absolute inset-0 [backface-visibility:hidden]">
               <Phone pdfId={id} at={at} drift={6} size={360} eager={i < 3} />
             </div>
             {/* back of the phone */}
