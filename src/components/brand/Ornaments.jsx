@@ -17,8 +17,8 @@ export function Sprig({ className }) {
 export function SectionTitle({ eyebrow, title, light, className }) {
   return (
     <div className={cn('flex flex-col items-center text-center', className)}>
-      {eyebrow && <p className={cn('flex items-center gap-2.5 text-[13.5px] font-medium', light ? 'text-on-inverse/70' : 'text-primary/60')}><span className="h-px w-6 bg-current opacity-40" />{eyebrow}<span className="h-px w-6 bg-current opacity-40" /></p>}
-      <h2 className={cn('mt-1.5 text-balance font-display text-[1.75rem] font-bold leading-[1.45] sm:text-display-md', light ? 'text-on-inverse' : 'text-primary')}>{title}</h2>
+      {eyebrow && <p className={cn('text-[14px] font-medium', light ? 'text-on-inverse/70' : 'text-primary/55')}>{eyebrow}</p>}
+      <h2 className={cn('mt-0.5 text-balance font-display text-[2.1rem] font-bold leading-[1.45] sm:text-[2.75rem]', light ? 'text-on-inverse' : 'text-primary')}>{title}</h2>
     </div>
   )
 }

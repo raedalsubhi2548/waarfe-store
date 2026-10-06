@@ -3,7 +3,6 @@ import { Heart, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import { money, effectivePrice } from '@/lib/format.js'
-import { flyToCart } from '@/lib/fly.js'
 
 // A stable, gentle tilt per product so a shelf looks hand-pinned, not random on every render.
 const TILTS = [-2.2, 1.6, -1.2, 2.4, -1.8, 1.1]
@@ -43,7 +42,7 @@ export default function ServiceTicket({ p, className }) {
               {sale && <s className="ms-1.5 text-xs text-muted-foreground">{money(p.price)}</s>}
               {p.perUnit && <span className="block text-[11px] text-muted-foreground">{p.perUnit}</span>}
             </p>
-            <button type="button" onClick={(e) => { flyToCart(e.currentTarget.closest('article')?.querySelector('img'), p.image); addToCart(p.id) }} aria-label={`أضف ${p.name} للسلة`}
+            <button type="button" onClick={() => addToCart(p.id)} aria-label={`أضف ${p.name} للسلة`}
               className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_rgb(9_56_46/0.7)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
               <Plus className="size-[18px]" />
             </button>

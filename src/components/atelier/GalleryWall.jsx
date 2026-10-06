@@ -29,8 +29,8 @@ export default function GalleryWall() {
   return (
     <section className="relative py-14 sm:py-20" aria-label="معرض أعمال وارف">
       <div className="container-w mb-6 flex flex-col items-center gap-2 text-center sm:mb-8">
-        <p className="text-[13.5px] font-medium text-primary/60">من مكتب وارف</p>
-        <h2 className="font-display text-[1.75rem] font-bold leading-[1.45] text-primary sm:text-display-md">بنرات وتصاميم سوشال ميديا</h2>
+        <p className="text-[14px] font-medium text-primary/55">من مكتب وارف</p>
+        <h2 className="font-display text-[2.1rem] font-bold leading-[1.45] text-primary sm:text-[2.75rem]">بنرات وتصاميم سوشال ميديا</h2>
         <p className="max-w-md text-[15px] leading-7 text-muted-foreground">نماذج حقيقية من شغلنا لعملائنا، مرّر عليها عشان توقف.</p>
       </div>
       <div className="grid gap-1">
