@@ -86,11 +86,11 @@ function ArchWindow() {
         </div>
       </div>
       {/* floating chips */}
-      <div className="absolute -start-8 top-[38%] flex items-center gap-2 rounded-full bg-background/95 py-2 ps-2 pe-4 shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_6s_ease-in-out_infinite] sm:-start-14">
+      <div className="absolute -start-6 top-[30%] flex items-center gap-2 rounded-full bg-background/95 py-2 ps-2 pe-4 shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_6s_ease-in-out_infinite] sm:-start-24">
         <span className="grid size-8 place-items-center rounded-full bg-primary text-[11px] font-bold text-accent">+200</span>
         <span className="text-[12.5px] font-semibold text-primary">طلب على سلة</span>
       </div>
-      <div className="absolute -end-6 bottom-[16%] flex items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#f3e3a1,#d7c676)] px-3.5 py-2 text-primary shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_7s_1.5s_ease-in-out_infinite] sm:-end-12">
+      <div className="absolute -end-4 bottom-[14%] flex items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#f3e3a1,#d7c676)] px-3.5 py-2 text-primary shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_7s_1.5s_ease-in-out_infinite] sm:-end-20">
         <Stars className="text-primary" /><b className="tabular text-[13px]">5.0</b>
       </div>
     </div>
