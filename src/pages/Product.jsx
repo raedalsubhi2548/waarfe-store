@@ -101,7 +101,7 @@ export default function Product() {
       {related.length > 0 && (
         <section className="mt-16">
           <h2 className="mb-6 font-display text-2xl font-semibold text-primary">من نفس القسم</h2>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{related.map((r) => <ServiceTicket key={r.id} p={r} />)}</div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">{related.map((r) => <ServiceTicket key={r.id} p={r} />)}</div>
         </section>
       )}
     </div>

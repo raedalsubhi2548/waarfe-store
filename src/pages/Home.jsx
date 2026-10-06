@@ -55,7 +55,7 @@ const ViewAll = ({ to, children = 'عرض الكل' }) => (
 /** Products as covers on a shelf. */
 function Shelf({ items }) {
   return (
-    <ul className="mx-auto grid max-w-[1060px] grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8">
+    <ul className="mx-auto grid max-w-[980px] grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
       {items.map((p, i) => <Reveal as="li" key={p.id} delay={(i % 4) * 90}><ServiceTicket p={p} className="h-full" /></Reveal>)}
     </ul>
   )
@@ -119,21 +119,21 @@ function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra })
     <>
       <img src={img} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full origin-left scale-[1.1] object-cover object-left transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.14]" />
       <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95)_0%,rgb(6_42_34/0.6)_45%,transparent_75%)] sm:bg-[linear-gradient(270deg,rgb(6_42_34/0.96)_0%,rgb(6_42_34/0.75)_40%,transparent_70%)]" aria-hidden="true" />
-      <span className="pointer-events-none absolute inset-[10px] rounded-[22px] ring-1 ring-accent/35" aria-hidden="true" />
-      <div className="relative me-auto flex min-h-[460px] max-w-[470px] flex-col justify-end p-7 sm:min-h-[400px] sm:justify-center sm:p-12">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent/15 px-3.5 py-1.5 text-[13px] font-medium text-accent ring-1 ring-accent/40 backdrop-blur">{kicker}</span>
-        <h2 className="mt-4 font-display text-[1.75rem] font-bold leading-[1.45] sm:text-[2.2rem]"><span className="block">{title}</span><span className="block text-accent">{accent}</span></h2>
-        <p className="mt-3 text-[15.5px] leading-[1.9] text-on-inverse/80">{body}</p>
+      <span className="pointer-events-none absolute inset-[8px] rounded-[18px] ring-1 ring-accent/35" aria-hidden="true" />
+      <div className="relative me-auto flex min-h-[340px] max-w-[440px] flex-col justify-end p-6 sm:min-h-[300px] sm:justify-center sm:p-10">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-semibold text-primary shadow-[0_8px_20px_-10px_rgb(215_198_118/0.8)]">{kicker}</span>
+        <h2 className="mt-3 font-display text-[1.45rem] font-bold leading-[1.5] sm:text-[1.8rem]"><span className="block">{title}</span><span className="block text-accent">{accent}</span></h2>
+        <p className="mt-2 text-[14.5px] leading-[1.85] text-on-inverse/85">{body}</p>
         <div className="mt-6 flex flex-wrap items-center gap-4">
-          <span className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-semibold text-primary shadow-[0_14px_30px_-12px_rgb(215_198_118/0.7)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
+          <span className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-[14px] font-semibold text-primary shadow-[0_14px_30px_-12px_rgb(215_198_118/0.7)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
           {extra}
         </div>
       </div>
     </>
   )
-  const cls = 'group relative isolate block overflow-hidden rounded-[28px] bg-[#062a22] text-on-inverse shadow-[0_40px_80px_-40px_rgb(9_56_46/0.9)]'
+  const cls = 'group relative isolate block overflow-hidden rounded-[24px] bg-[#062a22] text-on-inverse shadow-[0_40px_80px_-40px_rgb(9_56_46/0.9)]'
   return (
-    <Reveal className="container-w py-8">
+    <Reveal className="container-w mx-auto max-w-[1100px] py-6">
       {to ? <Link to={to} className={cls}>{inner}</Link> : <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a>}
     </Reveal>
   )
@@ -180,46 +180,37 @@ function Promises() {
 
 
 /* ---------------- Store sections ---------------- */
-const SHOWCASE = [
-  { id: 'design-services', img: 'waarfe-cat-design.webp', line: 'هوية، بنرات، وتصاميم تشبهك' },
-  { id: 'marketing-services', img: 'waarfe-cat-marketing.webp', line: 'نوصّل متجرك لعملائه' },
-  { id: 'government-services', img: 'waarfe-cat-government.webp', line: 'أوراقك الرسمية بدون تعب' },
-]
+const CAT_ART = {
+  'design-services': 'waarfe-cat-design.webp',
+  'marketing-services': 'waarfe-cat-marketing.webp',
+  'government-services': 'waarfe-cat-government.webp',
+}
+/** All categories in one row: small arch-topped cards. */
 function Categories() {
   const { categories, products } = useApp()
-  const byCat = Object.fromEntries(categories.map((c) => [c.id, c]))
-  const count = (id) => products.filter((p) => p.categoryId === id).length
-  const rest = categories.filter((c) => !SHOWCASE.some((s) => s.id === c.id))
   return (
     <section className="container-w">
-      <ul className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-        {SHOWCASE.filter((s) => byCat[s.id]).map((s, i) => (
-          <Reveal as="li" key={s.id} delay={i * 110}>
-            <Link to={`/c/${s.id}`} className="group relative isolate block aspect-[4/5] overflow-hidden rounded-[26px] bg-[#062a22] text-on-inverse shadow-[0_34px_60px_-30px_rgb(9_56_46/0.85)] max-sm:aspect-[5/4]">
-              <img src={`${ART}/${s.img}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
-              <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95),rgb(6_42_34/0.35)_45%,transparent_70%)]" aria-hidden="true" />
-              <span className="pointer-events-none absolute inset-[9px] rounded-[20px] ring-1 ring-accent/40 transition-[inset] duration-500 group-hover:inset-[6px]" aria-hidden="true" />
-              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-6">
-                <span>
-                  <span className="block font-display text-[1.45rem] font-bold leading-snug">{byCat[s.id].name}</span>
-                  <span className="mt-1 block text-[14px] text-on-inverse/75">{s.line}</span>
-                  <span className="tabular mt-2 block text-[13px] font-medium text-accent">{count(s.id)} خدمات</span>
+      <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:mx-auto sm:grid sm:max-w-[1000px] sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:px-0">
+        {categories.map((c, i) => {
+          const n = products.filter((p) => p.categoryId === c.id).length
+          return (
+            <Reveal as="li" key={c.id} delay={i * 80} className="w-[136px] shrink-0 snap-start sm:w-auto">
+              <Link to={`/c/${c.id}`} className="group block text-center">
+                <span className="relative block rounded-t-[999px] rounded-b-[18px] bg-[linear-gradient(160deg,#f3e3a1,#b8973c_45%,#e8d384)] p-[1.5px] shadow-[0_18px_34px_-20px_rgb(9_56_46/0.7)] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_26px_44px_-22px_rgb(9_56_46/0.8)]">
+                  <span className="relative block aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[16.5px] bg-[#062a22]">
+                    {CAT_ART[c.id]
+                      ? <img src={`${ART}/${CAT_ART[c.id]}`} alt="" loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]" />
+                      : <span className="grid size-full place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#1a6a55,#09382e_60%,#052119)] text-accent"><span className="grid size-16 place-items-center rounded-full ring-1 ring-accent/50 shadow-[0_0_40px_-6px_rgb(215_198_118/0.5)]"><Icon name={c.icon} size={28} /></span></span>}
+                    <span className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(transparent,rgb(6_42_34/0.75))]" aria-hidden="true" />
+                  </span>
                 </span>
-                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-primary transition-transform duration-500 group-hover:-translate-x-1"><ArrowLeft className="size-5" /></span>
-              </span>
-            </Link>
-          </Reveal>
-        ))}
+                <span className="mt-3 block text-[15px] font-semibold text-primary">{c.name}</span>
+                <span className="tabular text-[12.5px] text-muted-foreground">{n} خدمات</span>
+              </Link>
+            </Reveal>
+          )
+        })}
       </ul>
-      {rest.length > 0 && (
-        <Reveal className="mt-6 flex flex-wrap justify-center gap-2.5">
-          {rest.map((c) => (
-            <Link key={c.id} to={`/c/${c.id}`} className="inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2.5 text-[14px] font-medium text-primary ring-1 ring-accent/40 transition-[box-shadow,ring-color] hover:shadow-card hover:ring-accent">
-              <Icon name={c.icon} size={16} className="text-accent-text" />{c.name}<span className="tabular text-xs text-muted-foreground">({count(c.id)})</span>
-            </Link>
-          ))}
-        </Reveal>
-      )}
     </section>
   )
 }
