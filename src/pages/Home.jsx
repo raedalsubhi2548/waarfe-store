@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, MessageCircle, Star, Quote } from 'lucide-react'
+import { ArrowLeft, Star, Quote } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { FAQ } from '@/data/content.js'
 import { ALL_REVIEWS } from '@/data/reviews.js'
@@ -9,7 +9,6 @@ import { useInView } from '@/lib/useInView.js'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import Icon from '@/components/Icon.jsx'
-import Divider from '@/components/home/Divider.jsx'
 import LineArt from '@/components/home/LineArt.jsx'
 import ServiceTicket from '@/components/home/ServiceTicket.jsx'
 import GalleryWall from '@/components/atelier/GalleryWall.jsx'
@@ -27,7 +26,7 @@ function Reveal({ as: T = 'div', className, delay = 0, children, ...p }) {
 function Head({ eyebrow, title }) {
   return (
     <Reveal className="mb-8 text-center sm:mb-12">
-      {eyebrow && <p className="mb-3 flex items-center justify-center gap-2 text-[13px] font-medium text-accent-text"><span className="h-px w-6 bg-accent" />{eyebrow}<span className="h-px w-6 bg-accent" /></p>}
+      {eyebrow && <p className="mb-3 flex items-center justify-center gap-2 text-[13.5px] font-medium text-primary/60"><span className="h-px w-6 bg-primary/25" />{eyebrow}<span className="h-px w-6 bg-primary/25" /></p>}
       <h2 className="text-balance font-display text-[1.6rem] font-semibold text-primary sm:text-display-sm lg:text-display-md">{title}</h2>
     </Reveal>
   )
@@ -55,7 +54,7 @@ const ViewAll = ({ to, children = 'عرض الكل' }) => (
 /** Products as covers on a shelf. */
 function Shelf({ items }) {
   return (
-    <ul className="mx-auto grid max-w-[980px] grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+    <ul className="mx-auto grid max-w-[980px] grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4">
       {items.map((p, i) => <Reveal as="li" key={p.id} delay={(i % 4) * 90}><ServiceTicket p={p} className="h-full" /></Reveal>)}
     </ul>
   )
@@ -84,31 +83,28 @@ function Hero() {
 
       <div className="container-w relative flex min-h-[640px] flex-col justify-start pt-[calc(var(--header-height)+92px)] pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32 md:pt-[calc(var(--header-height)+40px)]">
         <div className="mx-auto max-w-[560px] text-center md:ms-0 md:me-auto md:text-start lg:ms-[2%]">
-          <p className="inline-flex items-center gap-3 text-[14px] font-medium text-accent motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
-            <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,var(--accent))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,var(--accent))] md:hidden" />
+          <p className="inline-flex items-center gap-3 text-[14px] font-medium text-on-inverse/70 motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
+            <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(254_251_242/0.6))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(254_251_242/0.6))] md:hidden" />
           </p>
           <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in_850ms_var(--p-ease-emphasized)_both]">
             <span className="block">متجرك يستاهل</span>
-            <span className="block text-accent [text-shadow:0_2px_30px_rgb(215_198_118/0.35)]">تصميم يليق فيه</span>
+            <span className="block font-light text-[#efe7cf]">تصميم يليق فيه</span>
           </h1>
           <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_rgb(6_42_34/0.9)] md:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in_1.15s_var(--p-ease-emphasized)_both]">
-            <Button asChild size="lg" variant="accent" className="px-8 font-semibold shadow-[0_16px_34px_-12px_rgb(215_198_118/0.7)]"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
+            <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
           <div className="mt-9 flex items-center justify-center gap-5 text-[13.5px] text-on-inverse/75 md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
             <span className="flex items-center gap-2"><Stars className="text-accent" /><b className="tabular font-semibold text-on-inverse">5.0</b> تقييم عملائنا</span>
-            <span className="h-4 w-px bg-accent/40" />
+            <span className="h-4 w-px bg-on-inverse/25" />
             <span><b dir="ltr" className="font-semibold text-on-inverse">+200</b> طلب على سلة</span>
           </div>
         </div>
       </div>
 
-      {/* concave arch into the cream page, with a gold hairline */}
-      <svg viewBox="0 0 1440 140" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-[70px] w-full sm:h-[120px]" aria-hidden="true">
-        <path d="M0 140 V40 Q720 150 1440 40 V140 Z" fill="var(--background)" />
-        <path d="M0 40 Q720 150 1440 40" fill="none" stroke="#d7c676" strokeOpacity=".8" strokeWidth="1.4" />
-      </svg>
+      {/* melt softly into the cream page — no hard edge */}
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,transparent,rgb(254_251_242/0.55)_55%,var(--background))] sm:h-56" aria-hidden="true" />
     </section>
   )
 }
@@ -119,13 +115,13 @@ function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra })
     <>
       <img src={img} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full origin-left scale-[1.1] object-cover object-left transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.14]" />
       <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95)_0%,rgb(6_42_34/0.6)_45%,transparent_75%)] sm:bg-[linear-gradient(270deg,rgb(6_42_34/0.96)_0%,rgb(6_42_34/0.75)_40%,transparent_70%)]" aria-hidden="true" />
-      <span className="pointer-events-none absolute inset-[8px] rounded-[18px] ring-1 ring-accent/35" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-[8px] rounded-[18px] ring-1 ring-white/15" aria-hidden="true" />
       <div className="relative me-auto flex min-h-[340px] max-w-[440px] flex-col justify-end p-6 sm:min-h-[300px] sm:justify-center sm:p-10">
-        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-[13px] font-semibold text-primary shadow-[0_8px_20px_-10px_rgb(215_198_118/0.8)]">{kicker}</span>
-        <h2 className="mt-3 font-display text-[1.45rem] font-bold leading-[1.5] sm:text-[1.8rem]"><span className="block">{title}</span><span className="block text-accent">{accent}</span></h2>
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-background px-3.5 py-1.5 text-[13px] font-semibold text-primary shadow-[0_8px_20px_-10px_rgb(0_0_0/0.5)]">{kicker}</span>
+        <h2 className="mt-3 font-display text-[1.45rem] font-bold leading-[1.5] sm:text-[1.8rem]"><span className="block">{title}</span><span className="block font-light text-[#efe7cf]">{accent}</span></h2>
         <p className="mt-2 text-[14.5px] leading-[1.85] text-on-inverse/85">{body}</p>
         <div className="mt-6 flex flex-wrap items-center gap-4">
-          <span className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-[14px] font-semibold text-primary shadow-[0_14px_30px_-12px_rgb(215_198_118/0.7)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
+          <span className="inline-flex h-11 items-center gap-2 rounded-full bg-background px-5 text-[14px] font-semibold text-primary shadow-[0_14px_30px_-12px_rgb(0_0_0/0.6)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
           {extra}
         </div>
       </div>
@@ -145,7 +141,7 @@ function LandingPromo() {
   return (
     <SceneBanner img={`${ART}/waarfe-landing.webp`} to="/p/landing-page-design" kicker="طفشت من الاشتراكات الشهرية؟"
       title="صفحة هبوط مبرمجة لك" accent="بدون اشتراك شهري" body="مبرمجة بـ HTML وCSS وJavaScript، مع دومين واستضافة سنة هدية."
-      cta="اطلبها الحين" extra={p && <span className="tabular text-xl font-semibold text-accent">{money(effectivePrice(p))}</span>} />
+      cta="اطلبها الحين" extra={p && <span className="tabular text-xl font-semibold text-on-inverse">{money(effectivePrice(p))}</span>} />
   )
 }
 
@@ -165,11 +161,11 @@ function Promises() {
     { art: 'chat', t: 'تواصل مباشر', d: 'على واتساب طول التنفيذ' },
   ]
   return (
-    <section className="container-w relative z-10 -mt-6 sm:-mt-16">
-      <ul className="mx-auto grid max-w-4xl grid-cols-3 gap-2 rounded-2xl bg-white/75 px-3 py-5 shadow-[0_30px_60px_-30px_rgb(9_56_46/0.45)] ring-1 ring-accent/40 backdrop-blur-xl sm:px-6 sm:py-7">
+    <section className="container-w relative z-10 -mt-16 sm:-mt-24">
+      <ul className="mx-auto grid max-w-4xl grid-cols-3 gap-2 rounded-[22px] bg-[#fffdf7]/80 px-3 py-5 shadow-[0_30px_60px_-34px_rgb(9_56_46/0.5)] ring-1 ring-primary/[0.07] backdrop-blur-xl sm:px-6 sm:py-7">
         {items.map((x, i) => (
           <Reveal as="li" key={x.t} delay={i * 100} className="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-4 sm:text-start">
-            <LineArt name={x.art} className="size-10 shrink-0 sm:size-12" delay={i * 0.15} />
+            <LineArt name={x.art} tone="green" className="size-10 shrink-0 text-primary sm:size-12" delay={i * 0.15} />
             <span><b className="block text-[13px] font-semibold text-primary sm:text-[15px]">{x.t}</b><span className="text-[11.5px] text-muted-foreground sm:text-sm">{x.d}</span></span>
           </Reveal>
         ))}
@@ -196,11 +192,11 @@ function Categories() {
           return (
             <Reveal as="li" key={c.id} delay={i * 80} className="w-[136px] shrink-0 snap-start sm:w-auto">
               <Link to={`/c/${c.id}`} className="group block text-center">
-                <span className="relative block rounded-t-[999px] rounded-b-[18px] bg-[linear-gradient(160deg,#f3e3a1,#b8973c_45%,#e8d384)] p-[1.5px] shadow-[0_18px_34px_-20px_rgb(9_56_46/0.7)] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_26px_44px_-22px_rgb(9_56_46/0.8)]">
-                  <span className="relative block aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[16.5px] bg-[#062a22]">
+                <span className="relative block rounded-t-[999px] rounded-b-[18px] bg-[#fffdf7] p-[5px] shadow-[0_1px_2px_rgb(9_56_46/0.08),0_22px_36px_-22px_rgb(9_56_46/0.6)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_26px_44px_-22px_rgb(9_56_46/0.8)]">
+                  <span className="relative block aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[14px] bg-[#062a22]">
                     {CAT_ART[c.id]
                       ? <img src={`${ART}/${CAT_ART[c.id]}`} alt="" loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]" />
-                      : <span className="grid size-full place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#1a6a55,#09382e_60%,#052119)] text-accent"><span className="grid size-16 place-items-center rounded-full ring-1 ring-accent/50 shadow-[0_0_40px_-6px_rgb(215_198_118/0.5)]"><Icon name={c.icon} size={28} /></span></span>}
+                      : <span className="grid size-full place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#1a6a55,#09382e_60%,#052119)] text-on-inverse"><span className="grid size-16 place-items-center rounded-full ring-1 ring-on-inverse/30 shadow-[0_0_40px_-6px_rgb(255_255_255/0.25)]"><Icon name={c.icon} size={28} /></span></span>}
                     <span className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(transparent,rgb(6_42_34/0.75))]" aria-hidden="true" />
                   </span>
                 </span>
@@ -251,7 +247,7 @@ function ReviewRow({ items, reverse }) {
         {row.map((r, i) => (
           <li key={i} aria-hidden={i >= items.length || undefined} className="w-[280px] shrink-0 sm:w-[340px]">
             <figure className="flex h-full flex-col rounded-xl bg-surface p-5 shadow-[0_16px_40px_-30px_rgb(9_56_46/0.5)] ring-1 ring-accent/30">
-              <div className="flex items-center justify-between"><Stars className="text-accent-text" /><Quote className="size-5 text-accent/70" strokeWidth={1.4} /></div>
+              <div className="flex items-center justify-between"><Stars className="text-accent-text" /><Quote className="size-5 text-primary/20" strokeWidth={1.4} /></div>
               <blockquote className="mt-3 line-clamp-4 flex-1 text-[14px] leading-7">{r.text}</blockquote>
               <figcaption className="mt-4 flex items-center gap-2.5 border-t border-border pt-3 text-xs">
                 <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary font-semibold text-accent">{r.name.charAt(0)}</span>
@@ -284,6 +280,8 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <div className="relative isolate">
+        <span className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_18%_at_95%_14%,rgb(9_56_46/0.07),transparent),radial-gradient(40%_14%_at_5%_34%,rgb(215_198_118/0.12),transparent),radial-gradient(50%_16%_at_100%_56%,rgb(9_56_46/0.06),transparent),radial-gradient(45%_14%_at_0%_78%,rgb(9_56_46/0.06),transparent)]" aria-hidden="true" />
       <Promises />
       <New />
       <LandingPromo />
@@ -297,7 +295,6 @@ export default function Home() {
       <CategoryShelf id="government-services" />
       <GalleryWall />
       <Reviews />
-      <Divider />
       <section className="container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
         <Head eyebrow="قبل ما تطلب" title="أسئلة تتكرر" />
         <Accordion type="single" collapsible className="grid gap-3">
@@ -309,17 +306,7 @@ export default function Home() {
           ))}
         </Accordion>
       </section>
-      <section className="container-w pb-6">
-        <Reveal className="relative overflow-hidden rounded-xl bg-primary px-6 py-12 text-center text-on-inverse sm:py-16">
-          <svg viewBox="0 0 400 400" className="pointer-events-none absolute -top-24 -end-24 size-80 opacity-30" fill="none" aria-hidden="true">
-            {[60, 100, 140, 180].map((r) => <circle key={r} cx="200" cy="200" r={r} stroke="var(--accent)" strokeOpacity=".5" />)}
-          </svg>
-          <Divider tone="dark" className="mb-3 !w-full max-w-xs" />
-          <h2 className="font-display text-[1.5rem] font-semibold sm:text-display-sm">محتار من وين تبدأ؟</h2>
-          <p className="mx-auto mt-2 max-w-md text-on-inverse/80">قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.</p>
-          <Button asChild size="lg" variant="accent" className="mt-7 font-medium"><a href={waLink('السلام عليكم، أبي استشارة: من وين أبدأ متجري؟')} target="_blank" rel="noreferrer"><MessageCircle />استشرنا على واتساب</a></Button>
-        </Reveal>
-      </section>
+      </div>
     </>
   )
 }

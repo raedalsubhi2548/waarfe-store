@@ -75,9 +75,9 @@ export default function SiteHeader() {
           <button
             onClick={() => setCartOpen(true)}
             aria-label={`السلة، ${count} عناصر`}
-            className={cn('ms-1 inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 shadow-[0_8px_20px_-8px_rgb(0_0_0/0.5)] transition-colors', clear ? 'bg-accent text-accent-foreground' : 'bg-primary text-primary-foreground hover:bg-primary-hover')}
+            className={cn('ms-1 inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 shadow-[0_8px_20px_-8px_rgb(0_0_0/0.5)] transition-colors', clear ? 'bg-background text-primary' : 'bg-primary text-primary-foreground hover:bg-primary-hover')}
           >
-            <ShoppingBag className={cn('size-[18px]', clear ? 'text-primary' : 'text-accent')} />
+            <ShoppingBag className={cn('size-[18px]', clear ? 'text-primary' : 'text-on-inverse')} />
             <span className="tabular text-sm font-semibold">{count}</span>
           </button>
         </div>

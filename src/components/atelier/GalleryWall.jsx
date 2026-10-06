@@ -1,47 +1,46 @@
-import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { WORK } from '@/data/work.js'
 
 const lh3 = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
-// [index in WORK, aspect ratio]
-const PIECES = [[8, 1.79], [15, 1], [2, 2.35], [25, 1.79], [32, 1], [10, 2.35], [21, 1.79], [37, 1], [4, 2.35], [30, 1.79]]
+const ROW_A = [8, 15, 2, 25, 32, 10, 21, 37, 4, 30, 12, 18]
+const ROW_B = [1, 9, 23, 40, 16, 34, 22, 6, 28, 36, 13, 41]
 
-/** A gallery wall: framed banners under soft spotlights. Swipe on phones, arrows on desktop. */
-export default function GalleryWall() {
-  const row = useRef(null)
-  const nudge = (dir) => row.current?.scrollBy({ left: dir * row.current.clientWidth * 0.8, behavior: 'smooth' })
+function Row({ ids, reverse }) {
+  const list = [...ids, ...ids]
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7f0dc,#efe4c4)] py-14 sm:py-20" aria-label="معرض أعمال وارف">
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,#e2d3a8,#d6c491)] shadow-[0_-1px_0_rgb(9_56_46/0.12)]" aria-hidden="true" />
-      <div className="container-w relative mb-4 flex items-end justify-between gap-4">
-        <div>
-          <p className="mb-2 flex items-center gap-2 text-[13px] font-medium text-accent-text"><span className="h-px w-6 bg-accent" />المعرض</p>
-          <h2 className="font-display text-[1.6rem] font-semibold text-primary sm:text-display-md">بنرات وتصاميم سوشال ميديا</h2>
-        </div>
-        <div className="hidden gap-2 sm:flex">
-          <button onClick={() => nudge(1)} className="grid size-11 place-items-center rounded-full bg-white/70 text-primary ring-1 ring-accent/40 hover:bg-white" aria-label="السابق"><ChevronRight className="size-5" /></button>
-          <button onClick={() => nudge(-1)} className="grid size-11 place-items-center rounded-full bg-white/70 text-primary ring-1 ring-accent/40 hover:bg-white" aria-label="التالي"><ChevronLeft className="size-5" /></button>
-        </div>
-      </div>
-
-      <ul ref={row} className="relative flex snap-x snap-mandatory items-end gap-8 overflow-x-auto px-[max(16px,calc((100vw-var(--container))/2))] pb-6 [scrollbar-width:none] sm:gap-12">
-        {PIECES.map(([i, ar], k) => (
-          <li key={k} className="relative shrink-0 snap-center pt-14">
-            <span className="pointer-events-none absolute -top-2 left-1/2 h-[calc(100%+30px)] w-[150%] -translate-x-1/2 bg-[radial-gradient(50%_70%_at_50%_0%,rgb(255_250_230/0.95),transparent_70%)]" aria-hidden="true" />
-            <span className="absolute top-2 left-1/2 h-3 w-14 -translate-x-1/2 rounded-b-full bg-[linear-gradient(180deg,#2b2b2b,#555)] shadow-[0_6px_20px_rgb(255_240_200/0.9)]" aria-hidden="true" />
-            <Link to="/work?tab=banners" className="group relative block">
-              <figure className="rounded-[3px] bg-[linear-gradient(135deg,#f3e3a1,#b99a3e_35%,#f1dd94_55%,#a8862f_80%,#e9d283)] p-[6px] shadow-[0_26px_44px_-20px_rgb(40_30_10/0.5),0_8px_14px_-6px_rgb(40_30_10/0.3)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1.5">
-                <div className="bg-[#fffdf6] p-[clamp(8px,1.2vw,14px)] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.06)]">
-                  <img src={lh3(WORK[i], 700)} alt={`من أعمال وارف ${k + 1}`} loading="lazy" decoding="async" className="block h-[clamp(150px,30vw,280px)] w-auto bg-sunken object-cover" style={{ aspectRatio: ar }} />
-                </div>
-              </figure>
+    <div className="group/row flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_10%,black_90%,transparent)]">
+      <ul className={`flex w-max shrink-0 gap-4 py-4 motion-safe:animate-[marquee_120s_linear_infinite] group-hover/row:[animation-play-state:paused] sm:gap-5 ${reverse ? '[animation-direction:reverse]' : ''}`}>
+        {list.map((i, k) => (
+          <li key={k} aria-hidden={k >= ids.length || undefined} className="shrink-0">
+            <Link to="/work?tab=banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#fffdf7] p-1.5 shadow-[0_1px_2px_rgb(9_56_46/0.06),0_24px_40px_-26px_rgb(9_56_46/0.55)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgb(9_56_46/0.06),0_32px_50px_-26px_rgb(9_56_46/0.6)]">
+              <img src={lh3(WORK[i], 600)} alt={k < ids.length ? `من أعمال وارف ${k + 1}` : ''} loading="lazy" decoding="async"
+                className="block h-[150px] w-auto min-w-[150px] rounded-[13px] bg-sunken object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:h-[210px] sm:min-w-[210px]" />
             </Link>
           </li>
         ))}
       </ul>
-      <div className="container-w relative mt-6 text-center">
-        <Link to="/work?tab=banners" className="group inline-flex h-10 items-center gap-2 text-sm font-medium text-primary"><span className="border-b border-accent pb-0.5">كل التصاميم ({WORK.length})</span><ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /></Link>
+    </div>
+  )
+}
+
+/** Our banner & social work drifting slowly in two rows; hover pauses a row. */
+export default function GalleryWall() {
+  return (
+    <section className="relative py-14 sm:py-20" aria-label="معرض أعمال وارف">
+      <div className="container-w mb-6 flex flex-col items-center gap-2 text-center sm:mb-8">
+        <p className="text-[13.5px] font-medium text-primary/60">من مكتب وارف</p>
+        <h2 className="font-display text-[1.75rem] font-bold leading-[1.45] text-primary sm:text-display-md">بنرات وتصاميم سوشال ميديا</h2>
+        <p className="max-w-md text-[15px] leading-7 text-muted-foreground">نماذج حقيقية من شغلنا لعملائنا، مرّر عليها عشان توقف.</p>
+      </div>
+      <div className="grid gap-1">
+        <Row ids={ROW_A} />
+        <Row ids={ROW_B} reverse />
+      </div>
+      <div className="mt-8 text-center">
+        <Link to="/work?tab=banners" className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[14px] font-medium text-on-inverse shadow-[0_14px_28px_-14px_rgb(9_56_46/0.8)] transition-colors hover:bg-primary-hover">
+          شوف كل التصاميم ({WORK.length})<ArrowLeft className="size-4" />
+        </Link>
       </div>
     </section>
   )

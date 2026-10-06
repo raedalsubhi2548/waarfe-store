@@ -14,7 +14,7 @@ export default function Wishlist() {
   return (
     <>
       {!user && <p className="mb-6 rounded-md border-2 border-dashed border-accent bg-accent/10 p-4 text-sm"><Link to="/login?next=/account/wishlist" className="font-bold text-primary underline underline-offset-4">سجّل دخولك</Link> عشان تحفظ أمنياتك في حسابك وتشوفها من أي جهاز.</p>}
-      <ul className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">{items.map((p) => <li key={p.id}><ServiceTicket p={p} className="h-full" /></li>)}</ul>
+      <ul className="grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-10 md:grid-cols-3 lg:grid-cols-4">{items.map((p) => <li key={p.id}><ServiceTicket p={p} className="h-full" /></li>)}</ul>
     </>
   )
 }
