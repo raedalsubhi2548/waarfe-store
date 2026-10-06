@@ -52,7 +52,7 @@ export default function GalleryWall() {
                 <Link to="/work?tab=banners" className="group relative block">
                   <figure className="rounded-[3px] bg-[linear-gradient(135deg,#f3e3a1,#b99a3e_35%,#f1dd94_55%,#a8862f_80%,#e9d283)] p-[7px] shadow-[0_30px_50px_-20px_rgb(40_30_10/0.55),0_8px_14px_-6px_rgb(40_30_10/0.35)] transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-2">
                     <div className="bg-[#fffdf6] p-[clamp(8px,1.4vw,16px)] shadow-[inset_0_0_0_1px_rgb(0_0_0/0.06)]">
-                      <img src={lh3(WORK[i], 700)} alt={`من أعمال وارف ${k + 1}`} loading={k < 5 ? "eager" : "lazy"} decoding="async" className="block h-[clamp(150px,34svh,330px)] w-auto bg-sunken object-cover" style={{ aspectRatio: ar }} />
+                      <img src={lh3(WORK[i], 700)} alt={`من أعمال وارف ${k + 1}`} loading="eager" decoding="async" className="block h-[clamp(150px,34svh,330px)] w-auto bg-sunken object-cover" style={{ aspectRatio: ar }} />
                     </div>
                   </figure>
                   <figcaption className="mx-auto mt-4 w-fit rounded-sm bg-[#fffdf6] px-3 py-1 text-[11px] text-muted-foreground shadow-hairline">من أعمال وارف · <span className="tabular">{String(k + 1).padStart(2, '0')}</span></figcaption>
