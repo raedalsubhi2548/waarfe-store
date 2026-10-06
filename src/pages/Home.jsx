@@ -38,7 +38,7 @@ function Title({ t, className }) {
     <div ref={ref} className={cn('container-w', className)}>
       <h2 className="sr-only">{t.alt}</h2>
       <img src={t.src} alt="" width="1440" height="211" loading="lazy" decoding="async"
-        className={cn('mx-auto w-full max-w-[680px] transition-[opacity,scale] duration-[900ms] ease-[cubic-bezier(.34,1.4,.64,1)]', on ? 'scale-100 opacity-100' : 'scale-90 opacity-0')} />
+        className={cn('melt mx-auto w-full max-w-[680px] mix-blend-multiply transition-[opacity,scale] duration-[900ms] ease-[cubic-bezier(.34,1.4,.64,1)]', on ? 'scale-100 opacity-100' : 'scale-90 opacity-0')} />
     </div>
   )
 }
@@ -52,30 +52,38 @@ const ViewAll = ({ to, children = 'عرض الكل' }) => (
 /** Products as covers on a shelf. */
 function Shelf({ items }) {
   return (
-    <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+    <ul className="mx-auto grid max-w-[1060px] grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8">
       {items.map((p, i) => <Reveal as="li" key={p.id} delay={(i % 4) * 90}><ServiceTicket p={p} className="h-full" /></Reveal>)}
     </ul>
   )
 }
 
-/* ---------------- Hero: the store's own main banner ---------------- */
+/* ---------------- Hero: the store's main banner, melting under the header ---------------- */
+const DUST = Array.from({ length: 16 }, (_, i) => ({ l: (i * 61) % 100, t: 40 + ((i * 37) % 55), d: 7 + (i % 5) * 1.6, w: i * 0.9, s: 2 + (i % 3) }))
 function Hero() {
   const b = BANNERS.hero
   return (
-    <section className="container-w pt-5 sm:pt-8">
-      <Link to={b.to} className="group relative block overflow-hidden rounded-xl shadow-[0_30px_60px_-30px_rgb(9_56_46/0.55)] ring-1 ring-accent/30">
-        <img src={b.src} alt={b.alt} width={b.w} height={b.h} fetchpriority="high" className="w-full motion-safe:animate-[hero-in_1.6s_cubic-bezier(.16,1,.3,1)_both] transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.02]" />
-        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_35%,rgb(255_255_255/0.35)_50%,transparent_65%)] bg-[length:250%_100%] bg-[position:120%_0] motion-safe:animate-[sheen_1.8s_.6s_ease-out_both]" aria-hidden="true" />
+    <section className="relative -mt-[var(--header-height)]">
+      <Link to={b.to} className="group relative mx-auto block max-w-[1700px] overflow-hidden" aria-label={b.alt}>
+        <div className="melt-hero">
+          <img src={b.src} alt={b.alt} width={b.w} height={b.h} fetchpriority="high" className="block w-full motion-safe:animate-[hero-in_1.8s_cubic-bezier(.16,1,.3,1)_both]" />
+        </div>
+        {/* cream veil behind the header so the logo floats on the wall */}
+        <span className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgb(254_251_242/0.9),transparent)]" aria-hidden="true" />
+        <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_38%,rgb(255_255_255/0.35)_50%,transparent_62%)] bg-[length:250%_100%] bg-[position:120%_0] motion-safe:animate-[sheen_2.2s_.9s_ease-out_both]" aria-hidden="true" />
+        {DUST.map((d, i) => (
+          <span key={i} className="pointer-events-none absolute rounded-full bg-[#e8d48a] shadow-[0_0_8px_#f3e3a1] motion-safe:animate-[dust_var(--d)_linear_infinite]" style={{ left: `${d.l}%`, top: `${d.t}%`, width: d.s, height: d.s, '--d': `${d.d}s`, '--dx': `${(i % 2 ? 1 : -1) * (10 + i * 2)}px`, animationDelay: `${d.w}s` }} aria-hidden="true" />
+        ))}
       </Link>
     </section>
   )
 }
 
 function Banner({ b, className }) {
-  const img = <img src={b.src} alt={b.alt} width={b.w} height={b.h} loading="lazy" decoding="async" className="w-full transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.015]" />
+  const img = <img src={b.src} alt={b.alt} width={b.w} height={b.h} loading="lazy" decoding="async" className="melt w-full transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.02]" />
   return (
     <Reveal className={cn('container-w', className)}>
-      {b.to ? <Link to={b.to} className="group block overflow-hidden rounded-xl shadow-[0_24px_50px_-30px_rgb(9_56_46/0.5)]">{img}</Link> : <div className="overflow-hidden rounded-xl shadow-[0_24px_50px_-30px_rgb(9_56_46/0.5)]">{img}</div>}
+      {b.to ? <Link to={b.to} className="group block">{img}</Link> : img}
     </Reveal>
   )
 }
@@ -88,8 +96,8 @@ function Promises() {
     { art: 'chat', t: 'تواصل مباشر', d: 'على واتساب طول التنفيذ' },
   ]
   return (
-    <section className="mt-8 bg-sunken/70 sm:mt-12">
-      <ul className="container-w grid grid-cols-3 gap-2 py-8 sm:py-10">
+    <section className="container-w relative z-10 -mt-6 sm:-mt-16">
+      <ul className="mx-auto grid max-w-4xl grid-cols-3 gap-2 rounded-2xl bg-white/75 px-3 py-5 shadow-[0_30px_60px_-30px_rgb(9_56_46/0.45)] ring-1 ring-accent/40 backdrop-blur-xl sm:px-6 sm:py-7">
         {items.map((x, i) => (
           <Reveal as="li" key={x.t} delay={i * 100} className="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-4 sm:text-start">
             <LineArt name={x.art} className="size-10 shrink-0 sm:size-12" delay={i * 0.15} />
@@ -160,7 +168,7 @@ function ReviewRow({ items, reverse }) {
   const row = [...items, ...items]
   return (
     <div className="group flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_8%,black_92%,transparent)]">
-      <ul className={cn('flex w-max shrink-0 gap-4 py-3 motion-safe:animate-[marquee_70s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
+      <ul className={cn('flex w-max shrink-0 gap-4 py-3 motion-safe:animate-[marquee_160s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
         {row.map((r, i) => (
           <li key={i} aria-hidden={i >= items.length || undefined} className="w-[280px] shrink-0 sm:w-[340px]">
             <figure className="flex h-full flex-col rounded-xl bg-surface p-5 shadow-[0_16px_40px_-30px_rgb(9_56_46/0.5)] ring-1 ring-accent/30">

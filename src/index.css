@@ -32,6 +32,19 @@
       repeating-linear-gradient(0deg, rgb(255 255 255 / 0.03) 0 1px, transparent 1px 3px),
       repeating-linear-gradient(90deg, rgb(0 0 0 / 0.08) 0 1px, transparent 1px 3px);
   }
+  /* melt: fade an image's edges into the page so banners never sit in a box */
+  .melt {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+    mask-composite: intersect;
+  }
+  .melt-hero {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent), linear-gradient(to bottom, #000 70%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent), linear-gradient(to bottom, #000 70%, transparent);
+    mask-composite: intersect;
+  }
   .foot-social a { width: 40px; height: 40px; background: rgb(254 251 242 / .08); }
 }
 
@@ -61,4 +74,6 @@
 @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes hero-in { from { opacity: 0; scale: 1.06; } }
 @keyframes sheen { to { background-position: -40% 0; } }
+@keyframes kenburns { from { scale: 1; } to { scale: 1.07; } }
+@keyframes dust { 0% { translate: 0 0; opacity: 0; } 15% { opacity: .9; } 100% { translate: var(--dx, 20px) -160px; opacity: 0; } }
 @keyframes marquee { to { transform: translateX(50%); } }

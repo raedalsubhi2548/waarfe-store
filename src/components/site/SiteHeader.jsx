@@ -8,7 +8,19 @@ import Social from '@/components/Social.jsx'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { SearchDialog } from '@/components/site/SearchDialog.jsx'
 
-const iconBtn = 'relative grid size-11 place-items-center rounded-full text-primary transition-colors hover:bg-sunken'
+const iconBtn = 'relative grid size-11 place-items-center rounded-full text-primary transition-colors hover:bg-white/60'
+
+/** A hairline of gold under the header that fills as you read the page. */
+function ScrollLine() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    let raf = 0
+    const on = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; const h = document.documentElement.scrollHeight - innerHeight; setP(h > 0 ? scrollY / h : 0) }) }
+    on(); addEventListener('scroll', on, { passive: true })
+    return () => removeEventListener('scroll', on)
+  }, [])
+  return <span className="absolute inset-x-0 bottom-0 h-px origin-right bg-gradient-to-l from-accent via-[#f3e3a1] to-accent" style={{ transform: `scaleX(${p})` }} aria-hidden="true" />
+}
 
 export default function SiteHeader() {
   const { count, setCartOpen, user, categories, products, wishlist } = useApp()
@@ -24,45 +36,48 @@ export default function SiteHeader() {
   }, [])
   const accountTo = user ? (user.role === 'admin' ? '/admin' : '/account') : '/login'
 
-  const link = ({ isActive }) => cn('rounded-full px-3.5 py-2 text-[15px] font-semibold transition-colors', isActive ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-sunken')
+  const home = loc.pathname === '/'
+  const clear = home && !scrolled
+  const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary')
 
   return (
-    <header className={cn('sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md transition-[border-color,box-shadow] duration-300', scrolled ? 'border-border shadow-hairline' : 'border-transparent')}>
-      <div className="container-w flex h-[var(--header-height)] items-center gap-2">
-        <button className={cn(iconBtn, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
-          <Menu className="size-6" />
-        </button>
+    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', clear ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(9_56_46/0.35)] backdrop-blur-xl')}>
+      <div className="container-w grid h-[var(--header-height)] grid-cols-[1fr_auto_1fr] items-center gap-2">
+        <div className="flex items-center gap-1">
+          <button className={cn(iconBtn, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
+            <Menu className="size-6" />
+          </button>
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="الرئيسية">
+            <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
+            <NavLink to="/work" className={link}>أعمالنا</NavLink>
+            <NavLink to="/reviews" className={link}>آراء العملاء</NavLink>
+            <NavLink to="/contact" className={link}>تواصل</NavLink>
+          </nav>
+        </div>
 
-        <Link to="/" className="shrink-0" aria-label="وارف — الرئيسية">
-          <img src="/logo.png" alt="وارف WAARFE" width="600" height="580" className="h-[52px] w-auto" />
+        <Link to="/" className="group relative grid place-items-center" aria-label="وارف — الرئيسية">
+          <span className={cn('absolute size-24 rounded-full bg-[radial-gradient(closest-side,rgb(254_251_242/0.95),transparent)] transition-opacity duration-500', clear ? 'opacity-100' : 'opacity-0')} aria-hidden="true" />
+          <img src="/logo.png" alt="وارف WAARFE" width="600" height="580" className={cn('relative w-auto transition-[height] duration-500', clear ? 'h-[62px]' : 'h-[50px]')} />
         </Link>
 
-        <nav className="ms-6 hidden flex-1 items-center gap-1 lg:flex" aria-label="الرئيسية">
-          <NavLink to="/" end className={link}>الرئيسية</NavLink>
-          <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
-          <NavLink to="/work" className={link}>أعمالنا</NavLink>
-          <NavLink to="/reviews" className={link}>آراء العملاء</NavLink>
-          <NavLink to="/account" className={link}>تتبّع طلبك</NavLink>
-          <NavLink to="/contact" className={link}>تواصل</NavLink>
-        </nav>
-
-        <div className="ms-auto flex items-center gap-0.5">
+        <div className="flex items-center justify-end gap-0.5">
           <button className={iconBtn} onClick={() => setSearch(true)} aria-label="بحث"><Search className="size-[21px]" /></button>
           <Link className={cn(iconBtn, 'hidden sm:grid')} to="/account/wishlist" aria-label={`الأمنيات (${wishlist.length})`}>
             <Heart className="size-[21px]" />
             {wishlist.length > 0 && <span className="absolute top-1.5 end-1.5 size-2 rounded-full bg-danger" />}
           </Link>
-          <Link className={iconBtn} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
+          <Link className={cn(iconBtn, 'hidden sm:grid')} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
           <button
             onClick={() => setCartOpen(true)}
             aria-label={`السلة، ${count} عناصر`}
-            className="ms-1 inline-flex h-11 items-center gap-2 rounded-full bg-primary px-4 text-primary-foreground transition-colors hover:bg-primary-hover"
+            className="ms-1 inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-3.5 text-primary-foreground shadow-[0_8px_20px_-8px_rgb(9_56_46/0.6)] transition-colors hover:bg-primary-hover"
           >
-            <ShoppingBag className="size-5 text-accent" />
-            <span className="tabular text-sm font-bold">{count}</span>
+            <ShoppingBag className="size-[18px] text-accent" />
+            <span className="tabular text-sm font-semibold">{count}</span>
           </button>
         </div>
       </div>
+      <ScrollLine />
 
       <Sheet open={menu} onOpenChange={setMenu}>
         <SheetContent side="start" className="overflow-y-auto p-5">
