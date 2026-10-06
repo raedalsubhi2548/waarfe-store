@@ -15,8 +15,8 @@ A store is something you can track. The storefront reads like a waybill for your
 Brand is fixed: green #09382e, gold #d7c676, cream #fefbf2, white #ffffff. Gold is never used for body text on cream; use `text-accent-text` (#6f6220).
 
 ## Type
-- Display: **Readex Pro** (600–700). Text: **Almarai** (400/700). Both plain, modern Arabic; no decorative Kufi.
-- Scale (major third, 16px base): 12 · 14 · 16 · 18 · 20 · 24 · 30 · 38 · 48 · 60. Display sizes: `text-display-sm/md/lg/xl`.
+- Font: **IBM Plex Sans Arabic** (300–700) for everything; headings at 600, never heavier. Plain, soft, modern; no decorative Kufi.
+- Body 15.5px. Display sizes: 26 · 32 · 40 · 48 (`text-display-sm/md/lg/xl`).
 - Body line-height 1.75 (Arabic needs air); headings 1.15–1.3. Prices use `tabular`.
 
 ## Space, radius, elevation

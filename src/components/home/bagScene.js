@@ -28,7 +28,7 @@ export function createBagScene(canvas, { onReady } = {}) {
   const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
   scene.environment = envTex
   const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50)
-  camera.position.set(0, 0.35, 7.2)
+  camera.position.set(0, 0.35, 8.1)
 
   // light: warm key, cream fill, gold rim
   scene.add(new THREE.HemisphereLight(0xfffaf0, 0xd8cfae, 0.5))
@@ -45,10 +45,10 @@ export function createBagScene(canvas, { onReady } = {}) {
   // --- the bag
   const bag = new THREE.Group()
   world.add(bag)
-  const paper = new THREE.MeshPhysicalMaterial({ color: GREEN, roughness: 0.5, clearcoat: 0.45, clearcoatRoughness: 0.4, sheen: 0.35, sheenColor: new THREE.Color(0x2f6b55), envMapIntensity: 0.45 })
+  const paper = new THREE.MeshPhysicalMaterial({ color: GREEN, roughness: 0.62, clearcoat: 0.18, clearcoatRoughness: 0.5, sheen: 0.25, sheenColor: new THREE.Color(0x2f6b55), envMapIntensity: 0.2 })
   const body = new THREE.Mesh(new RoundedBoxGeometry(1.7, 2.0, 0.78, 6, 0.07), paper)
   bag.add(body)
-  const cuff = new THREE.Mesh(new RoundedBoxGeometry(1.74, 0.22, 0.82, 4, 0.05), new THREE.MeshPhysicalMaterial({ color: GREEN_2, roughness: 0.45, clearcoat: 0.4, envMapIntensity: 0.45 }))
+  const cuff = new THREE.Mesh(new RoundedBoxGeometry(1.74, 0.22, 0.82, 4, 0.05), new THREE.MeshPhysicalMaterial({ color: GREEN_2, roughness: 0.55, clearcoat: 0.2, envMapIntensity: 0.2 }))
   cuff.position.y = 0.92
   bag.add(cuff)
 
@@ -123,7 +123,7 @@ export function createBagScene(canvas, { onReady } = {}) {
     if (!w || !h) return
     renderer.setSize(w, h, false)
     camera.aspect = w / h
-    camera.position.z = w < 420 ? 8.4 : 7.2
+    camera.position.z = w < 420 ? 9 : 8.1
     camera.updateProjectionMatrix()
   }
   const frame = () => {
