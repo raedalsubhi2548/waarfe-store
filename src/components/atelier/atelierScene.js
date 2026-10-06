@@ -90,6 +90,7 @@ export function createAtelier(canvas, { stores, onReady }) {
     const band = new THREE.Mesh(new RoundedBoxGeometry(PW + 0.012, PH + 0.012, PD * 0.55, 6, 0.135), gold); g.add(band)
     const bezel = new THREE.Mesh(roundedRect(PW - 0.05, PH - 0.05, 0.11), glassBlack); bezel.position.z = PD / 2 + 0.001; g.add(bezel)
     const scr = new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false })
+    scr.color.set(0xf3ecd6)
     const sw = PW - 0.1, sh = PH - 0.1
     const screen = new THREE.Mesh(roundedRect(sw, sh, 0.085), scr); screen.position.z = PD / 2 + 0.002; g.add(screen)
     const island = new THREE.Mesh(roundedRect(0.28, 0.075, 0.037), glassBlack); island.position.set(0, sh / 2 - 0.09, PD / 2 + 0.003); g.add(island)
@@ -101,8 +102,7 @@ export function createAtelier(canvas, { stores, onReady }) {
       state.frac = Math.min(1, (sh / sw) * aspect)
       state.tex.repeat.set(1, state.frac)
       state.tex.offset.set(0, 1 - state.frac)
-      scr.map = state.tex; scr.needsUpdate = true
-      if (i === 0) onReady?.()
+      scr.map = state.tex; scr.color.set(0xffffff); scr.needsUpdate = true
     })
     g.userData = state
     rig.add(g)
@@ -126,8 +126,8 @@ export function createAtelier(canvas, { stores, onReady }) {
   // choreography (x, y, z, rotY, rotX) per phone at scroll stops 0/.35/.7/1
   const K = [
     { x: [0, 0.75, 0, 0], y: [-0.05, 0, 0.05, 0.05], z: [0.3, 0.2, 0.45, 0.45], ry: [-0.85, -0.3, 0, 0], rx: [0.12, 0.02, 0, 0] },
-    { x: [-5, -0.85, -1.4, -1.4], y: [-0.3, -0.1, -0.05, -0.05], z: [-0.6, -0.2, -0.15, -0.15], ry: [0.9, 0.35, 0.38, 0.38], rx: [0, 0, 0, 0] },
-    { x: [5, 5, 1.4, 1.4], y: [-0.3, -0.3, -0.05, -0.05], z: [-0.6, -0.6, -0.15, -0.15], ry: [-0.9, -0.9, -0.38, -0.38], rx: [0, 0, 0, 0] },
+    { x: [-9, -0.85, -1.4, -1.4], y: [-0.3, -0.1, -0.05, -0.05], z: [-0.6, -0.2, -0.15, -0.15], ry: [0.9, 0.35, 0.38, 0.38], rx: [0, 0, 0, 0] },
+    { x: [9, 9, 1.4, 1.4], y: [-0.3, -0.3, -0.05, -0.05], z: [-0.6, -0.6, -0.15, -0.15], ry: [-0.9, -0.9, -0.38, -0.38], rx: [0, 0, 0, 0] },
   ]
   let target = 0, prog = 0, px = 0, py = 0, cx = 0, cy = 0, narrow = false, raf = 0, running = false
   const clock = new THREE.Clock()
@@ -175,7 +175,7 @@ export function createAtelier(canvas, { stores, onReady }) {
   window.addEventListener('pointermove', onPointer, { passive: true })
   const ro = new ResizeObserver(resize); ro.observe(canvas)
   const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())); io.observe(canvas)
-  resize(); frame()
+  resize(); frame(); onReady?.()
 
   return {
     setProgress: (p) => { target = Math.max(0, Math.min(1, p)) },

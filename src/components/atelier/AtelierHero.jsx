@@ -103,7 +103,7 @@ export default function AtelierHero() {
         <div ref={rail} className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3 text-[11px] text-muted-foreground [--p:0]" aria-hidden="true">
           <MousePointer2 className="size-3.5 rotate-[-20deg]" />
           <span className="relative h-[3px] w-28 overflow-hidden rounded-full bg-primary/10"><span className="absolute inset-y-0 start-0 w-full origin-right scale-x-[var(--p)] rounded-full bg-accent" /></span>
-          <span>مرّر للأسفل</span>
+          <span className="whitespace-nowrap">مرّر للأسفل</span>
         </div>
       </div>
     </section>
