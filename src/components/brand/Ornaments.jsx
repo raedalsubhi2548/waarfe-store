@@ -18,8 +18,8 @@ export function SectionTitle({ eyebrow, title, light, className }) {
   return (
     <div className={cn('flex flex-col items-center text-center', className)}>
       <Sprig className={light ? 'text-accent' : 'text-primary'} />
-      {eyebrow && <p className={cn('mt-3 text-[12.5px] font-medium tracking-[0.12em]', light ? 'text-accent' : 'text-accent-text')}>{eyebrow}</p>}
-      <h2 className={cn('mt-1.5 text-balance font-display text-[1.65rem] font-semibold sm:text-display-md', light ? 'text-on-inverse' : 'text-primary')}>{title}</h2>
+      {eyebrow && <p className={cn('mt-3 text-[13.5px] font-medium', light ? 'text-accent' : 'text-accent-text')}>{eyebrow}</p>}
+      <h2 className={cn('mt-1.5 text-balance font-display text-[1.75rem] font-bold leading-[1.45] sm:text-display-md', light ? 'text-on-inverse' : 'text-primary')}>{title}</h2>
     </div>
   )
 }

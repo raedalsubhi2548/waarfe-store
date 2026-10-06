@@ -9,7 +9,7 @@ import { WHATSAPP, waLink } from '@/lib/format.js'
 
 export default function SiteFooter() {
   const { categories } = useApp()
-  const col = 'mb-4 flex items-center gap-2 text-[13px] font-semibold tracking-wide text-accent'
+  const col = 'mb-4 flex items-center gap-2 text-[13px] font-semibold text-accent'
   const item = 'group flex min-h-9 items-center gap-2 text-[14px] text-on-inverse/75 transition-colors hover:text-accent'
   return (
     <footer className="relative mt-32 text-on-inverse">

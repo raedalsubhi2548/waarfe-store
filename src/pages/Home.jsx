@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { ArrowLeft, MessageCircle, Star, ChevronLeft, Quote } from 'lucide-react'
+import { ArrowLeft, MessageCircle, Star, Quote } from 'lucide-react'
 import { useApp } from '@/state.jsx'
-import { FAQ, BANNERS, TITLES } from '@/data/content.js'
+import { FAQ } from '@/data/content.js'
 import { ALL_REVIEWS } from '@/data/reviews.js'
 import { waLink, money, effectivePrice } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
@@ -13,10 +13,8 @@ import Divider from '@/components/home/Divider.jsx'
 import LineArt from '@/components/home/LineArt.jsx'
 import ServiceTicket from '@/components/home/ServiceTicket.jsx'
 import GalleryWall from '@/components/atelier/GalleryWall.jsx'
-import { SectionTitle, ArchPattern, Sprig } from '@/components/brand/Ornaments.jsx'
+import { SectionTitle } from '@/components/brand/Ornaments.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
-import { STORE_PDFS } from '@/data/work.js'
-import { useEffect, useState } from 'react'
 
 const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5" fill="currentColor" strokeWidth={0} />)}</span>
 
@@ -63,107 +61,99 @@ function Shelf({ items }) {
   )
 }
 
-/* ---------------- Hero: green scene, medallion logo hangs from the header, delivered stores in an arch ---------------- */
-const DUST = Array.from({ length: 18 }, (_, i) => ({ l: (i * 61) % 100, t: 35 + ((i * 37) % 60), d: 7 + (i % 5) * 1.6, w: i * 0.8, s: 2 + (i % 3) }))
-const lh3 = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
-
-function ArchWindow() {
-  const [i, setI] = useState(0)
-  useEffect(() => { const t = setInterval(() => setI((x) => (x + 1) % STORE_PDFS.length), 7000); return () => clearInterval(t) }, [])
-  return (
-    <div className="relative mx-auto w-[min(78vw,340px)] lg:w-[380px]">
-      {/* outer gold frame */}
-      <div className="rounded-t-[999px] rounded-b-[28px] bg-[linear-gradient(145deg,#f6e7a8,#b8973c_30%,#f3df93_55%,#9c7c2c_80%,#e8d384)] p-[3px] shadow-[0_50px_90px_-30px_rgb(0_0_0/0.65),0_0_80px_-20px_rgb(215_198_118/0.45)]">
-        <div className="rounded-t-[999px] rounded-b-[25px] bg-[#062a22] p-2.5">
-          <div className="relative aspect-[3/4.3] overflow-hidden rounded-t-[999px] rounded-b-[18px] bg-[#f3ecd6] ring-1 ring-accent/50 [container-type:size]">
-            {STORE_PDFS.map((s, k) => (
-              <img key={s.id} src={lh3(s.id, 600)} alt="" decoding="async" loading={k === 0 ? 'eager' : 'lazy'}
-                className={cn('absolute inset-x-0 top-0 w-full transition-opacity duration-[1.6s] motion-safe:animate-[screen-scroll_40s_ease-in-out_infinite_alternate]', k === i ? 'opacity-100' : 'opacity-0')} />
-            ))}
-            <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgb(255_255_255/0.25),transparent_35%)]" />
-            <span className="absolute inset-x-0 bottom-0 bg-[linear-gradient(transparent,rgb(6_42_34/0.85))] px-4 pt-10 pb-3 text-center text-[12px] text-on-inverse/90">متجر <b className="text-accent">{STORE_PDFS[i].name}</b> · من تصميم وارف</span>
-          </div>
-        </div>
-      </div>
-      {/* floating chips */}
-      <div className="absolute -start-6 top-[30%] flex items-center gap-2 rounded-full bg-background/95 py-2 ps-2 pe-4 shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_6s_ease-in-out_infinite] sm:-start-24">
-        <span className="grid size-8 place-items-center rounded-full bg-primary text-[11px] font-bold text-accent">+200</span>
-        <span className="text-[12.5px] font-semibold text-primary">طلب على سلة</span>
-      </div>
-      <div className="absolute -end-4 bottom-[14%] flex items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#f3e3a1,#d7c676)] px-3.5 py-2 text-primary shadow-[0_20px_40px_-15px_rgb(0_0_0/0.5)] motion-safe:animate-[float_7s_1.5s_ease-in-out_infinite] sm:-end-20">
-        <Stars className="text-primary" /><b className="tabular text-[13px]">5.0</b>
-      </div>
-    </div>
-  )
-}
+/* ---------------- Hero: a cinematic scene (our own AI art) merged with the header ---------------- */
+const DUST = Array.from({ length: 16 }, (_, i) => ({ l: (i * 61) % 100, t: 20 + ((i * 37) % 70), d: 8 + (i % 5) * 1.8, w: i * 0.9, s: 2 + (i % 3) }))
+const ART = '/brand/ai'
 
 function Hero() {
   return (
-    <section className="relative -mt-[var(--header-height)] overflow-hidden bg-[radial-gradient(70%_60%_at_70%_30%,#14604c,#09382e_55%,#05261f)] text-on-inverse">
-      <ArchPattern className="opacity-80 [mask-image:radial-gradient(ellipse_at_50%_40%,black,transparent_75%)]" />
-      <span className="pointer-events-none absolute -top-40 left-1/2 size-[640px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(215_198_118/0.22),transparent)]" aria-hidden="true" />
+    <section className="relative -mt-[var(--header-height)] isolate overflow-hidden bg-[#062a22] text-on-inverse">
+      {/* the scene */}
+      <picture className="absolute inset-0 -z-10">
+        <source media="(max-width: 767px)" srcSet={`${ART}/waarfe-hero-mobile.webp`} />
+        <img src={`${ART}/waarfe-hero.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
+          className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
+      </picture>
+      {/* melt the scene into the header (top), the text side, and the page (bottom) */}
+      <span className="absolute inset-x-0 top-0 -z-10 h-48 bg-[linear-gradient(#062a22,transparent)]" aria-hidden="true" />
+      <span className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(6_42_34/0.75)_0%,transparent_45%)] md:bg-[linear-gradient(270deg,rgb(6_42_34/0.9)_0%,rgb(6_42_34/0.55)_38%,transparent_62%)]" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-1/3 bg-[linear-gradient(100deg,transparent,rgb(246_231_168/0.10),transparent)] motion-safe:animate-[sweep_9s_ease-in-out_infinite]" aria-hidden="true" />
       {DUST.map((d, i) => (
-        <span key={i} className="pointer-events-none absolute rounded-full bg-[#e8d48a] shadow-[0_0_8px_#f3e3a1] motion-safe:animate-[dust_var(--d)_linear_infinite]" style={{ left: `${d.l}%`, top: `${d.t}%`, width: d.s, height: d.s, '--d': `${d.d}s`, '--dx': `${(i % 2 ? 1 : -1) * (10 + i * 2)}px`, animationDelay: `${d.w}s` }} aria-hidden="true" />
+        <span key={i} className="pointer-events-none absolute -z-10 rounded-full bg-[#e8d48a] shadow-[0_0_8px_#f3e3a1] motion-safe:animate-[dust_var(--d)_linear_infinite]" style={{ left: `${d.l}%`, top: `${d.t}%`, width: d.s, height: d.s, '--d': `${d.d}s`, '--dx': `${(i % 2 ? 1 : -1) * (10 + i * 2)}px`, animationDelay: `${d.w}s` }} aria-hidden="true" />
       ))}
 
-      <div className="container-w relative grid items-center gap-12 pt-[calc(var(--header-height)+96px)] pb-32 lg:grid-cols-[1.05fr_1fr] lg:gap-6 lg:pt-[calc(var(--header-height)+80px)] lg:pb-40">
-        <div className="text-center lg:text-start">
-          <p className="inline-flex items-center gap-2 text-[13px] font-medium tracking-[0.14em] text-accent motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]"><span className="h-px w-8 bg-accent" />وارف · تصميم متاجر سلة</p>
-          <h1 className="mt-5 text-balance font-display text-[2.4rem] font-semibold leading-[1.25] sm:text-display-lg lg:text-[3.6rem] lg:leading-[1.15] motion-safe:animate-[rise-in_850ms_var(--p-ease-emphasized)_both]">
-            متجرك يستاهل<br /><span className="bg-[linear-gradient(90deg,#f6e7a8,#d7c676,#f3df93,#b8973c,#f6e7a8)] bg-[length:200%_auto] bg-clip-text text-transparent motion-safe:animate-[foil_6s_linear_infinite]">تصميم يليق فيه.</span>
+      <div className="container-w relative flex min-h-[640px] flex-col justify-start pt-[calc(var(--header-height)+92px)] pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32 md:pt-[calc(var(--header-height)+40px)]">
+        <div className="mx-auto max-w-[560px] text-center md:me-0 md:ms-auto md:text-start lg:me-[2%]">
+          <p className="inline-flex items-center gap-3 text-[14px] font-medium text-accent motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
+            <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,var(--accent))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,var(--accent))] md:hidden" />
+          </p>
+          <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in_850ms_var(--p-ease-emphasized)_both]">
+            <span className="block">متجرك يستاهل</span>
+            <span className="block text-accent [text-shadow:0_2px_30px_rgb(215_198_118/0.35)]">تصميم يليق فيه</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-[38ch] text-[16.5px] leading-8 text-on-inverse/75 lg:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع من يومين إلى 6 أيام، بتفاصيل تشبه علامتك.</p>
-          <div className="mt-8 flex justify-center gap-3 lg:justify-start motion-safe:animate-[rise-in_1.15s_var(--p-ease-emphasized)_both]">
+          <p className="mx-auto mt-5 max-w-[34ch] text-[17px] leading-[1.9] text-on-inverse/80 md:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in_1.15s_var(--p-ease-emphasized)_both]">
             <Button asChild size="lg" variant="accent" className="px-8 font-semibold shadow-[0_16px_34px_-12px_rgb(215_198_118/0.7)]"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
-            <Button asChild size="lg" variant="inverse" className="px-7 font-medium"><Link to="/work">شوف أعمالنا</Link></Button>
+            <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
+          </div>
+          <div className="mt-9 flex items-center justify-center gap-5 text-[13.5px] text-on-inverse/75 md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
+            <span className="flex items-center gap-2"><Stars className="text-accent" /><b className="tabular font-semibold text-on-inverse">5.0</b> تقييم عملائنا</span>
+            <span className="h-4 w-px bg-accent/40" />
+            <span><b className="font-semibold text-on-inverse">+200</b> طلب على سلة</span>
           </div>
         </div>
-        <div className="motion-safe:animate-[rise-in_1.2s_var(--p-ease-emphasized)_both]"><ArchWindow /></div>
       </div>
 
       {/* concave arch into the cream page, with a gold hairline */}
-      <svg viewBox="0 0 1440 140" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-[90px] w-full sm:h-[140px]" aria-hidden="true">
+      <svg viewBox="0 0 1440 140" preserveAspectRatio="none" className="absolute inset-x-0 bottom-0 h-[70px] w-full sm:h-[120px]" aria-hidden="true">
         <path d="M0 140 V40 Q720 150 1440 40 V140 Z" fill="var(--background)" />
-        <path d="M0 40 Q720 150 1440 40" fill="none" stroke="#d7c676" strokeOpacity=".7" strokeWidth="1.4" />
+        <path d="M0 40 Q720 150 1440 40" fill="none" stroke="#d7c676" strokeOpacity=".8" strokeWidth="1.4" />
       </svg>
     </section>
   )
 }
 
-/** Our own promo banner for the landing-page service (facts from the product). */
+/** Wide image banner: AI scene on one side, our words on the other (RTL: text on the right). */
+function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra }) {
+  const inner = (
+    <>
+      <img src={img} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full object-cover object-left transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
+      <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95)_0%,rgb(6_42_34/0.6)_45%,transparent_75%)] sm:bg-[linear-gradient(270deg,rgb(6_42_34/0.96)_0%,rgb(6_42_34/0.75)_40%,transparent_70%)]" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-[10px] rounded-[22px] ring-1 ring-accent/35" aria-hidden="true" />
+      <div className="relative ms-auto flex min-h-[460px] max-w-[470px] flex-col justify-end p-7 sm:min-h-[400px] sm:justify-center sm:p-12">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent/15 px-3.5 py-1.5 text-[13px] font-medium text-accent ring-1 ring-accent/40 backdrop-blur">{kicker}</span>
+        <h2 className="mt-4 font-display text-[1.75rem] font-bold leading-[1.45] sm:text-[2.2rem]"><span className="block">{title}</span><span className="block text-accent">{accent}</span></h2>
+        <p className="mt-3 text-[15.5px] leading-[1.9] text-on-inverse/80">{body}</p>
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          <span className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-semibold text-primary shadow-[0_14px_30px_-12px_rgb(215_198_118/0.7)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
+          {extra}
+        </div>
+      </div>
+    </>
+  )
+  const cls = 'group relative isolate block overflow-hidden rounded-[28px] bg-[#062a22] text-on-inverse shadow-[0_40px_80px_-40px_rgb(9_56_46/0.9)]'
+  return (
+    <Reveal className="container-w py-8">
+      {to ? <Link to={to} className={cls}>{inner}</Link> : <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a>}
+    </Reveal>
+  )
+}
+
 function LandingPromo() {
   const { byId } = useApp()
   const p = byId['landing-page-design']
   return (
-    <Reveal className="container-w py-6">
-      <Link to="/p/landing-page-design" className="group relative grid items-center gap-6 overflow-hidden rounded-[28px] bg-[radial-gradient(90%_120%_at_85%_0%,#14604c,#09382e_55%,#05261f)] p-7 text-on-inverse shadow-[0_40px_70px_-35px_rgb(9_56_46/0.8)] ring-1 ring-accent/40 sm:grid-cols-[1.2fr_1fr] sm:p-12">
-        <ArchPattern className="opacity-60" />
-        <div className="relative">
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 px-3 py-1 text-[12px] font-medium text-accent ring-1 ring-accent/40">طفشت من الاشتراكات الشهرية؟</span>
-          <h2 className="mt-4 text-balance font-display text-[1.7rem] font-semibold leading-snug sm:text-[2.2rem]">صفحة هبوط مبرمجة لك،<br /><span className="text-accent">بدون اشتراك شهري.</span></h2>
-          <p className="mt-3 max-w-md leading-8 text-on-inverse/75">مبرمجة بـ HTML وCSS وJavaScript، مع دومين واستضافة سنة هدية.</p>
-          <div className="mt-6 flex items-center gap-4">
-            <span className="inline-flex h-12 items-center gap-2 rounded-full bg-accent px-6 font-semibold text-primary transition-transform group-hover:-translate-y-0.5">اطلبها الحين<ArrowLeft className="size-4" /></span>
-            {p && <span className="tabular text-xl font-semibold text-accent">{money(effectivePrice(p))}</span>}
-          </div>
-        </div>
-        <div className="relative mx-auto w-full max-w-xs text-accent"><LineArt name="landing" className="w-full" /></div>
-      </Link>
-    </Reveal>
+    <SceneBanner img={`${ART}/waarfe-landing.webp`} to="/p/landing-page-design" kicker="طفشت من الاشتراكات الشهرية؟"
+      title="صفحة هبوط مبرمجة لك" accent="بدون اشتراك شهري" body="مبرمجة بـ HTML وCSS وJavaScript، مع دومين واستضافة سنة هدية."
+      cta="اطلبها الحين" extra={p && <span className="tabular text-xl font-semibold text-accent">{money(effectivePrice(p))}</span>} />
   )
 }
 
 function PaymentsStrip() {
   return (
-    <Reveal className="container-w py-10">
-      <div className="flex flex-col items-center gap-5 rounded-[28px] bg-surface/70 px-6 py-8 text-center ring-1 ring-accent/30 sm:flex-row sm:justify-between sm:text-start">
-        <div>
-          <p className="font-display text-xl font-semibold text-primary">ادفع بالطريقة اللي تريحك</p>
-          <p className="mt-1 text-sm text-muted-foreground">مدى، Apple Pay، البطاقات، أو تحويل بنكي.</p>
-        </div>
-        <PayIcons />
-      </div>
-    </Reveal>
+    <SceneBanner img={`${ART}/waarfe-installments.webp`} href={waLink('السلام عليكم، أبي أعرف عن تقسيط قيمة الخدمة')} kicker="ادفع بالطريقة اللي تريحك"
+      title="قسّم قيمة متجرك" accent="على دفعات مريحة" body="مدى، Apple Pay، البطاقات أو التحويل البنكي، واسألنا عن التقسيط مع تمارا وتابي."
+      cta="اسألنا عن التقسيط" extra={<PayIcons className="w-full" />} />
   )
 }
 
@@ -190,27 +180,46 @@ function Promises() {
 
 
 /* ---------------- Store sections ---------------- */
+const SHOWCASE = [
+  { id: 'design-services', img: 'waarfe-cat-design.webp', line: 'هوية، بنرات، وتصاميم تشبهك' },
+  { id: 'marketing-services', img: 'waarfe-cat-marketing.webp', line: 'نوصّل متجرك لعملائه' },
+  { id: 'government-services', img: 'waarfe-cat-government.webp', line: 'أوراقك الرسمية بدون تعب' },
+]
 function Categories() {
   const { categories, products } = useApp()
+  const byCat = Object.fromEntries(categories.map((c) => [c.id, c]))
+  const count = (id) => products.filter((p) => p.categoryId === id).length
+  const rest = categories.filter((c) => !SHOWCASE.some((s) => s.id === c.id))
   return (
     <section className="container-w">
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {categories.map((c, i) => {
-          const n = products.filter((p) => p.categoryId === c.id).length
-          return (
-            <Reveal as="li" key={c.id} delay={i * 70} className={cn(i === categories.length - 1 && categories.length % 2 && 'col-span-2 sm:col-span-1')}>
-              <Link to={`/c/${c.id}`} className="group flex h-full items-center gap-3 rounded-xl bg-surface p-4 ring-1 ring-accent/30 transition-[box-shadow,ring-color] duration-300 hover:shadow-card hover:ring-accent/70 sm:flex-col sm:items-start sm:p-5">
-                <span className="cloth grid size-11 shrink-0 place-items-center rounded-lg text-accent transition-transform duration-500 group-hover:-rotate-6 sm:size-12"><Icon name={c.icon} size={19} /></span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[14px] font-semibold text-primary sm:text-base">{c.name}</span>
-                  <span className="tabular text-xs text-muted-foreground">{n} خدمات</span>
+      <ul className="grid gap-4 sm:grid-cols-3 sm:gap-6">
+        {SHOWCASE.filter((s) => byCat[s.id]).map((s, i) => (
+          <Reveal as="li" key={s.id} delay={i * 110}>
+            <Link to={`/c/${s.id}`} className="group relative isolate block aspect-[4/5] overflow-hidden rounded-[26px] bg-[#062a22] text-on-inverse shadow-[0_34px_60px_-30px_rgb(9_56_46/0.85)] max-sm:aspect-[5/4]">
+              <img src={`${ART}/${s.img}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full object-cover transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
+              <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95),rgb(6_42_34/0.35)_45%,transparent_70%)]" aria-hidden="true" />
+              <span className="pointer-events-none absolute inset-[9px] rounded-[20px] ring-1 ring-accent/40 transition-[inset] duration-500 group-hover:inset-[6px]" aria-hidden="true" />
+              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-6">
+                <span>
+                  <span className="block font-display text-[1.45rem] font-bold leading-snug">{byCat[s.id].name}</span>
+                  <span className="mt-1 block text-[14px] text-on-inverse/75">{s.line}</span>
+                  <span className="tabular mt-2 block text-[13px] font-medium text-accent">{count(s.id)} خدمات</span>
                 </span>
-                <ChevronLeft className="hidden size-4 text-accent-text transition-transform group-hover:-translate-x-1 sm:block sm:self-end" />
-              </Link>
-            </Reveal>
-          )
-        })}
+                <span className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-primary transition-transform duration-500 group-hover:-translate-x-1"><ArrowLeft className="size-5" /></span>
+              </span>
+            </Link>
+          </Reveal>
+        ))}
       </ul>
+      {rest.length > 0 && (
+        <Reveal className="mt-6 flex flex-wrap justify-center gap-2.5">
+          {rest.map((c) => (
+            <Link key={c.id} to={`/c/${c.id}`} className="inline-flex items-center gap-2 rounded-full bg-surface px-4 py-2.5 text-[14px] font-medium text-primary ring-1 ring-accent/40 transition-[box-shadow,ring-color] hover:shadow-card hover:ring-accent">
+              <Icon name={c.icon} size={16} className="text-accent-text" />{c.name}<span className="tabular text-xs text-muted-foreground">({count(c.id)})</span>
+            </Link>
+          ))}
+        </Reveal>
+      )}
     </section>
   )
 }
