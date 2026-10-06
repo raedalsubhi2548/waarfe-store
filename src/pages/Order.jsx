@@ -49,14 +49,14 @@ export default function Order() {
         <div className={cn('mb-8 flex items-center gap-4 rounded-xl p-6 sm:p-8', paid ? 'bg-inverse text-on-inverse' : 'bg-sunken')}>
           <span className={cn('grid size-14 shrink-0 place-items-center rounded-full', paid ? 'bg-accent text-accent-foreground' : 'bg-surface text-primary')}>{paid ? <Check className="size-7" strokeWidth={3} /> : <Clock className="size-7" />}</span>
           <div>
-            <h1 className={cn('font-display text-2xl font-bold sm:text-3xl', !paid && 'text-primary')}>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
+            <h1 className={cn('font-display text-2xl font-semibold sm:text-3xl', !paid && 'text-primary')}>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
             <p className={cn('mt-1', paid ? 'text-on-inverse/80' : 'text-muted-foreground')}>
               <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع. تواصل معنا لإكمالها.'}
             </p>
           </div>
         </div>
       ) : (
-        <h1 className="tabular mb-8 font-display text-display-sm font-bold text-primary">طلب #{order.number}</h1>
+        <h1 className="tabular mb-8 font-display text-display-sm font-semibold text-primary">طلب #{order.number}</h1>
       )}
 
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
@@ -64,12 +64,12 @@ export default function Order() {
           <OrderTracker status={order.status} />
           {order.status === 'pending' && order.paymentMethod === 'bank' && (
             <div className="mt-6 grid justify-items-start gap-3 rounded-lg bg-sunken p-5">
-              <h3 className="font-display font-bold text-primary">التحويل البنكي</h3>
+              <h3 className="font-display font-semibold text-primary">التحويل البنكي</h3>
               {BANK_INFO ? <p className="whitespace-pre-line">{BANK_INFO}</p> : <p className="text-muted-foreground">بنرسل لك بيانات الحساب على واتساب.</p>}
               <Button asChild><a href={waLink(`السلام عليكم، طلبي رقم #${order.number} بقيمة ${money(order.total)}، أبي أرسل إيصال التحويل`)} target="_blank" rel="noreferrer"><MessageCircle />أرسل الإيصال على واتساب</a></Button>
             </div>
           )}
-          <h3 className="mt-8 mb-3 font-display font-bold text-primary">السجل</h3>
+          <h3 className="mt-8 mb-3 font-display font-semibold text-primary">السجل</h3>
           <ol className="relative grid gap-4 border-s-2 border-border-strong ps-5">
             {[...(order.history || [])].reverse().map((h, i) => (
               <li key={i} className="relative">
@@ -97,7 +97,7 @@ export default function Order() {
           </ul>
           <dl className="mt-5 grid gap-2 border-t border-border pt-4">
             {order.discount > 0 && <div className="flex justify-between text-success"><dt>خصم {order.coupon}</dt><dd className="tabular">− {money(order.discount)}</dd></div>}
-            <div className="flex items-baseline justify-between"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-bold text-primary">{money(order.total)}</dd></div>
+            <div className="flex items-baseline justify-between"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-semibold text-primary">{money(order.total)}</dd></div>
           </dl>
           <p className="mt-2 text-xs text-muted-foreground">{order.paymentMethod === 'card' ? 'بطاقة / Apple Pay' : 'تحويل بنكي'} · <span className="tabular">{dateTime(order.createdAt)}</span></p>
           <Button asChild variant="outline" className="mt-5 w-full"><Link to="/account">كل طلباتي</Link></Button>

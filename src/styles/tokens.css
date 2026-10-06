@@ -44,8 +44,8 @@
   --p-teal-100: #e3f1e8;
 
   /* Type */
-  --p-font-display: 'Readex Pro', 'Almarai', system-ui, sans-serif;
-  --p-font-text: 'Almarai', 'Readex Pro', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
+  --p-font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --p-font-text: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   /* Major-third scale, 16px base */
   --p-size-12: 0.75rem;
   --p-size-14: 0.875rem;
@@ -190,12 +190,12 @@
   --ease-standard: var(--p-ease-standard);
   --ease-emphasized: var(--p-ease-emphasized);
 
-  --text-display-xl: var(--p-size-60);
+  --text-display-xl: 3rem;
   --text-display-xl--line-height: 1.15;
-  --text-display-lg: var(--p-size-48);
+  --text-display-lg: 2.5rem;
   --text-display-lg--line-height: 1.2;
-  --text-display-md: var(--p-size-38);
+  --text-display-md: 2rem;
   --text-display-md--line-height: 1.25;
-  --text-display-sm: var(--p-size-30);
+  --text-display-sm: 1.625rem;
   --text-display-sm--line-height: 1.3;
 }

@@ -16,7 +16,7 @@ export default function CartDrawer() {
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
       <SheetContent side="end" className="w-[min(420px,92vw)]">
         <header className="border-b border-border px-5 py-5 pe-16">
-          <SheetTitle className="font-display text-xl font-bold text-primary">السلة <span className="tabular text-base font-semibold text-muted-foreground">({count})</span></SheetTitle>
+          <SheetTitle className="font-display text-xl font-semibold text-primary">السلة <span className="tabular text-base font-semibold text-muted-foreground">({count})</span></SheetTitle>
           <SheetDescription className="sr-only">الخدمات اللي أضفتها للسلة</SheetDescription>
         </header>
         {lines.length === 0 ? (
@@ -33,7 +33,7 @@ export default function CartDrawer() {
                   <img src={p.image} alt="" className="size-20 shrink-0 rounded-md object-cover" />
                   <div className="grid min-w-0 flex-1 content-start gap-1.5">
                     <Link to={`/p/${p.id}`} onClick={close} className="font-semibold leading-6 hover:underline">{p.name}</Link>
-                    <span className="tabular font-display font-bold text-primary">{money(effectivePrice(p) * qty)}</span>
+                    <span className="tabular font-display font-semibold text-primary">{money(effectivePrice(p) * qty)}</span>
                     <div className="flex items-center justify-between">
                       <Qty size="sm" value={qty} onChange={(q) => setQty(p.id, q)} />
                       <button onClick={() => setQty(p.id, 0)} className="grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label={`حذف ${p.name}`}><Trash2 className="size-4" /></button>

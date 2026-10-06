@@ -41,7 +41,7 @@ function SideFoot({ user }) {
       <Link to="/" target="_blank" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</Link>
       <button onClick={() => api.signOut()} className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-danger-soft hover:text-danger"><LogOut className="size-4" />خروج</button>
       <div className="mt-2 flex items-center gap-3 rounded-md bg-sunken p-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-display font-bold text-accent">{(user.name || user.email).charAt(0)}</span>
+        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-display font-semibold text-accent">{(user.name || user.email).charAt(0)}</span>
         <div className="min-w-0"><p className="truncate text-sm font-bold text-primary">{user.name || 'المدير'}</p><p className="truncate text-xs text-muted-foreground" dir="ltr">{user.email}</p></div>
       </div>
     </div>

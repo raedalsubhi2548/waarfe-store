@@ -10,7 +10,7 @@ export function AdminHead({ title, lead, back, action }) {
     <header className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {back}
-        <h1 className="truncate font-display text-2xl font-bold text-primary sm:text-[28px]">{title}</h1>
+        <h1 className="truncate font-display text-2xl font-semibold text-primary sm:text-[28px]">{title}</h1>
         {lead && <p className="mt-1 text-sm text-muted-foreground">{lead}</p>}
       </div>
       {action && <div className="flex flex-wrap gap-2">{action}</div>}
@@ -71,7 +71,7 @@ export function ConfirmProvider({ children }) {
           <Dialog.Overlay className="fixed inset-0 z-[60] bg-primary/45 motion-safe:animate-[fade-in_200ms]" />
           <Dialog.Content className="fixed inset-x-4 top-1/2 z-[60] mx-auto max-w-md -translate-y-1/2 rounded-xl bg-background p-6 shadow-overlay outline-none motion-safe:animate-[rise-in_260ms_var(--p-ease-emphasized)]">
             <span className="grid size-12 place-items-center rounded-full bg-danger-soft text-danger"><TriangleAlert className="size-6" /></span>
-            <Dialog.Title className="mt-4 font-display text-lg font-bold text-primary">{state?.title}</Dialog.Title>
+            <Dialog.Title className="mt-4 font-display text-lg font-semibold text-primary">{state?.title}</Dialog.Title>
             {state?.body && <Dialog.Description className="mt-1 text-sm leading-7 text-muted-foreground">{state.body}</Dialog.Description>}
             <div className="mt-6 flex gap-2">
               <Button className="flex-1 bg-danger text-white hover:bg-danger/90" onClick={() => close(true)}>{state?.ok || 'حذف'}</Button>

@@ -26,7 +26,7 @@ export default function Policies() {
         <div className="grid gap-4">
           {SECTIONS.map((s, i) => (
             <section key={s.id} id={s.id} className="scroll-mt-28 rounded-lg bg-surface p-6 shadow-hairline ring-1 ring-border sm:p-8">
-              <h2 className="flex items-baseline gap-3 font-display text-xl font-bold text-primary"><span className="tabular text-sm text-accent-text">0{i + 1}</span>{s.h}</h2>
+              <h2 className="flex items-baseline gap-3 font-display text-xl font-semibold text-primary"><span className="tabular text-sm text-accent-text">0{i + 1}</span>{s.h}</h2>
               <ul className="mt-4 grid gap-3">
                 {s.p.map((x) => <li key={x} className="flex gap-3 leading-8"><Check className="mt-2 size-4 shrink-0 text-primary" />{x}</li>)}
               </ul>

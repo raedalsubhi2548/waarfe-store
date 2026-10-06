@@ -84,7 +84,7 @@ export default function ProductForm() {
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {preview.sections.map((s) => (
                   <div key={s.title} className="rounded-md bg-sunken p-4">
-                    <h3 className="font-display font-bold text-primary">{s.title}</h3>
+                    <h3 className="font-display font-semibold text-primary">{s.title}</h3>
                     <ul className="mt-2 grid gap-1.5 text-sm">{s.items.map((i) => <li key={i} className="flex gap-2"><Check className="mt-1 size-3.5 shrink-0 text-primary" />{i}</li>)}</ul>
                   </div>
                 ))}

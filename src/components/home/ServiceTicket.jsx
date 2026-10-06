@@ -43,7 +43,7 @@ export default function ServiceTicket({ p, className, rank }) {
         </h3>
         <div className="mt-auto flex items-end justify-between gap-2">
           <p className="tabular leading-tight">
-            <span className="font-display text-lg font-bold text-primary">{money(effectivePrice(p))}</span>
+            <span className="font-display text-lg font-semibold text-primary">{money(effectivePrice(p))}</span>
             {sale && <s className="ms-2 text-xs text-muted-foreground">{money(p.price)}</s>}
             {p.perUnit && <span className="block text-xs text-muted-foreground">{p.perUnit}</span>}
           </p>

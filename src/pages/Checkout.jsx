@@ -108,7 +108,7 @@ export default function Checkout() {
           <dl className="mt-5 grid gap-2 border-t border-border pt-4 text-[15px]">
             <div className="flex justify-between"><dt className="text-muted-foreground">المجموع</dt><dd className="tabular">{money(subtotal)}</dd></div>
             {discount > 0 && <div className="flex justify-between text-success"><dt>خصم {coupon.code}</dt><dd className="tabular">− {money(discount)}</dd></div>}
-            <div className="flex items-baseline justify-between border-t border-border pt-3"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-bold text-primary">{money(total)}</dd></div>
+            <div className="flex items-baseline justify-between border-t border-border pt-3"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-semibold text-primary">{money(total)}</dd></div>
           </dl>
           {err && <p className="mt-3 text-sm text-danger" role="alert">{err}</p>}
           <Button size="lg" className="mt-4 w-full" disabled={busy}><Lock />{busy ? 'جاري تأكيد الطلب…' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>

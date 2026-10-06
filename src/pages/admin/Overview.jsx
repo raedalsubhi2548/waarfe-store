@@ -37,7 +37,7 @@ function SalesChart({ orders, days }) {
   const tickEvery = days > 14 ? 5 : days > 7 ? 2 : 1
   return (
     <figure>
-      <p className="tabular font-display text-3xl font-bold text-primary">{money(total)}</p>
+      <p className="tabular font-display text-3xl font-semibold text-primary">{money(total)}</p>
       <figcaption className="text-sm text-muted-foreground">المبيعات المدفوعة آخر {days} يوم · أعلى يوم {money(max === 1 ? 0 : max)}</figcaption>
       <svg viewBox={`0 0 ${W} ${H + 26}`} className="mt-4 w-full" role="img" aria-label={`رسم المبيعات آخر ${days} يوم`}>
         <defs>
@@ -65,7 +65,7 @@ function Kpi({ icon: I, label, value, delta, to, tone }) {
         <span className="text-sm font-semibold text-muted-foreground">{label}</span>
         <span className={cn('grid size-9 place-items-center rounded-full', tone || 'bg-sunken text-primary')}><I className="size-[18px]" /></span>
       </div>
-      <p className="tabular mt-3 font-display text-2xl font-bold text-primary sm:text-[28px]">{value}</p>
+      <p className="tabular mt-3 font-display text-2xl font-semibold text-primary sm:text-[28px]">{value}</p>
       {delta != null && (
         <p className={cn('mt-1 flex items-center gap-1 text-xs font-bold', delta >= 0 ? 'text-success' : 'text-danger')}>
           {delta >= 0 ? <ArrowUp className="size-3.5" /> : <ArrowDown className="size-3.5" />}
@@ -134,7 +134,7 @@ export default function Overview() {
             <ol className="grid gap-4">
               {top.map((t, i) => (
                 <li key={t.id} className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
-                  <span className="tabular w-4 text-center font-display text-sm font-bold text-accent-text">{i + 1}</span>
+                  <span className="tabular w-4 text-center font-display text-sm font-semibold text-accent-text">{i + 1}</span>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{t.name}</p>
                     <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-sunken"><div className="h-full rounded-full bg-primary" style={{ width: `${(t.total / topMax) * 100}%` }} /></div>
@@ -160,7 +160,7 @@ export default function Overview() {
 
       <section className="mt-4">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold text-primary">أحدث الطلبات</h2>
+          <h2 className="font-display text-lg font-semibold text-primary">أحدث الطلبات</h2>
           <Link to="/admin/orders" className="flex items-center gap-1 text-sm font-semibold text-primary hover:underline">كل الطلبات<ArrowUpLeft className="size-4" /></Link>
         </div>
         {orders.length === 0 ? (

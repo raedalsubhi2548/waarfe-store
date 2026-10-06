@@ -31,7 +31,7 @@ export function Panel({ className, title, action, children }) {
     <section className={cn('rounded-lg bg-surface p-5 shadow-hairline ring-1 ring-border sm:p-6', className)}>
       {(title || action) && (
         <div className="mb-4 flex items-center justify-between gap-3">
-          {title && <h2 className="font-display text-lg font-bold text-primary">{title}</h2>}
+          {title && <h2 className="font-display text-lg font-semibold text-primary">{title}</h2>}
           {action}
         </div>
       )}
@@ -45,7 +45,7 @@ export function PageHead({ title, lead, crumbs, action }) {
     <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
         {crumbs && <nav className="mb-2 flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground" aria-label="المسار">{crumbs}</nav>}
-        <h1 className="text-balance font-display text-display-sm font-bold text-primary sm:text-display-md">{title}</h1>
+        <h1 className="text-balance font-display text-display-sm font-semibold text-primary sm:text-display-md">{title}</h1>
         {lead && <p className="mt-2 text-[17px] leading-8 text-muted-foreground">{lead}</p>}
       </div>
       {action}
@@ -57,7 +57,7 @@ export function Empty({ icon: IconC, title, children, action }) {
   return (
     <div className="grid justify-items-center gap-3 rounded-lg border-2 border-dashed border-border-strong px-6 py-14 text-center">
       {IconC && <span className="grid size-14 place-items-center rounded-full bg-sunken text-primary"><IconC className="size-6" /></span>}
-      <p className="font-display text-lg font-bold text-primary">{title}</p>
+      <p className="font-display text-lg font-semibold text-primary">{title}</p>
       {children && <p className="max-w-md text-muted-foreground">{children}</p>}
       {action}
     </div>

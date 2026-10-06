@@ -22,7 +22,7 @@ export default function Work() {
         <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_50%_120%,rgb(215_198_118/0.22),transparent)]" aria-hidden="true" />
         <div className="container-w relative py-10 text-center sm:py-14">
           <nav className="mb-4 text-sm text-on-inverse/60" aria-label="المسار"><Link to="/" className="hover:underline">الرئيسية</Link> / <span>أعمالنا</span></nav>
-          <h1 className="font-display text-display-sm font-bold sm:text-display-md">أعمالنا</h1>
+          <h1 className="font-display text-display-sm font-semibold sm:text-display-md">أعمالنا</h1>
           <p className="mx-auto mt-2 max-w-md text-on-inverse/75">متاجر سلّمناها كاملة، وتصاميم بنرات وسوشال ميديا لعملائنا.</p>
           <div className="mx-auto mt-8 inline-grid grid-cols-2 rounded-full bg-white/10 p-1 ring-1 ring-white/10" role="tablist" aria-label="نوع العمل">
             {TABS.map(({ id, label, icon: I, count }) => (
@@ -44,7 +44,7 @@ export default function Work() {
                 <li key={s.id}>
                   <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="group block" aria-label={`افتح ملف متجر ${s.name}`}>
                     <Phone pdfId={s.id} scrollOnHover size={500} className="transition-transform duration-500 ease-emphasized group-hover:-translate-y-2" />
-                    <span className="mt-4 flex items-center justify-center gap-1.5 font-display font-bold text-primary">{s.name}<ExternalLink className="size-3.5 text-muted-foreground" /></span>
+                    <span className="mt-4 flex items-center justify-center gap-1.5 font-display font-semibold text-primary">{s.name}<ExternalLink className="size-3.5 text-muted-foreground" /></span>
                   </a>
                 </li>
               ))}
@@ -62,7 +62,7 @@ export default function Work() {
 
       <Divider />
       <div className="container-w py-12 text-center">
-        <h2 className="font-display text-2xl font-bold text-primary">عجبك شغلنا؟</h2>
+        <h2 className="font-display text-2xl font-semibold text-primary">عجبك شغلنا؟</h2>
         <div className="mt-5 flex justify-center gap-3">
           <Button asChild size="lg"><Link to="/p/salla-store-design">ابدأ متجرك</Link></Button>
           <Button asChild size="lg" variant="outline"><a href={waLink('السلام عليكم، شفت أعمالكم وأبي تصميم لمتجري')} target="_blank" rel="noreferrer">واتساب</a></Button>

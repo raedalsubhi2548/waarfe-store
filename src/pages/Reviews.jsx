@@ -18,7 +18,7 @@ export default function Reviews() {
       <header className="relative mb-10 overflow-hidden rounded-xl bg-inverse p-6 text-on-inverse sm:p-10">
         <span className="pointer-events-none absolute -top-20 -end-20 size-64 rounded-full border-[24px] border-accent/10" aria-hidden="true" />
         <Stars className="text-accent" />
-        <h1 className="mt-3 font-display text-display-sm font-bold sm:text-display-md">آراء عملائنا</h1>
+        <h1 className="mt-3 font-display text-display-sm font-semibold sm:text-display-md">آراء عملائنا</h1>
         <p className="mt-2 max-w-xl leading-8 text-on-inverse/80"><span className="tabular">{ALL_REVIEWS.length}</span> رأي مكتوب، منشورة كلها في متجرنا على سلة بتقييم <span className="tabular">5.0</span>.</p>
       </header>
 
@@ -36,7 +36,7 @@ export default function Reviews() {
               <div className="flex items-center justify-between"><Stars className="text-accent-text [&_svg]:size-3 sm:[&_svg]:size-4" /><Quote className="size-4 text-accent/60 sm:size-5" /></div>
               <blockquote className="mt-3 whitespace-pre-line text-sm leading-7 sm:text-base sm:leading-8">{r.text}</blockquote>
               <figcaption className="mt-4 flex items-center gap-2.5 border-t border-border pt-3 text-xs sm:gap-3 sm:pt-4 sm:text-sm">
-                <span className="grid size-8 shrink-0 sm:size-9 place-items-center rounded-full bg-sunken font-display font-bold text-primary">{r.name.charAt(0)}</span>
+                <span className="grid size-8 shrink-0 sm:size-9 place-items-center rounded-full bg-sunken font-display font-semibold text-primary">{r.name.charAt(0)}</span>
                 <span><b className="block text-primary">{r.name}</b>{r.city && <span className="text-muted-foreground">{r.city}</span>}</span>
               </figcaption>
             </figure>

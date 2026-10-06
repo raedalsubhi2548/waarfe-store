@@ -12,7 +12,7 @@ export default function Contact() {
         <a href={waLink('السلام عليكم')} target="_blank" rel="noreferrer" className="group relative flex min-h-64 flex-col justify-between overflow-hidden rounded-xl bg-inverse p-8 text-on-inverse shadow-card">
           <span className="grid size-16 place-items-center rounded-full bg-accent text-accent-foreground"><BrandIcon icon={wa.icon} size={30} /></span>
           <div>
-            <p className="font-display text-display-sm font-bold">راسلنا على واتساب</p>
+            <p className="font-display text-display-sm font-semibold">راسلنا على واتساب</p>
             <p className="tabular mt-1 text-lg opacity-85" dir="ltr">+{WHATSAPP}</p>
             <p className="mt-4 flex items-center gap-2 text-sm opacity-75"><Clock className="size-4" />نرد عادة خلال ساعات العمل بنفس اليوم</p>
           </div>

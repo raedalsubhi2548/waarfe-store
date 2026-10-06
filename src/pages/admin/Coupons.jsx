@@ -49,7 +49,7 @@ export default function Coupons() {
           {list.map((c) => (
             <li key={c.code} className={cn('relative flex overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border', (!c.active || expired(c)) && 'opacity-70')}>
               <div className="grid w-28 shrink-0 place-items-center bg-primary p-4 text-center text-accent">
-                <span className="tabular font-display text-2xl font-bold leading-none">{c.type === 'percent' ? `${c.value}%` : c.value}</span>
+                <span className="tabular font-display text-2xl font-semibold leading-none">{c.type === 'percent' ? `${c.value}%` : c.value}</span>
                 <span className="text-xs text-on-inverse/80">{c.type === 'percent' ? 'خصم' : 'ر.س خصم'}</span>
               </div>
               <span className="absolute start-[104px] -top-2.5 size-5 rounded-full bg-background" aria-hidden="true" />

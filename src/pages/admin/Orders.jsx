@@ -30,7 +30,7 @@ function OrderDetail({ order, onSaved }) {
 
       <section className="rounded-lg bg-surface p-4 ring-1 ring-border">
         <h3 className="mb-3 text-xs font-bold text-muted-foreground">العميل</h3>
-        <p className="font-display text-lg font-bold text-primary">{order.customer?.name}</p>
+        <p className="font-display text-lg font-semibold text-primary">{order.customer?.name}</p>
         <div className="mt-2 grid gap-1.5 text-sm">
           {order.customer?.email && <a href={`mailto:${order.customer.email}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary"><Mail className="size-4" /><span dir="ltr">{order.customer.email}</span></a>}
           {order.customer?.phone && <a href={`tel:${order.customer.phone}`} className="flex items-center gap-2 text-muted-foreground hover:text-primary"><Phone className="size-4" /><span dir="ltr">{order.customer.phone}</span></a>}
@@ -57,7 +57,7 @@ function OrderDetail({ order, onSaved }) {
         <dl className="mt-4 grid gap-1.5 border-t border-dashed border-border-strong pt-3 text-sm">
           <div className="flex justify-between"><dt className="text-muted-foreground">المجموع</dt><dd className="tabular">{money(sub)}</dd></div>
           {order.discount > 0 && <div className="flex justify-between text-success"><dt>خصم <span dir="ltr">{order.coupon}</span></dt><dd className="tabular">− {money(order.discount)}</dd></div>}
-          <div className="flex justify-between pt-1 font-display text-base font-bold text-primary"><dt>الإجمالي</dt><dd className="tabular">{money(order.total)}</dd></div>
+          <div className="flex justify-between pt-1 font-display text-base font-semibold text-primary"><dt>الإجمالي</dt><dd className="tabular">{money(order.total)}</dd></div>
         </dl>
         <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
           {order.paymentMethod === 'card' ? <><CreditCard className="size-4" />بطاقة / Apple Pay</> : <><Landmark className="size-4" />تحويل بنكي</>}
@@ -163,7 +163,7 @@ export default function Orders() {
           {open && (
             <>
               <div className="sticky top-0 z-10 border-b border-border bg-background/95 px-5 py-4 pe-16 backdrop-blur">
-                <SheetTitle className="tabular font-display text-xl font-bold text-primary">طلب #{open.number}</SheetTitle>
+                <SheetTitle className="tabular font-display text-xl font-semibold text-primary">طلب #{open.number}</SheetTitle>
                 <SheetDescription className="text-sm text-muted-foreground">{dateTime(open.createdAt)}</SheetDescription>
               </div>
               <div className="p-5"><OrderDetail key={open.id + open.status} order={open} onSaved={load} /></div>

@@ -36,7 +36,7 @@ export default function Customers() {
           <ul className="grid gap-2 md:hidden">
             {shown.map((c) => (
               <li key={c.id} className="flex items-center gap-3 rounded-lg bg-surface p-4 shadow-hairline ring-1 ring-border">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sunken font-display font-bold text-primary">{(c.name || c.email || '؟').charAt(0)}</span>
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-sunken font-display font-semibold text-primary">{(c.name || c.email || '؟').charAt(0)}</span>
                 <div className="min-w-0 flex-1"><p className="truncate font-semibold">{c.name}</p><p className="tabular text-xs text-muted-foreground">{c.orders} طلب · {money(c.spent)}</p></div>
                 {c.phone && <a href={wa(c.phone)} target="_blank" rel="noreferrer" className="grid size-10 place-items-center rounded-full bg-primary text-accent" aria-label={`واتساب ${c.name}`}><MessageCircle className="size-4" /></a>}
               </li>
@@ -49,7 +49,7 @@ export default function Customers() {
                 <tr key={c.id} className="hover:bg-sunken/50">
                   <Td>
                     <div className="flex items-center gap-3">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken font-display text-sm font-bold text-primary">{(c.name || c.email || '؟').charAt(0)}</span>
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-sunken font-display text-sm font-semibold text-primary">{(c.name || c.email || '؟').charAt(0)}</span>
                       <div className="min-w-0"><p className="font-semibold">{c.name}</p><p className="text-xs text-muted-foreground" dir="ltr">{c.email}</p></div>
                     </div>
                   </Td>

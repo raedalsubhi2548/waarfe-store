@@ -23,9 +23,9 @@ export default function AccountLayout() {
     <div className="container-w py-10 sm:py-14">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          {user && <span className="grid size-14 place-items-center rounded-full bg-primary font-display text-xl font-bold text-accent" aria-hidden="true">{initial}</span>}
+          {user && <span className="grid size-14 place-items-center rounded-full bg-primary font-display text-xl font-semibold text-accent" aria-hidden="true">{initial}</span>}
           <div>
-            <h1 className="font-display text-display-sm font-bold text-primary">{user ? `أهلاً ${user.name || ''}` : 'أمنياتي'}</h1>
+            <h1 className="font-display text-display-sm font-semibold text-primary">{user ? `أهلاً ${user.name || ''}` : 'أمنياتي'}</h1>
             {user && <p className="text-sm text-muted-foreground" dir="ltr">{user.email}</p>}
           </div>
         </div>

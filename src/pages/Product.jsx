@@ -43,12 +43,12 @@ export default function Product() {
         </div>
 
         <div>
-          <h1 className="text-balance font-display text-display-sm font-bold leading-tight text-primary sm:text-display-md">{p.name}</h1>
+          <h1 className="text-balance font-display text-display-sm font-semibold leading-tight text-primary sm:text-display-md">{p.name}</h1>
           <p className="mt-3 text-[17px] leading-8 text-muted-foreground">{p.summary}</p>
 
           <Ticket className="mt-6" head={
             <div className="flex flex-wrap items-baseline gap-3 p-5">
-              <span className="tabular font-display text-4xl font-bold text-primary">{money(effectivePrice(p))}</span>
+              <span className="tabular font-display text-4xl font-semibold text-primary">{money(effectivePrice(p))}</span>
               {onSale && <s className="tabular text-muted-foreground">{money(p.price)}</s>}
               {onSale && <Badge variant="soft" className="bg-success-soft text-success">وفّر {money(p.price - p.salePrice)}</Badge>}
               {p.perUnit && <span className="text-sm text-muted-foreground">{p.perUnit}</span>}
@@ -83,13 +83,13 @@ export default function Product() {
 
       <section className="mt-16 grid gap-8 border-t-2 border-primary pt-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
         <div>
-          <h2 className="font-display text-2xl font-bold text-primary">عن الخدمة</h2>
+          <h2 className="font-display text-2xl font-semibold text-primary">عن الخدمة</h2>
           <p className="mt-3 max-w-[60ch] text-[17px] leading-9">{intro}</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           {sections.map((s) => (
             <div key={s.title} className="rounded-lg bg-surface p-5 shadow-hairline ring-1 ring-border">
-              <h3 className="mb-3 font-display font-bold text-primary">{s.title}</h3>
+              <h3 className="mb-3 font-display font-semibold text-primary">{s.title}</h3>
               <ul className="grid gap-2">
                 {s.items.map((it) => <li key={it} className="flex gap-2 text-[15px] leading-7"><Check className="mt-1.5 size-3.5 shrink-0 rounded-full bg-accent p-0.5 text-primary" strokeWidth={3} />{it}</li>)}
               </ul>
@@ -100,7 +100,7 @@ export default function Product() {
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-6 font-display text-2xl font-bold text-primary">من نفس القسم</h2>
+          <h2 className="mb-6 font-display text-2xl font-semibold text-primary">من نفس القسم</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">{related.map((r) => <ServiceTicket key={r.id} p={r} />)}</div>
         </section>
       )}

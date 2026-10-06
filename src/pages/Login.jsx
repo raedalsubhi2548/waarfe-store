@@ -42,7 +42,7 @@ export default function Login() {
       <aside className="relative hidden overflow-hidden rounded-xl bg-inverse p-10 text-on-inverse lg:flex lg:flex-col lg:justify-between">
         <div className="grid size-24 place-items-center rounded-lg bg-background p-3"><img src="/logo.png" alt="وارف" className="w-full" /></div>
         <div>
-          <h2 className="text-balance font-display text-display-md font-bold leading-tight">حسابك هو لوحة متابعة متجرك.</h2>
+          <h2 className="text-balance font-display text-display-md font-semibold leading-tight">حسابك هو لوحة متابعة متجرك.</h2>
           <ul className="mt-8 grid gap-4">
             {PERKS.map(({ icon: I, t }) => (
               <li key={t} className="flex items-center gap-3 text-[17px]"><span className="grid size-10 place-items-center rounded-full bg-accent text-accent-foreground"><I className="size-5" /></span>{t}</li>
@@ -53,7 +53,7 @@ export default function Login() {
       </aside>
 
       <div className="rounded-xl bg-surface p-6 shadow-card ring-1 ring-border sm:p-10">
-        <h1 className="font-display text-display-sm font-bold text-primary">{mode === 'in' ? 'تسجيل الدخول' : 'حساب جديد'}</h1>
+        <h1 className="font-display text-display-sm font-semibold text-primary">{mode === 'in' ? 'تسجيل الدخول' : 'حساب جديد'}</h1>
         <p className="mt-1 text-muted-foreground">{mode === 'in' ? 'تابع طلباتك وأمنياتك من مكان واحد.' : 'سجّل مرة وحدة، وتابع كل طلباتك من حسابك.'}</p>
 
         <div className="mt-6 grid grid-cols-2 rounded-full bg-sunken p-1" role="tablist">

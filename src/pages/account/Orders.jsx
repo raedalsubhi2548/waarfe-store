@@ -23,7 +23,7 @@ export default function Orders() {
         {[['كل الطلبات', orders.length], ['قيد المتابعة', active], ['إجمالي مشترياتك', money(spent)]].map(([l, v]) => (
           <div key={l} className="p-4 sm:p-5">
             <dt className="text-xs text-muted-foreground sm:text-sm">{l}</dt>
-            <dd className="tabular mt-1 font-display text-lg font-bold text-primary sm:text-2xl">{v}</dd>
+            <dd className="tabular mt-1 font-display text-lg font-semibold text-primary sm:text-2xl">{v}</dd>
           </div>
         ))}
       </dl>
