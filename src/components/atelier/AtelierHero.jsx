@@ -56,7 +56,7 @@ export default function AtelierHero() {
     }
   }, [])
 
-  const chapter = 'absolute inset-x-0 top-[calc(var(--header-height)+20px)] px-5 text-center transition-none will-change-[opacity,translate] lg:inset-x-auto lg:top-1/2 lg:end-[max(32px,calc((100vw-var(--container))/2))] lg:w-[min(460px,40vw)] lg:-translate-y-1/2 lg:px-0 lg:text-start'
+  const chapter = 'absolute inset-x-0 top-[calc(var(--header-height)+20px)] px-5 text-center transition-none will-change-[opacity,translate] lg:inset-x-auto lg:top-1/2 lg:start-[max(32px,calc((100vw-var(--container))/2))] lg:w-[min(460px,40vw)] lg:-translate-y-1/2 lg:px-0 lg:text-start'
   return (
     <section ref={section} className="relative h-[300svh]" aria-label="وارف: متاجر تُصمَّم لتبيع">
       <div className="sticky top-0 h-[100svh] overflow-hidden">

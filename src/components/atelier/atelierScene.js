@@ -147,9 +147,9 @@ export function createAtelier(canvas, { stores, onReady }) {
     cx += (px - cx) * 0.05; cy += (py - cy) * 0.05
     const spread = narrow ? 0.62 : 1
     // desktop: stage sits left of the text; mobile: centred, lower
-    rig.position.set(narrow ? 0 : -1.25, narrow ? -0.62 : 0, 0)
-    camera.position.set(cx * 0.25, 0.15 + cy * -0.15, (narrow ? 7.4 : 5.4) + track([0, 0.3, 1.2, 1.2], prog))
-    camera.lookAt(rig.position.x * 0.35, rig.position.y * 0.4, 0)
+    rig.position.set(narrow ? 0 : -1.6, narrow ? -0.75 : -0.05, 0)
+    camera.position.set(cx * 0.25, 0.15 + cy * -0.15, (narrow ? 8.2 : 7) + track([0, 0.2, 1.1, 1.1], prog))
+    camera.lookAt(rig.position.x * 0.2, rig.position.y * 0.5, 0)
     phones.forEach((g, i) => {
       const k = K[i]
       g.position.set(track(k.x, prog) * spread, track(k.y, prog) + Math.sin(t * 0.8 + i) * 0.03, track(k.z, prog))
