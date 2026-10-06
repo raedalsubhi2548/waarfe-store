@@ -10,7 +10,8 @@ import { useInView } from '@/lib/useInView.js'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import Icon from '@/components/Icon.jsx'
-import Bag3D from '@/components/home/Bag3D.jsx'
+import AtelierHero from '@/components/atelier/AtelierHero.jsx'
+import GalleryWall from '@/components/atelier/GalleryWall.jsx'
 import Divider from '@/components/home/Divider.jsx'
 import Phone from '@/components/home/Phone.jsx'
 import LineArt from '@/components/home/LineArt.jsx'
@@ -41,36 +42,29 @@ const More = ({ to, children }) => (
   </Link>
 )
 
-/* ---------------- Hero ---------------- */
-function Hero() {
-  return (
-    <section className="relative isolate overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_55%_at_22%_45%,rgb(215_198_118/0.22),transparent_70%),radial-gradient(35%_40%_at_90%_10%,rgb(9_56_46/0.05),transparent)]" aria-hidden="true" />
-      <div className="container-w grid items-center gap-2 pt-10 pb-8 sm:pt-14 lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-16 lg:pb-14">
-        <div className="text-center lg:text-start">
-          <p className="inline-flex items-center gap-2 rounded-full bg-surface px-3.5 py-1.5 text-[13px] shadow-hairline ring-1 ring-accent/30 motion-safe:animate-[rise-in_600ms_var(--p-ease-emphasized)]">
-            <Stars className="text-accent-text" /><span className="tabular font-semibold text-primary">5.0</span><span className="text-muted-foreground">· +200 طلب على سلة</span>
-          </p>
-          <h1 className="mt-6 text-balance font-display text-[2.15rem] font-semibold leading-[1.3] text-primary sm:text-display-lg lg:text-display-xl motion-safe:animate-[rise-in_750ms_var(--p-ease-emphasized)]">
-            متجرك في سلة،<br /><span className="relative inline-block">بتصميم يبيع.
-              <svg viewBox="0 0 300 20" className="absolute -bottom-2 start-0 h-3 w-full" fill="none" aria-hidden="true"><path d="M4 14 C 80 4, 200 4, 296 12" stroke="var(--accent)" strokeWidth="5" strokeLinecap="round" pathLength="1" className="[stroke-dasharray:1] motion-safe:animate-[draw_1.2s_.8s_cubic-bezier(.65,0,.35,1)_both]" /></svg>
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-[36ch] text-[16.5px] leading-8 text-muted-foreground lg:mx-0 motion-safe:animate-[rise-in_900ms_var(--p-ease-emphasized)]">نصمم متجرك ونجهّزه للبيع من يومين إلى 6 أيام، بلمسة تشبه علامتك.</p>
-          <div className="mt-8 flex justify-center gap-3 lg:justify-start motion-safe:animate-[rise-in_1050ms_var(--p-ease-emphasized)]">
-            <Button asChild size="lg" className="px-7 font-medium"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
-            <Button asChild size="lg" variant="outline" className="px-6 font-medium"><Link to="/work">شوف أعمالنا</Link></Button>
-          </div>
-        </div>
-        <Bag3D className="order-first mx-auto aspect-square w-full max-w-[340px] sm:max-w-[440px] lg:order-none lg:max-w-[560px]" />
-      </div>
-    </section>
-  )
-}
-
 /* ---------------- Core services ---------------- */
 const ART_FOR = { 'salla-store-design': 'store', 'landing-page-design': 'landing', 'google-tools-integration': 'analytics' }
 const SHORT = { 'salla-store-design': 'متجر متكامل جاهز للبيع من أول يوم.', 'landing-page-design': 'صفحة هبوط مبرمجة تبيع منتجك.', 'google-tools-integration': 'تعرف وش يصير في متجرك بالأرقام.' }
+
+/** Card that tilts toward the pointer, sitting on a soft plinth. */
+function Tilt({ className, children }) {
+  const onMove = (e) => {
+    const el = e.currentTarget, r = el.getBoundingClientRect()
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5
+    el.style.setProperty('--rx', `${(-y * 8).toFixed(2)}deg`); el.style.setProperty('--ry', `${(x * 10).toFixed(2)}deg`)
+    el.style.setProperty('--gx', `${((x + 0.5) * 100).toFixed(1)}%`); el.style.setProperty('--gy', `${((y + 0.5) * 100).toFixed(1)}%`)
+  }
+  const onLeave = (e) => { e.currentTarget.style.setProperty('--rx', '0deg'); e.currentTarget.style.setProperty('--ry', '0deg') }
+  return (
+    <div className="[perspective:1000px]">
+      <div onPointerMove={onMove} onPointerLeave={onLeave} className={cn('relative transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] [transform:rotateX(var(--rx,0))_rotateY(var(--ry,0))] [transform-style:preserve-3d]', className)}>
+        {children}
+        <span className="pointer-events-none absolute inset-0 rounded-[inherit] bg-[radial-gradient(circle_at_var(--gx,50%)_var(--gy,0%),rgb(255_255_255/0.6),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      </div>
+      <span className="mx-auto mt-3 block h-3 w-3/4 rounded-[50%] bg-[radial-gradient(closest-side,rgb(9_56_46/0.18),transparent)]" aria-hidden="true" />
+    </div>
+  )
+}
 
 function Core() {
   const { byId, addToCart, catalogReady } = useApp()
@@ -82,7 +76,9 @@ function Core() {
         <ul className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
           {list.map((p, i) => (
             <Reveal as="li" key={p.id} delay={i * 120} className={cn(i === 0 && 'col-span-2 lg:col-span-1')}>
-              <article className="group relative flex h-full flex-col items-center rounded-xl bg-surface p-5 text-center shadow-[0_1px_0_rgb(215_198_118/0.4),0_20px_50px_-35px_rgb(9_56_46/0.45)] ring-1 ring-accent/35 transition-[box-shadow,translate] duration-500 hover:-translate-y-1 hover:shadow-[0_30px_60px_-30px_rgb(9_56_46/0.45)] sm:p-8">
+              <Tilt className="group h-full rounded-xl">
+              <article className="relative flex h-full flex-col items-center rounded-xl bg-[linear-gradient(180deg,#ffffff,#fdf8ea)] p-5 text-center shadow-[0_1px_0_rgb(215_198_118/0.4),0_24px_50px_-30px_rgb(9_56_46/0.4)] ring-1 ring-accent/40 sm:p-8">
+                <span className="pointer-events-none absolute inset-2 rounded-[14px] border border-accent/25" aria-hidden="true" />
                 {i === 0 && <span className="absolute top-4 start-4 rounded-full bg-accent/25 px-2.5 py-0.5 text-[11px] font-semibold text-accent-text">الأكثر طلباً</span>}
                 <LineArt name={ART_FOR[p.id]} className="size-20 sm:size-28" delay={0.2 + i * 0.15} />
                 <h3 className="mt-5 font-display text-base font-semibold leading-7 text-primary sm:text-xl">
@@ -95,6 +91,7 @@ function Core() {
                   <Button size="sm" variant="outline" className="w-full max-w-44 font-medium" onClick={() => addToCart(p.id)}>أضف للسلة</Button>
                 </div>
               </article>
+              </Tilt>
             </Reveal>
           ))}
         </ul>
@@ -184,67 +181,40 @@ function Categories() {
   )
 }
 
-/* ---------------- Stores we delivered ---------------- */
-function Stores() {
+/* ---------------- Reviews: two rows drifting in opposite directions ---------------- */
+function ReviewRow({ items, reverse }) {
+  const row = [...items, ...items]
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,var(--background),#f4ecd3_55%,var(--background))] py-16 sm:py-24">
-      <div className="container-w">
-        <Head center eyebrow="متاجر سلّمناها كاملة" title="من الفكرة لمتجر يبيع" />
-        <ul className="mx-auto grid max-w-3xl grid-cols-3 items-end gap-3 sm:gap-10">
-          {STORE_PDFS.map((s, i) => (
-            <Reveal as="li" key={s.id} delay={i * 140} className={cn(i === 1 && '-translate-y-0 sm:mb-10')}>
-              <Link to="/work" className="group block" aria-label={`متجر ${s.name}`}>
-                <Phone pdfId={s.id} scrollOnHover size={420} className="transition-transform duration-700 ease-emphasized group-hover:-translate-y-2" />
-                <p className="mt-4 text-center text-[13px] font-semibold text-primary sm:text-[15px]">{s.name}</p>
-              </Link>
-            </Reveal>
-          ))}
-        </ul>
-        <Reveal className="mt-10 text-center"><More to="/work">كل المتاجر</More></Reveal>
-      </div>
-    </section>
-  )
-}
-
-/* ---------------- Banners & social ---------------- */
-function Banners() {
-  return (
-    <section className="container-w py-16 sm:py-24">
-      <Head center eyebrow="بنرات وسوشال ميديا" title="تصاميم تشد العين" />
-      <Reveal><WorkGallery items={PREVIEW} className="columns-2 sm:columns-3 lg:columns-4" /></Reveal>
-      <Reveal className="mt-10 text-center"><More to="/work?tab=banners">كل التصاميم ({WORK.length})</More></Reveal>
-    </section>
-  )
-}
-
-/* ---------------- Reviews ---------------- */
-function Reviews() {
-  const f = FEATURED_REVIEW
-  return (
-    <section className="container-w py-16 sm:py-24">
-      <Head center eyebrow="تقييمات منشورة في متجرنا على سلة" title="وش قالوا عملاؤنا" />
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:grid-rows-2">
-        <Reveal as="figure" className="relative col-span-2 flex flex-col overflow-hidden rounded-xl bg-surface p-6 ring-1 ring-accent/40 sm:p-8 lg:col-span-1 lg:row-span-2">
-          <Quote className="size-9 text-accent" strokeWidth={1.4} />
-          <blockquote className="mt-4 flex-1 text-[16px] leading-9 text-foreground sm:text-[17px]">{f.text}</blockquote>
-          <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-5 text-sm">
-            <span className="grid size-10 place-items-center rounded-full bg-primary font-semibold text-accent">{f.name.charAt(0)}</span>
-            <span><b className="block font-semibold text-primary">{f.name}</b><span className="text-muted-foreground">{f.city}</span></span>
-            <Stars className="ms-auto text-accent-text" />
-          </figcaption>
-        </Reveal>
-        {HOME_REVIEWS.map((r, i) => (
-          <Reveal as="figure" key={i} delay={i * 90} className="flex flex-col rounded-lg bg-surface p-4 ring-1 ring-border sm:p-5">
-            <Stars className="text-accent-text" />
-            <blockquote className="mt-3 line-clamp-5 flex-1 text-[13.5px] leading-7 sm:text-[15px] sm:leading-8">{r.text}</blockquote>
-            <figcaption className="mt-4 flex items-center gap-2.5 border-t border-border pt-3 text-xs sm:text-sm">
-              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-sunken font-semibold text-primary">{r.name.charAt(0)}</span>
-              <span className="min-w-0"><b className="block truncate font-semibold text-primary">{r.name}</b>{r.city && <span className="text-muted-foreground">{r.city}</span>}</span>
-            </figcaption>
-          </Reveal>
+    <div className="group flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_8%,black_92%,transparent)]">
+      <ul className={cn('flex w-max shrink-0 gap-4 py-3 motion-safe:animate-[marquee_70s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
+        {row.map((r, i) => (
+          <li key={i} aria-hidden={i >= items.length || undefined} className="w-[280px] shrink-0 sm:w-[340px]">
+            <figure className="flex h-full flex-col rounded-xl bg-surface p-5 shadow-[0_16px_40px_-30px_rgb(9_56_46/0.5)] ring-1 ring-accent/30">
+              <div className="flex items-center justify-between"><Stars className="text-accent-text" /><Quote className="size-5 text-accent/70" strokeWidth={1.4} /></div>
+              <blockquote className="mt-3 line-clamp-4 flex-1 text-[14px] leading-7">{r.text}</blockquote>
+              <figcaption className="mt-4 flex items-center gap-2.5 border-t border-border pt-3 text-xs">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary font-semibold text-accent">{r.name.charAt(0)}</span>
+                <span className="min-w-0"><b className="block truncate font-semibold text-primary">{r.name}</b>{r.city && <span className="text-muted-foreground">{r.city}</span>}</span>
+              </figcaption>
+            </figure>
+          </li>
         ))}
+      </ul>
+    </div>
+  )
+}
+
+function Reviews() {
+  const short = ALL_REVIEWS.filter((r) => r.text.length < 170)
+  const half = Math.ceil(short.length / 2)
+  return (
+    <section className="py-16 sm:py-24">
+      <div className="container-w"><Head center eyebrow="تقييمات منشورة في متجرنا على سلة" title="وش قالوا عملاؤنا" /></div>
+      <div className="grid gap-2">
+        <ReviewRow items={short.slice(0, half)} />
+        <ReviewRow items={short.slice(half)} reverse />
       </div>
-      <Reveal className="mt-10 text-center"><More to="/reviews">كل الآراء ({ALL_REVIEWS.length})</More></Reveal>
+      <div className="mt-10 text-center"><Button asChild variant="outline" className="font-medium"><Link to="/reviews">كل الآراء ({ALL_REVIEWS.length})<ArrowLeft className="size-4" /></Link></Button></div>
     </section>
   )
 }
@@ -252,15 +222,13 @@ function Reviews() {
 export default function Home() {
   return (
     <>
-      <Hero />
+      <AtelierHero />
       <Promises />
       <Core />
       <Divider />
       <Categories />
       <Installments />
-      <Stores />
-      <Banners />
-      <Divider />
+      <GalleryWall />
       <Reviews />
       <Divider />
       <section className="container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
