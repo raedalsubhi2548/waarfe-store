@@ -72,7 +72,7 @@ export default function Shop() {
       ) : list.length === 0 ? (
         <Empty icon={Search} title="ما فيه خدمة تطابق بحثك" action={<Button variant="outline" onClick={() => setParams({})}>مسح البحث</Button>}>امسح البحث أو اختر قسماً آخر.</Empty>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">{list.map((p) => <ServiceTicket key={p.id} p={p} />)}</div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{list.map((p) => <ServiceTicket key={p.id} p={p} />)}</div>
       )}
     </div>
   )

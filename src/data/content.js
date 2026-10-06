@@ -7,6 +7,16 @@ export const BANNERS = {
   payments: { src: H + '507182d0-4e1d-402b-88da-098ae411c99a.webp', w: 1440, h: 480, alt: 'سهلناها عليك — ادفع بمدى أو Apple Pay أو ماستركارد أو تمارا' },
 }
 
+// Section-title strips from the live Salla homepage (1440×211, text baked in).
+export const TITLES = {
+  new: { src: H + '64c50282-281d-47dd-99e6-17cbd5226f7a.webp', alt: 'جديدنا' },
+  reviews: { src: H + '29e2350d-688d-4674-8239-9d496842941a.webp', alt: 'ماذا قالو عن وارف؟' },
+  categories: { src: H + '3cf38679-d6d7-48ff-bb89-d5838372aa3f.webp', alt: 'أقسام المتجر' },
+  'design-services': { src: H + '4513e9b1-6c07-477c-95a1-3c39001cb947.webp', alt: 'خدمات التصميم' },
+  'marketing-services': { src: H + 'da759060-7c51-4b79-86fe-52894704dc34.webp', alt: 'خدمات التسويق' },
+  'government-services': { src: H + '20664077-9578-4fb0-8ce1-c633fee22edd.webp', alt: 'الخدمات الحكومية' },
+}
+
 // Published reviews from the Salla store (reviews_list, publish = true)
 export const REVIEWS = [
   { name: 'Saud Saeed', city: 'الرياض', text: 'من أول تواصل كان فيه وضوح وتنظيم، وكل خطوة كانت محسوبة. التنفيذ كان سريع، التفاصيل مضبوطة، والتعامل جدًا راقي ومحترم. اشتغلوا على المتجر وكأنه مشروعهم، وتابعوا معنا كل ملاحظة لين طلع بالشكل المطلوب.' },
