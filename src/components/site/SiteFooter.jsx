@@ -21,7 +21,7 @@ export default function SiteFooter() {
         <div className="container-w relative pb-10">
           {/* closing invitation */}
           <div className="mx-auto max-w-xl text-center">
-            <h2 className="font-display text-[1.6rem] font-bold leading-[1.5] sm:text-[2rem]">محتار من وين تبدأ؟</h2>
+            <h2 className="font-script text-[2rem] font-bold leading-[1.5] sm:text-[2.6rem]">محتار من وين تبدأ؟</h2>
             <p className="mt-2 text-[15.5px] leading-8 text-on-inverse/75">قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.</p>
             <a href={waLink('السلام عليكم، أبي استشارة: من وين أبدأ متجري؟')} target="_blank" rel="noreferrer"
               className="mt-6 inline-flex items-center gap-3 rounded-full bg-background py-2 ps-2 pe-6 text-primary shadow-[0_18px_36px_-16px_rgb(0_0_0/0.6)] transition-transform hover:-translate-y-0.5">

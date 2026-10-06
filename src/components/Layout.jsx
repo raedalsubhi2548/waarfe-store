@@ -15,7 +15,7 @@ export default function Layout() {
     <>
       <a href="#main" className="skip">انتقل للمحتوى</a>
       <SiteHeader />
-      <main id="main"><Suspense fallback={<PageFallback />}><Outlet /></Suspense></main>
+      <main id="main" className="site-main"><Suspense fallback={<PageFallback />}><Outlet /></Suspense></main>
       <SiteFooter />
       <CartDrawer />
     </>

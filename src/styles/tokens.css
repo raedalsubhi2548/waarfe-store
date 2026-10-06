@@ -44,7 +44,8 @@
   --p-teal-100: #e3f1e8;
 
   /* Type */
-  --p-font-display: 'Aref Ruqaa', 'IBM Plex Sans Arabic', serif;
+  --p-font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --p-font-script: 'Aref Ruqaa', 'IBM Plex Sans Arabic', serif;
   --p-font-text: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   /* Major-third scale, 16px base */
   --p-size-12: 0.75rem;
