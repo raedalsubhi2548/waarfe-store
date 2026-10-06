@@ -76,14 +76,14 @@ function Hero() {
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
       <span className="absolute inset-x-0 top-0 -z-10 h-48 bg-[linear-gradient(#062a22,transparent)]" aria-hidden="true" />
-      <span className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(6_42_34/0.75)_0%,transparent_45%)] md:bg-[linear-gradient(270deg,rgb(6_42_34/0.9)_0%,rgb(6_42_34/0.55)_38%,transparent_62%)]" aria-hidden="true" />
-      <span className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-1/3 bg-[linear-gradient(100deg,transparent,rgb(246_231_168/0.10),transparent)] motion-safe:animate-[sweep_9s_ease-in-out_infinite]" aria-hidden="true" />
+      <span className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(6_42_34/0.95)_0%,rgb(6_42_34/0.82)_42%,transparent_68%)] md:bg-[linear-gradient(270deg,rgb(6_42_34/0.9)_0%,rgb(6_42_34/0.55)_38%,transparent_62%)]" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-y-0 left-0 -z-10 w-1/3 opacity-0 bg-[linear-gradient(100deg,transparent,rgb(246_231_168/0.10),transparent)] motion-safe:animate-[sweep_9s_ease-in-out_infinite]" aria-hidden="true" />
       {DUST.map((d, i) => (
         <span key={i} className="pointer-events-none absolute -z-10 rounded-full bg-[#e8d48a] shadow-[0_0_8px_#f3e3a1] motion-safe:animate-[dust_var(--d)_linear_infinite]" style={{ left: `${d.l}%`, top: `${d.t}%`, width: d.s, height: d.s, '--d': `${d.d}s`, '--dx': `${(i % 2 ? 1 : -1) * (10 + i * 2)}px`, animationDelay: `${d.w}s` }} aria-hidden="true" />
       ))}
 
       <div className="container-w relative flex min-h-[640px] flex-col justify-start pt-[calc(var(--header-height)+92px)] pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32 md:pt-[calc(var(--header-height)+40px)]">
-        <div className="mx-auto max-w-[560px] text-center md:me-0 md:ms-auto md:text-start lg:me-[2%]">
+        <div className="mx-auto max-w-[560px] text-center md:ms-0 md:me-auto md:text-start lg:ms-[2%]">
           <p className="inline-flex items-center gap-3 text-[14px] font-medium text-accent motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,var(--accent))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,var(--accent))] md:hidden" />
           </p>
@@ -91,7 +91,7 @@ function Hero() {
             <span className="block">متجرك يستاهل</span>
             <span className="block text-accent [text-shadow:0_2px_30px_rgb(215_198_118/0.35)]">تصميم يليق فيه</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-[34ch] text-[17px] leading-[1.9] text-on-inverse/80 md:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
+          <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_rgb(6_42_34/0.9)] md:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in_1.15s_var(--p-ease-emphasized)_both]">
             <Button asChild size="lg" variant="accent" className="px-8 font-semibold shadow-[0_16px_34px_-12px_rgb(215_198_118/0.7)]"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
@@ -99,7 +99,7 @@ function Hero() {
           <div className="mt-9 flex items-center justify-center gap-5 text-[13.5px] text-on-inverse/75 md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
             <span className="flex items-center gap-2"><Stars className="text-accent" /><b className="tabular font-semibold text-on-inverse">5.0</b> تقييم عملائنا</span>
             <span className="h-4 w-px bg-accent/40" />
-            <span><b className="font-semibold text-on-inverse">+200</b> طلب على سلة</span>
+            <span><b dir="ltr" className="font-semibold text-on-inverse">+200</b> طلب على سلة</span>
           </div>
         </div>
       </div>
@@ -117,10 +117,10 @@ function Hero() {
 function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra }) {
   const inner = (
     <>
-      <img src={img} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full object-cover object-left transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
+      <img src={img} alt="" loading="lazy" decoding="async" className="absolute inset-0 -z-10 size-full origin-left scale-[1.1] object-cover object-left transition-transform duration-[1.6s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.14]" />
       <span className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgb(6_42_34/0.95)_0%,rgb(6_42_34/0.6)_45%,transparent_75%)] sm:bg-[linear-gradient(270deg,rgb(6_42_34/0.96)_0%,rgb(6_42_34/0.75)_40%,transparent_70%)]" aria-hidden="true" />
       <span className="pointer-events-none absolute inset-[10px] rounded-[22px] ring-1 ring-accent/35" aria-hidden="true" />
-      <div className="relative ms-auto flex min-h-[460px] max-w-[470px] flex-col justify-end p-7 sm:min-h-[400px] sm:justify-center sm:p-12">
+      <div className="relative me-auto flex min-h-[460px] max-w-[470px] flex-col justify-end p-7 sm:min-h-[400px] sm:justify-center sm:p-12">
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent/15 px-3.5 py-1.5 text-[13px] font-medium text-accent ring-1 ring-accent/40 backdrop-blur">{kicker}</span>
         <h2 className="mt-4 font-display text-[1.75rem] font-bold leading-[1.45] sm:text-[2.2rem]"><span className="block">{title}</span><span className="block text-accent">{accent}</span></h2>
         <p className="mt-3 text-[15.5px] leading-[1.9] text-on-inverse/80">{body}</p>
