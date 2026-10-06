@@ -73,6 +73,7 @@ export default function SiteHeader() {
           </Link>
           <Link className={cn(iconBtn, ink, 'hidden sm:grid')} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
           <button
+            id="cart-btn"
             onClick={() => setCartOpen(true)}
             aria-label={`السلة، ${count} عناصر`}
             className={cn('ms-1 inline-flex h-10 items-center gap-1.5 rounded-full px-3.5 shadow-[0_8px_20px_-8px_rgb(0_0_0/0.5)] transition-colors', clear ? 'bg-background text-primary' : 'bg-primary text-primary-foreground hover:bg-primary-hover')}
