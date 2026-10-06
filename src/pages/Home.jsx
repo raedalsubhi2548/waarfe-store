@@ -10,7 +10,7 @@ import { useInView } from '@/lib/useInView.js'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 import Icon from '@/components/Icon.jsx'
-import AtelierHero from '@/components/atelier/AtelierHero.jsx'
+import Bag3D from '@/components/home/Bag3D.jsx'
 import GalleryWall from '@/components/atelier/GalleryWall.jsx'
 import Divider from '@/components/home/Divider.jsx'
 import Phone from '@/components/home/Phone.jsx'
@@ -41,6 +41,33 @@ const More = ({ to, children }) => (
     <span className="border-b border-accent pb-0.5">{children}</span><ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
   </Link>
 )
+
+/* ---------------- Hero ---------------- */
+function Hero() {
+  return (
+    <section className="relative isolate overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_55%_at_22%_45%,rgb(215_198_118/0.22),transparent_70%),radial-gradient(35%_40%_at_90%_10%,rgb(9_56_46/0.05),transparent)]" aria-hidden="true" />
+      <div className="container-w grid items-center gap-2 pt-10 pb-8 sm:pt-14 lg:grid-cols-[1fr_1.05fr] lg:gap-8 lg:pt-16 lg:pb-14">
+        <div className="text-center lg:text-start">
+          <p className="inline-flex items-center gap-2 rounded-full bg-surface px-3.5 py-1.5 text-[13px] shadow-hairline ring-1 ring-accent/30 motion-safe:animate-[rise-in_600ms_var(--p-ease-emphasized)]">
+            <Stars className="text-accent-text" /><span className="tabular font-semibold text-primary">5.0</span><span className="text-muted-foreground">· +200 طلب على سلة</span>
+          </p>
+          <h1 className="mt-6 text-balance font-display text-[2.15rem] font-semibold leading-[1.3] text-primary sm:text-display-lg lg:text-display-xl motion-safe:animate-[rise-in_750ms_var(--p-ease-emphasized)]">
+            متجرك في سلة،<br /><span className="relative inline-block">بتصميم يبيع.
+              <svg viewBox="0 0 300 20" className="absolute -bottom-2 start-0 h-3 w-full" fill="none" aria-hidden="true"><path d="M4 14 C 80 4, 200 4, 296 12" stroke="var(--accent)" strokeWidth="5" strokeLinecap="round" pathLength="1" className="[stroke-dasharray:1] motion-safe:animate-[draw_1.2s_.8s_cubic-bezier(.65,0,.35,1)_both]" /></svg>
+            </span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-[36ch] text-[16.5px] leading-8 text-muted-foreground lg:mx-0 motion-safe:animate-[rise-in_900ms_var(--p-ease-emphasized)]">نصمم متجرك ونجهّزه للبيع من يومين إلى 6 أيام، بلمسة تشبه علامتك.</p>
+          <div className="mt-8 flex justify-center gap-3 lg:justify-start motion-safe:animate-[rise-in_1050ms_var(--p-ease-emphasized)]">
+            <Button asChild size="lg" className="px-7 font-medium"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
+            <Button asChild size="lg" variant="outline" className="px-6 font-medium"><Link to="/work">شوف أعمالنا</Link></Button>
+          </div>
+        </div>
+        <Bag3D className="order-first mx-auto aspect-square w-full max-w-[340px] sm:max-w-[440px] lg:order-none lg:max-w-[560px]" />
+      </div>
+    </section>
+  )
+}
 
 /* ---------------- Core services ---------------- */
 const ART_FOR = { 'salla-store-design': 'store', 'landing-page-design': 'landing', 'google-tools-integration': 'analytics' }
@@ -181,6 +208,28 @@ function Categories() {
   )
 }
 
+/* ---------------- Stores we delivered ---------------- */
+function Stores() {
+  return (
+    <section className="relative overflow-hidden bg-[linear-gradient(180deg,var(--background),#f4ecd3_55%,var(--background))] py-16 sm:py-24">
+      <div className="container-w">
+        <Head center eyebrow="متاجر سلّمناها كاملة" title="من الفكرة لمتجر يبيع" />
+        <ul className="mx-auto grid max-w-3xl grid-cols-3 items-end gap-3 sm:gap-10">
+          {STORE_PDFS.map((s, i) => (
+            <Reveal as="li" key={s.id} delay={i * 140} className={cn(i === 1 && '-translate-y-0 sm:mb-10')}>
+              <Link to="/work" className="group block" aria-label={`متجر ${s.name}`}>
+                <Phone pdfId={s.id} scrollOnHover size={420} className="transition-transform duration-700 ease-emphasized group-hover:-translate-y-2" />
+                <p className="mt-4 text-center text-[13px] font-semibold text-primary sm:text-[15px]">{s.name}</p>
+              </Link>
+            </Reveal>
+          ))}
+        </ul>
+        <Reveal className="mt-10 text-center"><More to="/work">كل المتاجر</More></Reveal>
+      </div>
+    </section>
+  )
+}
+
 /* ---------------- Reviews: two rows drifting in opposite directions ---------------- */
 function ReviewRow({ items, reverse }) {
   const row = [...items, ...items]
@@ -222,13 +271,15 @@ function Reviews() {
 export default function Home() {
   return (
     <>
-      <AtelierHero />
+      <Hero />
       <Promises />
       <Core />
       <Divider />
       <Categories />
       <Installments />
+      <Stores />
       <GalleryWall />
+      <Divider />
       <Reviews />
       <Divider />
       <section className="container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
