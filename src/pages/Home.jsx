@@ -179,6 +179,8 @@ function Promises() {
 const CAT_ART = {
   'design-services': 'waarfe-cat-design.webp',
   'marketing-services': 'waarfe-cat-marketing.webp',
+  subscriptions: 'waarfe-cat-subscriptions.webp',
+  'digital-products': 'waarfe-cat-digital.webp',
   'government-services': 'waarfe-cat-government.webp',
 }
 /** All categories in one row: small arch-topped cards. */
