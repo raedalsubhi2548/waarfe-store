@@ -6,7 +6,7 @@ import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
 import { WHATSAPP, waLink } from '@/lib/format.js'
 
-/** The page settles into deep green: no hard edge, the logo sits clearly on cream. */
+/** The page settles into deep navy: no hard edge, the logo sits clearly on white. */
 export default function SiteFooter() {
   const { categories } = useApp()
   const col = 'mb-4 text-[13px] font-semibold text-on-inverse/55'
@@ -14,8 +14,8 @@ export default function SiteFooter() {
   return (
     <footer className="relative mt-10 text-on-inverse">
       {/* cream melts into green */}
-      <div className="h-40 bg-[linear-gradient(180deg,var(--background),#0d4436_85%,#09382e)] sm:h-56" aria-hidden="true" />
-      <div className="relative overflow-hidden bg-[linear-gradient(180deg,#09382e,#062a22)]">
+      <div className="h-40 bg-[linear-gradient(180deg,var(--background),#233759_85%,#1b2b44)] sm:h-56" aria-hidden="true" />
+      <div className="relative overflow-hidden bg-[linear-gradient(180deg,#1b2b44,#0f1a2c)]">
         <span className="pointer-events-none absolute -top-40 left-1/2 size-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.06),transparent)]" aria-hidden="true" />
 
         <div className="container-w relative pb-10">
@@ -33,8 +33,8 @@ export default function SiteFooter() {
           <div className="mt-16 grid gap-10 border-t border-white/10 pt-12 lg:grid-cols-[1.1fr_2fr]">
             {/* brand */}
             <div className="flex flex-col items-center gap-4 text-center lg:items-start lg:text-start">
-              <Link to="/" className="grid size-28 place-items-center rounded-[28px] bg-background p-4 shadow-[0_20px_40px_-20px_rgb(0_0_0/0.6)]" aria-label="وارف — الرئيسية">
-                <img src="/logo.png" alt="وارف WAARFE" width="600" height="580" className="w-full" />
+              <Link to="/" className="grid w-52 place-items-center rounded-[24px] bg-white px-6 py-5 shadow-[0_20px_40px_-20px_rgb(0_0_0/0.6)]" aria-label="رائد — الرئيسية">
+                <img src="/logo.png" alt="رائد Raed" width="458" height="248" className="w-full" />
               </Link>
               <p className="max-w-xs text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
               <Social className="foot-social" />
@@ -45,8 +45,8 @@ export default function SiteFooter() {
                 <h2 className={col}>الأقسام</h2>
                 <ul>{categories.map((c) => <li key={c.id}><Link to={`/c/${c.id}`} className={item}><Icon name={c.icon} size={15} className="opacity-60" />{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
               </nav>
-              <nav aria-label="وارف">
-                <h2 className={col}>وارف</h2>
+              <nav aria-label="رائد">
+                <h2 className={col}>رائد</h2>
                 <ul>
                   <li><Link to="/work" className={item}>أعمالنا</Link></li>
                   <li><Link to="/reviews" className={item}>آراء العملاء</Link></li>
@@ -70,7 +70,7 @@ export default function SiteFooter() {
             </div>
           </div>
 
-          <p className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-on-inverse/50">© {new Date().getFullYear()} وارف · وثيقة العمل الحر FL-164935115</p>
+          <p className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-on-inverse/50">© {new Date().getFullYear()} رائد</p>
         </div>
       </div>
     </footer>

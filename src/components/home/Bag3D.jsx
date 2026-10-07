@@ -16,9 +16,9 @@ export default function Bag3D({ className }) {
     return () => { alive = false; dispose?.(); 'cancelIdleCallback' in window ? cancelIdleCallback(id) : clearTimeout(id) }
   }, [])
   return (
-    <div className={cn('relative', className)} role="img" aria-label="حقيبة تسوّق وارف ثلاثية الأبعاد تحيط بها أوراق ذهبية وخضراء">
+    <div className={cn('relative', className)} role="img" aria-label="حقيبة تسوّق رائد ثلاثية الأبعاد تحيط بها أوراق ذهبية وخضراء">
       <div className={cn('absolute inset-0 grid place-items-center transition-opacity duration-700', ready && !failed ? 'opacity-0' : 'opacity-100')} aria-hidden="true">
-        <span className="grid size-44 place-items-center rounded-full bg-background shadow-[0_30px_80px_-30px_rgb(9_56_46/0.45)] ring-1 ring-accent/50 sm:size-56">
+        <span className="grid size-44 place-items-center rounded-full bg-background shadow-[0_30px_80px_-30px_rgb(27_43_68/0.45)] ring-1 ring-accent/50 sm:size-56">
           <img src="/logo.png" alt="" className="w-1/2" />
         </span>
       </div>

@@ -1,7 +1,7 @@
 // Customer reviews published on Waarfe's Salla store (testimonials + product ratings).
 // Pulled from the Salla reviews API, Oct 2026. All published reviews are 5 stars.
 // Text is verbatim. Do not edit wording or add reviews that aren't on Salla.
-export const ALL_REVIEWS = [
+const RAW_REVIEWS = [
   { name: 'عبدالله سهيل', city: 'جدة', date: '2025-12', text: 'بصراحة تجربة التعامل مع متجر وارف كانت من أفضل التجارب اللي مرّت علي في مشروع المتجر الخاص فيني. من أول ما تواصلت معهم وأنا أحس إنهم فاهمين شغلهم كويس ومهتمين يقدمون نتائج حقيقية مو بس كلام وتسويق.\nساعدوني خطوة بخطوة في مشروع Moora، من تطوير الهوية وتنظيم طريقة عرض المنتجات وتصميمات احترافية، وحتى نصائح للتسويق وزيادة المبيعات. لاحظت فرق كبير في شكل المتجر بعد ما بديت أطبق اللي قالوه لي. دائمًا يردّون بسرعة وإذا احتجت تعديل أو فكرة إضافية كانوا جاهزين بدون تردد.\nاللي أعجبني أكثر إن شغلهم مرتب وتفاصيلهم دقيقة ويعطون اقتراحات تساعدك فعلاً تبني مشروع قوي مو مؤقت. أنصح أي شخص عنده متجر ويبغى يطوّره أو يبدأ بداية صحيحة إنه يتعامل معهم بدون تردد.' },
   { name: 'سلطان', city: 'الطائف', date: '2025-12', text: 'تشرفت بالتعامل مع متجر وارف، حيث قاموا بتصميم متجر إلكتروني متكامل خلال 3 أيام فقط، من الصفر وحتى مستوى احترافي عالي. سرعة إنجاز مذهلة، احترافية عالية في التصميم والتنفيذ، تعاون رائع ومرونة كبيرة في التعامل، واهتمام بأدق التفاصيل. أنصح وبقوة بالتعامل مع متجر وارف لكل من يبحث عن الجودة والسرعة والتميّز.' },
   { name: 'عبدالعزيز القيسي', city: 'عنيزة', date: '2026-06', text: 'والله بكل امانة شغل نظيف و انصح اي احد يبغى يصمم متجرة ماله الى وارف 10/10' },
@@ -56,6 +56,9 @@ export const ALL_REVIEWS = [
 ]
 
 // Homepage: one featured review + four short ones.
+// Reviews that name the earlier store are left out; wording of the rest is untouched.
+export const ALL_REVIEWS = RAW_REVIEWS.filter((r) => !/وارف|waarfe/i.test(r.text))
+
 export const FEATURED_REVIEW = ALL_REVIEWS[1]
 export const HOME_REVIEWS = [2, 3, 6, 8].map((i) => ALL_REVIEWS[i])
 

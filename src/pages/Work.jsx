@@ -19,7 +19,7 @@ export default function Work() {
   return (
     <>
       <section className="relative overflow-hidden bg-inverse text-on-inverse">
-        <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_50%_120%,rgb(215_198_118/0.22),transparent)]" aria-hidden="true" />
+        <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(50%_80%_at_50%_120%,rgb(195_206_221/0.22),transparent)]" aria-hidden="true" />
         <div className="container-w relative py-10 text-center sm:py-14">
           <nav className="mb-4 text-sm text-on-inverse/60" aria-label="المسار"><Link to="/" className="hover:underline">الرئيسية</Link> / <span>أعمالنا</span></nav>
           <h1 className="font-display text-display-sm font-semibold sm:text-display-md">أعمالنا</h1>

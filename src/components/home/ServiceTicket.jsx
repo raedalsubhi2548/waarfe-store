@@ -17,10 +17,10 @@ export default function ServiceTicket({ p, className }) {
     <div className={cn('group relative pt-3', className)} style={{ '--tilt': `${tiltOf(p.id)}deg` }}>
       {/* the pin */}
       <span className="pointer-events-none absolute top-0 left-1/2 z-20 -translate-x-1/2" aria-hidden="true">
-        <span className="block size-[18px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#3f9b7f,#0f4a3d_55%,#062a22)] shadow-[0_4px_5px_-1px_rgb(0_0_0/0.45),inset_0_-2px_3px_rgb(0_0_0/0.3)]" />
+        <span className="block size-[18px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#5d7cb5,#233759_55%,#0f1a2c)] shadow-[0_4px_5px_-1px_rgb(0_0_0/0.45),inset_0_-2px_3px_rgb(0_0_0/0.3)]" />
         <span className="absolute top-[3px] left-[5px] size-[5px] rounded-full bg-white/70 blur-[0.5px]" />
       </span>
-      <article className="relative flex h-full origin-top flex-col rounded-[6px] bg-[#fffdf7] p-2.5 pt-4 shadow-[0_1px_1px_rgb(9_56_46/0.08),0_22px_34px_-20px_rgb(9_56_46/0.55)] ring-1 ring-[#09382e]/[0.06] transition-[rotate,translate,box-shadow] duration-700 ease-[cubic-bezier(.34,1.56,.64,1)] [rotate:var(--tilt)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_2px_rgb(9_56_46/0.06),0_30px_44px_-22px_rgb(9_56_46/0.6)] group-hover:[rotate:0deg]">
+      <article className="relative flex h-full origin-top flex-col rounded-[6px] bg-[#ffffff] p-2.5 pt-4 shadow-[0_1px_1px_rgb(27_43_68/0.08),0_22px_34px_-20px_rgb(27_43_68/0.55)] ring-1 ring-[#1b2b44]/[0.06] transition-[rotate,translate,box-shadow] duration-700 ease-[cubic-bezier(.34,1.56,.64,1)] [rotate:var(--tilt)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_2px_rgb(27_43_68/0.06),0_30px_44px_-22px_rgb(27_43_68/0.6)] group-hover:[rotate:0deg]">
         <Link to={`/p/${p.id}`} className="relative block overflow-hidden rounded-[3px] bg-sunken">
           <img src={p.image} alt="" loading="lazy" decoding="async" width="500" height="500"
             className="aspect-square w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
@@ -43,7 +43,7 @@ export default function ServiceTicket({ p, className }) {
               {p.perUnit && <span className="block text-[11px] text-muted-foreground">{p.perUnit}</span>}
             </p>
             <button type="button" onClick={() => addToCart(p.id)} aria-label={`أضف ${p.name} للسلة`}
-              className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_rgb(9_56_46/0.7)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
+              className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_rgb(27_43_68/0.7)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
               <Plus className="size-[18px]" />
             </button>
           </div>

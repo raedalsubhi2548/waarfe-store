@@ -19,7 +19,7 @@ export default function Reviews() {
         <span className="pointer-events-none absolute -top-20 -end-20 size-64 rounded-full border-[24px] border-accent/10" aria-hidden="true" />
         <Stars className="text-accent" />
         <h1 className="mt-3 font-display text-display-sm font-semibold sm:text-display-md">آراء عملائنا</h1>
-        <p className="mt-2 max-w-xl leading-8 text-on-inverse/80"><span className="tabular">{ALL_REVIEWS.length}</span> رأي مكتوب، منشورة كلها في متجرنا على سلة بتقييم <span className="tabular">5.0</span>.</p>
+        <p className="mt-2 max-w-xl leading-8 text-on-inverse/80"><span className="tabular">{ALL_REVIEWS.length}</span> رأي مكتوب من عملائنا، وكلها بتقييم <span className="tabular">5.0</span>.</p>
       </header>
 
       <div className="mb-6 flex gap-2 overflow-x-auto [scrollbar-width:none]" role="tablist">

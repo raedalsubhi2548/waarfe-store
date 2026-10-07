@@ -1,33 +1,4 @@
-// Content taken from the live Salla store (waarfe.com): banners, published customer reviews, FAQ.
-const H = 'https://cdn.files.salla.network/homepage/76831287/'
-
-export const BANNERS = {
-  hero: { src: H + '00ced3c7-ab5b-4682-80d0-7cb65b36581e.webp', w: 1376, h: 768, alt: 'وارف — خطوتك الأولى نحو متجر يليق بك. تصاميم متاجر سلة بمستوى عالمي', to: '/shop' },
-  landing: { src: H + '28108423-97cd-4087-9786-bbc7c0bb4fd5.webp', w: 1200, h: 400, alt: 'طفشت من اشتراك سلة؟ ودك بشي جديد وجذاب يرفع قيمة منتجك؟', to: '/p/landing-page-design' },
-  payments: { src: H + '507182d0-4e1d-402b-88da-098ae411c99a.webp', w: 1440, h: 480, alt: 'سهلناها عليك — ادفع بمدى أو Apple Pay أو ماستركارد أو تمارا' },
-}
-
-// Section-title strips from the live Salla homepage (1440×211, text baked in).
-export const TITLES = {
-  new: { src: H + '64c50282-281d-47dd-99e6-17cbd5226f7a.webp', alt: 'جديدنا' },
-  reviews: { src: H + '29e2350d-688d-4674-8239-9d496842941a.webp', alt: 'ماذا قالو عن وارف؟' },
-  categories: { src: H + '3cf38679-d6d7-48ff-bb89-d5838372aa3f.webp', alt: 'أقسام المتجر' },
-  'design-services': { src: H + '4513e9b1-6c07-477c-95a1-3c39001cb947.webp', alt: 'خدمات التصميم' },
-  'marketing-services': { src: H + 'da759060-7c51-4b79-86fe-52894704dc34.webp', alt: 'خدمات التسويق' },
-  'government-services': { src: H + '20664077-9578-4fb0-8ce1-c633fee22edd.webp', alt: 'الخدمات الحكومية' },
-}
-
-// Published reviews from the Salla store (reviews_list, publish = true)
-export const REVIEWS = [
-  { name: 'Saud Saeed', city: 'الرياض', text: 'من أول تواصل كان فيه وضوح وتنظيم، وكل خطوة كانت محسوبة. التنفيذ كان سريع، التفاصيل مضبوطة، والتعامل جدًا راقي ومحترم. اشتغلوا على المتجر وكأنه مشروعهم، وتابعوا معنا كل ملاحظة لين طلع بالشكل المطلوب.' },
-  { name: 'عبدالعزيز القيسي', city: '', text: 'والله بكل امانة شغل نظيف و انصح اي احد يبغى يصمم متجرة ماله الى وارف 10/10' },
-  { name: 'عبدالعزيز بسام', city: 'الرياض', text: 'الخدمة ممتازة وسريعة، التصميم طلع احترافي جدًا. 👌🏼' },
-  { name: 'Njood', city: 'الرياض', text: 'ماشاء الله شغل احترافي سعدت بالتعامل معكم وبوقت سريع ماشاء الله وجودة عالية' },
-  { name: 'عبدالله الرشيدي', city: 'المدينة المنورة', text: 'ماشاءالله تبارك الله ابداع والله وفوق الابداع' },
-  { name: 'Shafi Alanzi', city: 'الرياض', text: 'الله يسعدكم من افضل المتاجر والله وتعامل سريع بالتوفيق يارب' },
-  { name: 'حامد', city: 'الجموم', text: 'شكرا على التعامل المميز والراقي من افضل التجارب العمل معكم جميل 👍🏻' },
-  { name: 'Mohammed', city: 'صفوى', text: 'تصميم جميل و تعامل رائع' },
-]
+// Store copy: FAQ.
 
 export const FAQ = [
   { q: 'كم مدة تنفيذ تصميم المتجر؟', a: 'من يومين إلى 6 أيام كحد أقصى حسب التفاصيل المطلوبة.' },

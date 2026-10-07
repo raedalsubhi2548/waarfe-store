@@ -1,4 +1,4 @@
-# Waarfe design system
+# Raed design system
 
 Source of truth for values: `src/styles/tokens.css` (three layers). Tailwind v4 reads the semantic layer through `@theme inline`, so utilities like `bg-primary`, `text-accent-text`, `rounded-lg`, `shadow-card` always resolve to brand tokens.
 

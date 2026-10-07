@@ -236,7 +236,7 @@ insert into public.products (id, name, price, sale_price, category_id, image, ba
 ## شروط تمارا المهمة
 - يطابق نشاط المتجر نشاط السجل أو الوثيقة
 - صور المنتجات واضحة ووصفها مكتمل', true, false, null) on conflict (id) do nothing;
-insert into public.products (id, name, price, sale_price, category_id, image, badge, featured, sort, summary, description, active, digital, per_unit) values ('waarfe-ai-ad-campaigns-guide', 'دليل وارف لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', 150, 129, 'digital-products', 'https://cdn.salla.sa/zvxNvp/883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg', null, true, 1, 'أطلق وأدر حملاتك على تيك توك وسناب وميتا بمحادثة بالعربي مع الذكاء الاصطناعي — خطوة بخطوة بالصور.', 'دليل وارف الرسمي يمشّيك من الصفر لين ما تربط حسابك الإعلاني بالذكاء الاصطناعي (Claude)، وبعدها تطلق وتدير حملاتك بمجرد إنك تكلّمه بالعربي. مكتوب بأبسط طريقة، وكل خطوة معها صورة.
+insert into public.products (id, name, price, sale_price, category_id, image, badge, featured, sort, summary, description, active, digital, per_unit) values ('raed-ai-ad-campaigns-guide', 'دليل وارف لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', 150, 129, 'digital-products', 'https://cdn.salla.sa/zvxNvp/883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg', null, true, 1, 'أطلق وأدر حملاتك على تيك توك وسناب وميتا بمحادثة بالعربي مع الذكاء الاصطناعي — خطوة بخطوة بالصور.', 'دليل وارف الرسمي يمشّيك من الصفر لين ما تربط حسابك الإعلاني بالذكاء الاصطناعي (Claude)، وبعدها تطلق وتدير حملاتك بمجرد إنك تكلّمه بالعربي. مكتوب بأبسط طريقة، وكل خطوة معها صورة.
 ## وش راح تتعلم
 - ربط حسابك الإعلاني بالذكاء الاصطناعي بالصور خطوة بخطوة
 - إطلاق حملة كاملة (الهدف، الاستهداف، الميزانية، الكريتيف) بمحادثة بالعربي

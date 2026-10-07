@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 /**
- * One continuous branch (وارف = lush) that winds down behind every section, tying the page into a
+ * One continuous wave (echoing the swoosh under the Raed logo) that winds down behind every section, tying the page into a
  * single picture. It grows as you scroll; nothing is pinned or hijacked.
  */
 export default function Vine() {
@@ -52,14 +52,9 @@ export default function Vine() {
     <div ref={box} className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-hidden" style={{ height: h || 0 }} aria-hidden="true">
       {d && (
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" className="absolute inset-0">
-          <path d={d} stroke="#09382e" strokeOpacity=".035" strokeWidth="16" strokeLinecap="round" />
-          <path ref={path} d={d} stroke="#09382e" strokeOpacity=".16" strokeWidth="1.4" strokeLinecap="round" />
-          {leaves.map((l, i) => (
-            <g key={i} transform={`translate(${l.x} ${l.y}) rotate(${l.r})`} opacity=".18">
-              <path d="M0 0 C 10 -14, 30 -16, 44 -6 C 30 4, 12 6, 0 0 Z" fill="#09382e" />
-              <path d="M0 0 C 8 10, 24 16, 38 12 C 28 2, 12 -2, 0 0 Z" fill="#09382e" opacity=".7" />
-            </g>
-          ))}
+          <path d={d} stroke="#1b2b44" strokeOpacity=".035" strokeWidth="16" strokeLinecap="round" />
+          <path ref={path} d={d} stroke="#1b2b44" strokeOpacity=".16" strokeWidth="1.4" strokeLinecap="round" />
+          {leaves.map((l, i) => <circle key={i} cx={l.x} cy={l.y} r="4" fill="#1b2b44" opacity=".22" />)}
         </svg>
       )}
     </div>

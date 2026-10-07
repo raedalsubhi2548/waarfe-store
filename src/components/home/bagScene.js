@@ -1,5 +1,5 @@
-// Procedural Three.js scene: a Waarfe shopping bag with gold handles, the real logo
-// on its front label, and leaves drifting around it («وارف» = lush shade).
+// Procedural Three.js scene: a Raed shopping bag with gold handles, the real logo
+// on its front label, and leaves drifting around it («رائد» = lush shade).
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'

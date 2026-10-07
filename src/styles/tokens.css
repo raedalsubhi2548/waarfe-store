@@ -1,41 +1,41 @@
 /* ==========================================================================
-   Waarfe design tokens — three layers
+   Raed design tokens — three layers
    1. Primitive  : raw values (never used directly in components)
    2. Semantic   : purpose aliases (what components reference)
    3. Component  : per-component knobs built from semantic tokens
-   Brand (fixed): green #09382e · gold #d7c676 · cream #fefbf2 · white #ffffff
+   Brand (fixed): green #1b2b44 · gold #c3cedd · cream #fbfcfe · white #ffffff
    ========================================================================== */
 
 :root {
   /* ---------- 1. PRIMITIVE ---------- */
-  /* Green — brand primary #09382e at 900 */
-  --p-green-950: #052620;
-  --p-green-900: #09382e;
-  --p-green-800: #0e4a3d;
-  --p-green-700: #145c4c;
-  --p-green-600: #1d725f;
-  --p-green-200: #c9dcd4;
-  --p-green-100: #e1ece7;
-  --p-green-50: #eff5f2;
+  /* Green — brand primary #1b2b44 at 900 */
+  --p-green-950: #0f1a2c;
+  --p-green-900: #1b2b44;
+  --p-green-800: #233759;
+  --p-green-700: #2c4470;
+  --p-green-600: #3a5689;
+  --p-green-200: #c9d3e3;
+  --p-green-100: #e2e8f1;
+  --p-green-50: #f1f4f9;
 
-  /* Gold — brand accent #d7c676 at 400 */
-  --p-gold-700: #6f6220; /* text-safe on cream (5.9:1) */
-  --p-gold-600: #9c8a33;
-  --p-gold-500: #c2af55;
-  --p-gold-400: #d7c676;
-  --p-gold-200: #ece2ad;
-  --p-gold-100: #f6efd2;
+  /* Gold — brand accent #c3cedd at 400 */
+  --p-gold-700: #4a5f84; /* text-safe on cream (5.9:1) */
+  --p-gold-600: #6f84a6;
+  --p-gold-500: #9fb0c8;
+  --p-gold-400: #c3cedd;
+  --p-gold-200: #dde5f0;
+  --p-gold-100: #eef2f8;
 
-  /* Cream — brand ground #fefbf2 at 50 */
-  --p-cream-50: #fefbf2;
-  --p-cream-100: #f8f2e1;
-  --p-cream-200: #efe7cf;
-  --p-cream-300: #e2d8b9;
+  /* Cream — brand ground #fbfcfe at 50 */
+  --p-cream-50: #fbfcfe;
+  --p-cream-100: #f3f6fa;
+  --p-cream-200: #dfe6f1;
+  --p-cream-300: #cfd8e5;
 
   --p-white: #ffffff;
-  --p-ink-900: #10251f;  /* body text, 15.6:1 on cream */
-  --p-ink-600: #4a5b55;  /* muted text, 6.9:1 on cream */
-  --p-ink-400: #7d8a85;  /* disabled/placeholder only */
+  --p-ink-900: #0f1a2c;  /* body text, 15.6:1 on cream */
+  --p-ink-600: #4b5870;  /* muted text, 6.9:1 on cream */
+  --p-ink-400: #8390a6;  /* disabled/placeholder only */
   --p-red-600: #a3322b;
   --p-red-100: #f6e3e1;
   --p-amber-700: #8a5a00;
@@ -45,7 +45,7 @@
 
   /* Type */
   --p-font-display: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  --p-font-script: 'Aref Ruqaa', 'IBM Plex Sans Arabic', serif;
+  --p-font-script: 'Marhey', 'IBM Plex Sans Arabic', sans-serif;
   --p-font-text: 'IBM Plex Sans Arabic', system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
   /* Major-third scale, 16px base */
   --p-size-12: 0.75rem;
@@ -69,9 +69,9 @@
   --p-radius-lg: 20px; --p-radius-xl: 28px; --p-radius-pill: 999px;
 
   /* Shadows — tinted with brand green, never grey */
-  --p-shadow-1: 0 1px 2px rgb(9 56 46 / 0.06);
-  --p-shadow-2: 0 1px 2px rgb(9 56 46 / 0.05), 0 8px 24px -12px rgb(9 56 46 / 0.22);
-  --p-shadow-3: 0 2px 4px rgb(9 56 46 / 0.06), 0 24px 48px -24px rgb(9 56 46 / 0.38);
+  --p-shadow-1: 0 1px 2px rgb(27 43 68 / 0.06);
+  --p-shadow-2: 0 1px 2px rgb(27 43 68 / 0.05), 0 8px 24px -12px rgb(27 43 68 / 0.22);
+  --p-shadow-3: 0 2px 4px rgb(27 43 68 / 0.06), 0 24px 48px -24px rgb(27 43 68 / 0.38);
 
   /* Motion */
   --p-dur-fast: 120ms; --p-dur-base: 200ms; --p-dur-slow: 320ms; --p-dur-stage: 520ms;

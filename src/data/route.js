@@ -1,4 +1,4 @@
-// The four stops of the Waarfe route. Service ids map to the live catalog.
+// The four stops of the Raed route. Service ids map to the live catalog.
 export const STOPS = [
   {
     key: 'document', title: 'وثّق', name: 'الأوراق الرسمية',
@@ -18,6 +18,6 @@ export const STOPS = [
   {
     key: 'grow', title: 'سوّق', name: 'الحملات والذكاء',
     text: 'حملات سناب وتيك توك وإنستغرام، وربط متجرك بـ ChatGPT وClaude.',
-    ids: ['snapchat-ads-creation', 'tiktok-ads-creation', 'instagram-ads-creation', 'ai-integration-chatgpt-claude-salla', 'waarfe-ai-ad-campaigns-guide'],
+    ids: ['snapchat-ads-creation', 'tiktok-ads-creation', 'instagram-ads-creation', 'ai-integration-chatgpt-claude-salla', 'raed-ai-ad-campaigns-guide'],
   },
 ]

@@ -17,15 +17,16 @@ const NAV = [
   { to: '/admin/coupons', icon: TicketPercent, label: 'كوبونات الخصم' },
 ]
 
-function Nav({ pending, onNavigate }) {
+function Nav({ pending, onNavigate, dark }) {
   return (
     <nav className="grid gap-1" aria-label="لوحة التحكم">
       {NAV.map(({ to, end, icon: I, label, badge }) => (
         <NavLink key={to} to={to} end={end} onClick={onNavigate}
           className={({ isActive }) => cn('group flex h-11 items-center gap-3 rounded-md px-3 text-[15px] font-semibold transition-colors',
-            isActive ? 'bg-primary text-on-inverse shadow-hairline' : 'text-foreground/80 hover:bg-sunken hover:text-primary')}>
+            dark ? (isActive ? 'bg-white text-primary shadow-[0_10px_24px_-12px_rgb(0_0_0/0.6)]' : 'text-white/70 hover:bg-white/[0.07] hover:text-white')
+              : (isActive ? 'bg-primary text-on-inverse shadow-hairline' : 'text-foreground/80 hover:bg-sunken hover:text-primary'))}>
           {({ isActive }) => (<>
-            <I className={cn('size-[18px]', isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-primary')} />
+            <I className={cn('size-[18px]', dark ? (isActive ? 'text-primary' : 'text-white/50 group-hover:text-white') : (isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-primary'))} />
             <span className="flex-1">{label}</span>
             {badge && pending > 0 && <span className={cn('tabular min-w-6 rounded-full px-1.5 text-center text-xs font-bold leading-6', isActive ? 'bg-accent text-accent-foreground' : 'bg-accent/30 text-accent-text')}>{pending}</span>}
           </>)}
@@ -35,12 +36,12 @@ function Nav({ pending, onNavigate }) {
   )
 }
 
-function SideFoot({ user }) {
+function SideFoot({ user, dark }) {
   return (
-    <div className="grid gap-1 border-t border-border pt-4">
+    <div className={cn('grid gap-1 border-t pt-4', dark ? 'border-white/10 [&_a]:text-white/70 [&_a:hover]:bg-white/[0.07] [&_a:hover]:text-white [&>button]:text-white/70' : 'border-border')}>
       <Link to="/" target="_blank" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</Link>
       <button onClick={() => api.signOut()} className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-danger-soft hover:text-danger"><LogOut className="size-4" />خروج</button>
-      <div className="mt-2 flex items-center gap-3 rounded-md bg-sunken p-3">
+      <div className={cn('mt-2 flex items-center gap-3 rounded-md p-3', dark ? 'bg-white/[0.06] [&_p:first-child]:text-white' : 'bg-sunken')}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-display font-semibold text-accent">{(user.name || user.email).charAt(0)}</span>
         <div className="min-w-0"><p className="truncate text-sm font-bold text-primary">{user.name || 'المدير'}</p><p className="truncate text-xs text-muted-foreground" dir="ltr">{user.email}</p></div>
       </div>
@@ -48,14 +49,15 @@ function SideFoot({ user }) {
   )
 }
 
-const Brand = () => (
+const Brand = ({ dark }) => (
   <Link to="/admin" className="flex items-center gap-3">
-    <img src="/logo.png" alt="وارف" className="h-10 w-auto" />
-    <span className="rounded-full bg-accent/25 px-2.5 py-0.5 text-xs font-bold text-accent-text">لوحة التحكم</span>
+    <img src={dark ? '/logo-white.png' : '/logo.png'} alt="رائد" className="h-11 w-auto" />
+    <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-bold', dark ? 'bg-white/10 text-white/80' : 'bg-accent/25 text-accent-text')}>لوحة التحكم</span>
   </Link>
 )
 
 export default function AdminLayout() {
+  useEffect(() => { let m = document.querySelector('meta[name="robots"]'); if (!m) { m = document.createElement('meta'); m.name = 'robots'; document.head.appendChild(m) } m.content = 'noindex,nofollow'; document.title = 'لوحة التحكم | رائد' }, [])
   const { user, authReady } = useApp()
   const { pathname } = useLocation()
   const [menu, setMenu] = useState(false)
@@ -74,10 +76,11 @@ export default function AdminLayout() {
   return (
     <ConfirmProvider>
       <div className="min-h-dvh bg-background lg:grid lg:grid-cols-[264px_1fr]">
-        <aside className="sticky top-0 hidden h-dvh flex-col gap-6 border-e border-border bg-surface p-5 lg:flex">
-          <Brand />
-          <div className="flex-1 overflow-y-auto"><Nav pending={pending} /></div>
-          <SideFoot user={user} />
+        <aside className="sticky top-0 hidden h-dvh flex-col gap-7 overflow-hidden bg-[radial-gradient(120%_60%_at_100%_0%,#2c4470,#1b2b44_45%,#0f1a2c)] p-5 text-white lg:flex">
+          <span className="pointer-events-none absolute -bottom-24 -start-24 size-72 rounded-full border-[14px] border-white/[0.04]" aria-hidden="true" />
+          <div className="relative pt-1"><Brand dark /></div>
+          <div className="relative flex-1 overflow-y-auto"><Nav pending={pending} dark /></div>
+          <div className="relative"><SideFoot user={user} dark /></div>
         </aside>
 
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur lg:hidden">

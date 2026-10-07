@@ -134,12 +134,12 @@ export const supa = {
 
   async getWishlist() {
     const me = cachedUser
-    if (!me) { try { return JSON.parse(localStorage.getItem('waarfe:wish:guest') || '[]') } catch { return [] } }
+    if (!me) { try { return JSON.parse(localStorage.getItem('raed:wish:guest') || '[]') } catch { return [] } }
     return check(await sb.from('wishlists').select('product_id').eq('user_id', me.id)).map((r) => r.product_id)
   },
   async setWishlist(ids) {
     const me = cachedUser
-    if (!me) { try { localStorage.setItem('waarfe:wish:guest', JSON.stringify(ids)) } catch { /* ignore */ } return }
+    if (!me) { try { localStorage.setItem('raed:wish:guest', JSON.stringify(ids)) } catch { /* ignore */ } return }
     check(await sb.from('wishlists').delete().eq('user_id', me.id))
     if (ids.length) check(await sb.from('wishlists').insert(ids.map((product_id) => ({ user_id: me.id, product_id }))))
   },

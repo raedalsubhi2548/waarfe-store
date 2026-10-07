@@ -7,7 +7,6 @@ import Icon from '@/components/Icon.jsx'
 import Social from '@/components/Social.jsx'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { SearchDialog } from '@/components/site/SearchDialog.jsx'
-import { Medallion } from '@/components/brand/Ornaments.jsx'
 
 const iconBtn = 'relative grid size-11 place-items-center rounded-full transition-colors'
 
@@ -20,7 +19,7 @@ function ScrollLine() {
     on(); addEventListener('scroll', on, { passive: true })
     return () => removeEventListener('scroll', on)
   }, [])
-  return <span className="absolute inset-x-0 bottom-0 h-px origin-right bg-gradient-to-l from-accent via-[#f3e3a1] to-accent" style={{ transform: `scaleX(${p})` }} aria-hidden="true" />
+  return <span className="absolute inset-x-0 bottom-0 h-px origin-right bg-gradient-to-l from-accent via-[#e6ecf5] to-accent" style={{ transform: `scaleX(${p})` }} aria-hidden="true" />
 }
 
 export default function SiteHeader() {
@@ -43,7 +42,7 @@ export default function SiteHeader() {
   const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', clear ? (isActive ? 'text-accent after:scale-x-100' : 'text-on-inverse/85 hover:text-accent') : (isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary'))
 
   return (
-    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', clear ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(9_56_46/0.35)] backdrop-blur-xl')}>
+    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', clear ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(27_43_68/0.35)] backdrop-blur-xl')}>
       <div className="container-w grid h-[var(--header-height)] grid-cols-[1fr_auto_1fr] items-center gap-2">
         <div className="flex items-center gap-1">
           <button className={cn(iconBtn, ink, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
@@ -57,12 +56,10 @@ export default function SiteHeader() {
           </nav>
         </div>
 
-        <Link to="/" className="relative grid h-full w-28 place-items-center" aria-label="وارف — الرئيسية">
-          {/* on the home hero the logo hangs from the header in a medallion */}
-          <span className={cn('absolute top-2 left-1/2 -translate-x-1/2 transition-[opacity,translate,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)]', clear ? 'opacity-100 scale-100' : 'pointer-events-none -translate-y-6 scale-75 opacity-0')}>
-            <Medallion />
-          </span>
-          <img src="/logo.png" alt="" width="600" height="580" className={cn('relative h-[50px] w-auto transition-[opacity,translate] duration-500', clear ? 'translate-y-3 opacity-0' : 'opacity-100')} />
+        <Link to="/" className="relative grid h-full w-36 place-items-center sm:w-44" aria-label="رائد — الرئيسية">
+          {/* white logo melts into the navy hero; the navy one takes over once the header turns white */}
+          <img src="/logo-white.png" alt="" width="458" height="248" className={cn('absolute h-[52px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[62px]', clear ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0')} />
+          <img src="/logo.png" alt="رائد Raed" width="458" height="248" className={cn('relative h-[44px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[48px]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
         </Link>
 
         <div className="flex items-center justify-end gap-0.5">
@@ -87,8 +84,8 @@ export default function SiteHeader() {
       <Sheet open={menu} onOpenChange={setMenu}>
         <SheetContent side="start" className="overflow-y-auto p-5">
           <SheetTitle className="sr-only">أقسام المتجر</SheetTitle>
-          <SheetDescription className="sr-only">تصفّح أقسام وارف وروابط حسابك</SheetDescription>
-          <Link to="/" className="self-start pe-14"><img src="/logo.png" alt="وارف" width="600" height="580" className="h-14 w-auto" /></Link>
+          <SheetDescription className="sr-only">تصفّح أقسام رائد وروابط حسابك</SheetDescription>
+          <Link to="/" className="self-start pe-14"><img src="/logo.png" alt="رائد Raed" width="458" height="248" className="h-12 w-auto" /></Link>
           <p className="mt-6 mb-2 text-xs font-bold text-muted-foreground">أقسام المتجر</p>
           <ul className="grid gap-2">
             {categories.map((c) => (

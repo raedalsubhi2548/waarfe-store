@@ -1,4 +1,5 @@
-// Seed catalog — imported from the live Salla store (waarfe.com) on 2026-10-05.
+import { coverFor } from '../lib/cover.js'
+// Seed catalog — imported from the live Salla store (Salla) on 2026-10-05.
 // Used in demo mode and as the source for supabase/seed.sql.
 
 export const seedCategories = [
@@ -26,7 +27,7 @@ export const seedCategories = [
 
 const IMG = 'https://cdn.salla.sa/zvxNvp/'
 
-export const seedProducts = [
+const RAW_PRODUCTS = [
   {
     id: 'salla-store-design', name: 'تصميم متجر في سلة', price: 300, categoryId: 'design-services',
     image: IMG + '445a5540-372a-49e7-a850-a20c1188e655-500x500-2iDddQUZOFOchpjOctqwg85nRjBF0sWQZKdTeSRS.jpg',
@@ -380,11 +381,11 @@ export const seedProducts = [
 - صور المنتجات واضحة ووصفها مكتمل`,
   },
   {
-    id: 'waarfe-ai-ad-campaigns-guide', name: 'دليل وارف لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', price: 150, salePrice: 129, categoryId: 'digital-products',
+    id: 'raed-ai-ad-campaigns-guide', name: 'دليل رائد لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', price: 150, salePrice: 129, categoryId: 'digital-products',
     image: 'https://cdn.salla.sa/zvxNvp/883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg',
     featured: true, sort: 1, digital: true,
     summary: 'أطلق وأدر حملاتك على تيك توك وسناب وميتا بمحادثة بالعربي مع الذكاء الاصطناعي — خطوة بخطوة بالصور.',
-    description: `دليل وارف الرسمي يمشّيك من الصفر لين ما تربط حسابك الإعلاني بالذكاء الاصطناعي (Claude)، وبعدها تطلق وتدير حملاتك بمجرد إنك تكلّمه بالعربي. مكتوب بأبسط طريقة، وكل خطوة معها صورة.
+    description: `دليل رائد الرسمي يمشّيك من الصفر لين ما تربط حسابك الإعلاني بالذكاء الاصطناعي (Claude)، وبعدها تطلق وتدير حملاتك بمجرد إنك تكلّمه بالعربي. مكتوب بأبسط طريقة، وكل خطوة معها صورة.
 ## وش راح تتعلم
 - ربط حسابك الإعلاني بالذكاء الاصطناعي بالصور خطوة بخطوة
 - إطلاق حملة كاملة (الهدف، الاستهداف، الميزانية، الكريتيف) بمحادثة بالعربي
@@ -401,6 +402,9 @@ export const seedProducts = [
 - ملف PDF عملي بالصور، تحمّله فوراً بعد الشراء`,
   },
 ]
+
+// Old store images carried the previous brand; every service gets a Raed cover until the owner uploads one.
+export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: coverFor(p) }))
 
 export const ORDER_STATUSES = [
   { id: 'pending', label: 'بانتظار الدفع' },

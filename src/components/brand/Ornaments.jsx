@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-/** Gold sprig: «وارف» — a small branch with leaves. Original artwork. */
+/** Gold sprig: «رائد» — a small branch with leaves. Original artwork. */
 export function Sprig({ className }) {
   return (
     <svg viewBox="0 0 120 28" fill="none" className={cn('h-6 w-auto', className)} aria-hidden="true">
@@ -26,10 +26,10 @@ export function SectionTitle({ eyebrow, title, light, className }) {
 /** The logo in a cream medallion with a double gold ring. */
 export function Medallion({ className, size = 'md' }) {
   return (
-    <span className={cn('relative grid place-items-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#fffdf6,#f6eed6)] shadow-[0_18px_40px_-14px_rgb(0_0_0/0.45),inset_0_0_0_1px_rgb(215_198_118/0.6)]', size === 'lg' ? 'size-32 p-6' : 'size-24 p-[18px]', className)}>
+    <span className={cn('relative grid place-items-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#ffffff,#eef2f8)] shadow-[0_18px_40px_-14px_rgb(0_0_0/0.45),inset_0_0_0_1px_rgb(195_206_221/0.6)]', size === 'lg' ? 'size-32 p-6' : 'size-24 p-[18px]', className)}>
       <span className="absolute inset-[5px] rounded-full border border-accent/70" aria-hidden="true" />
       <span className="absolute inset-[9px] rounded-full border border-dashed border-accent/40" aria-hidden="true" />
-      <img src="/logo.png" alt="وارف WAARFE" width="600" height="580" className="relative w-full" />
+      <img src="/logo.png" alt="رائد Raed" width="600" height="580" className="relative w-full" />
     </span>
   )
 }
@@ -40,8 +40,8 @@ export function ArchPattern({ className }) {
     <svg className={cn('pointer-events-none absolute inset-0 size-full', className)} aria-hidden="true">
       <defs>
         <pattern id="arches" width="72" height="96" patternUnits="userSpaceOnUse">
-          <path d="M6 96 V40 A30 30 0 0 1 66 40 V96" fill="none" stroke="rgb(215 198 118 / 0.10)" strokeWidth="1" />
-          <path d="M18 96 V46 A18 18 0 0 1 54 46 V96" fill="none" stroke="rgb(215 198 118 / 0.06)" strokeWidth="1" />
+          <path d="M6 96 V40 A30 30 0 0 1 66 40 V96" fill="none" stroke="rgb(195 206 221 / 0.10)" strokeWidth="1" />
+          <path d="M18 96 V46 A18 18 0 0 1 54 46 V96" fill="none" stroke="rgb(195 206 221 / 0.06)" strokeWidth="1" />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill="url(#arches)" />

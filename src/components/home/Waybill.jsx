@@ -69,7 +69,7 @@ export function Waybill({ active, onSelect }) {
             <p className="mt-1 font-display text-lg font-semibold text-primary">من الورق الرسمي لأول طلب</p>
           </div>
           <div className="text-end">
-            <Barcode value="WAARFE-ROUTE" className="h-7 w-28" />
+            <Barcode value="RAED-ROUTE" className="h-7 w-28" />
             <p className="mt-1 text-[11px] text-muted-foreground">مثال توضيحي</p>
           </div>
         </div>

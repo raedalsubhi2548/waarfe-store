@@ -5,7 +5,7 @@ import { effectivePrice } from './lib/format.js'
 const Ctx = createContext(null)
 export const useApp = () => useContext(Ctx)
 
-const CART_KEY = 'waarfe:cart'
+const CART_KEY = 'raed:cart'
 const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]') } catch { return [] } }
 
 export function AppProvider({ children }) {

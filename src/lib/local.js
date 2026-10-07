@@ -2,7 +2,7 @@
 // Same interface as supa.js so the UI never knows which one is running.
 import { seedCategories, seedProducts } from '../data/seed.js'
 
-const K = (k) => `waarfe:${k}`
+const K = (k) => `raed:${k}`
 const SEED_VERSION = '2026-10-05'
 
 function read(key, fallback) {
@@ -16,11 +16,11 @@ function write(key, value) {
 }
 
 async function hash(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('waarfe::' + text))
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('raed::' + text))
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-export const DEMO_ADMIN = { email: 'admin@waarfe.com', password: 'waarfe2026' }
+export const DEMO_ADMIN = { email: 'admin@rraed.com', password: 'raed2026' }
 
 async function ensureSeed() {
   if (read('seed') === SEED_VERSION) return

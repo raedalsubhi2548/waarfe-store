@@ -12,15 +12,15 @@ Two audiences of equal weight, both Saudi, Arabic-first, mostly on mobile:
 - **Existing Salla merchants:** already selling on Salla and wanting a more premium store, marketing, tracking, or AI-driven store management.
 
 ## Product Purpose
-waarfe.com sells Waarfe's fixed-price services for Saudi online stores: Salla store design, custom-coded landing pages, ad campaign setup (Snapchat, TikTok, Instagram), pixel and Google tools setup, government paperwork (commercial registration, freelance certificate, business-platform verification, Tabby/Tamara registration), Salla subscriptions/themes/domains, and a digital guide. Customers buy, pay online, and follow their order status from their account. Success = a visitor picks the right service, pays, and trusts Waarfe to deliver.
+rraed.com sells Raed's fixed-price services for Saudi online stores: Salla store design, custom-coded landing pages, ad campaign setup (Snapchat, TikTok, Instagram), pixel and Google tools setup, government paperwork (commercial registration, freelance certificate, business-platform verification, Tabby/Tamara registration), Salla subscriptions/themes/domains, and a digital guide. Customers buy, pay online, and follow their order status from their account. Success = a visitor picks the right service, pays, and trusts Raed to deliver.
 
 ## Positioning
 - **Everything in one place:** the official paperwork, the store, payments/tracking, and marketing come from one studio — a visitor can go from no license to first order without a second vendor.
 - **Speed:** store design delivered in 2–6 days.
-- **Daily Salla expertise:** Waarfe works on Salla every day and knows its fields, settings and limits.
+- **Daily Salla expertise:** Raed works on Salla every day and knows its fields, settings and limits.
 
 ## Operating Context
-Visitors arrive mainly from social ads and WhatsApp on phones. Many services need follow-up after purchase (Waarfe contacts the customer to collect data/documents). WhatsApp 0545607555 is the primary support channel.
+Visitors arrive mainly from social ads and WhatsApp on phones. Many services need follow-up after purchase (Raed contacts the customer to collect data/documents). WhatsApp 0545607555 is the primary support channel.
 
 ## Capabilities and Constraints
 - Stack: React + Vite on Vercel, Supabase (auth, Postgres, storage), Tap Payments (live). Must not break checkout, accounts, admin, or payment flows.
@@ -29,9 +29,9 @@ Visitors arrive mainly from social ads and WhatsApp on phones. Many services nee
 - Catalog: 21 services in 5 categories, imported from the Salla store; prices are real and owned by Raed.
 
 ## Brand Commitments
-- Name: وارف / waarfe — never «وارفه».
+- Name: رائد / waarfe — never «وارفه».
 - Colors: green #09382e (primary), gold #d7c676 (accent), cream #fefbf2 (background), white #ffffff.
-- Logo: official file in public/logo.png (Arabic «وارف» green with gold «و», «WAARFE» below). Green only; no dark-mode variant; never redrawn.
+- Logo: official file in public/logo.png (Arabic «رائد» green with gold «و», «WAARFE» below). Green only; no dark-mode variant; never redrawn.
 - Type: a plain, clean, modern Arabic font; no decorative Kufi lettering.
 - Arabic-first, RTL. Saudi dialect is acceptable in marketing copy.
 

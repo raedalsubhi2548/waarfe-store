@@ -1,4 +1,4 @@
-// Waarfe portfolio — banners and visuals designed for client stores.
+// Raed portfolio — banners and visuals designed for client stores.
 // Source: Raed's Google Drive folders (shared "anyone with the link"). Served through Google's image CDN.
 export const WORK_FOLDER = 'https://drive.google.com/drive/folders/1TLzd77t6_kMkhSH13eitJ6zsOH07Qzei'
 export const STORES_FOLDER = 'https://drive.google.com/drive/folders/1dP6LwYY1vzIKG0Cordp-KgIhIsrczU5m'

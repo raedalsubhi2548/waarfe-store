@@ -108,7 +108,7 @@ export default function Overview() {
   return (
     <>
       <AdminHead
-        title={`${hour < 12 ? 'صباح الخير' : 'مساء الخير'}، ${user.name || 'وارف'}`}
+        title={`${hour < 12 ? 'صباح الخير' : 'مساء الخير'}، ${user.name || 'رائد'}`}
         lead={open.length ? `عندك ${num(open.length)} طلب يحتاج تنفيذ.` : 'كل الطلبات المدفوعة منفّذة.'}
         action={<><Button asChild variant="outline"><Link to="/admin/orders">الطلبات</Link></Button><Button asChild><Link to="/admin/products/new"><Plus className="size-4" />منتج جديد</Link></Button></>}
       />

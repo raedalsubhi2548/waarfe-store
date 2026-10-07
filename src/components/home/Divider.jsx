@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * Waarfe section divider. «وارف» = lush, spreading shade: a sprig sprouts from the
+ * Raed section divider. «رائد» = lush, spreading shade: a sprig sprouts from the
  * centre and its gold line grows outward with small leaf buds along the way.
  * Draws once when scrolled into view.
  */

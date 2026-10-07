@@ -37,16 +37,16 @@ export function WorkGallery({ items, className }) {
 
       <Dialog.Root open={open >= 0} onOpenChange={(o) => !o && setOpen(-1)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-[rgb(5_38_32/0.92)] motion-safe:animate-[fade-in_200ms]" />
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-[rgb(11_19_34/0.92)] motion-safe:animate-[fade-in_200ms]" />
           <Dialog.Content
             className="fixed inset-0 z-50 grid place-items-center p-4 outline-none sm:p-10"
             onTouchStart={(e) => { startX = e.touches[0].clientX }}
             onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - startX; if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1) }}
           >
-            <Dialog.Title className="sr-only">معرض أعمال وارف</Dialog.Title>
+            <Dialog.Title className="sr-only">معرض أعمال رائد</Dialog.Title>
             <Dialog.Description className="sr-only">تصميم {open + 1} من {items.length}. استخدم الأسهم للتنقل.</Dialog.Description>
             {open >= 0 && (
-              <img key={items[open]} src={img(items[open], 1800)} alt={`تصميم ${open + 1} من أعمال وارف`} className="max-h-[86vh] max-w-full rounded-md object-contain shadow-overlay motion-safe:animate-[fade-in_240ms]" />
+              <img key={items[open]} src={img(items[open], 1800)} alt={`تصميم ${open + 1} من أعمال رائد`} className="max-h-[86vh] max-w-full rounded-md object-contain shadow-overlay motion-safe:animate-[fade-in_240ms]" />
             )}
             <Dialog.Close className="absolute top-4 end-4 grid size-12 place-items-center rounded-full bg-background text-primary" aria-label="إغلاق"><X className="size-6" /></Dialog.Close>
             <button onClick={() => go(-1)} className="absolute start-3 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-background/90 text-primary" aria-label="السابق"><ChevronRight className="size-6" /></button>
