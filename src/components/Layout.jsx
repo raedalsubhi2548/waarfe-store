@@ -24,7 +24,7 @@ export default function Layout() {
       <a href="#main" className="skip">انتقل للمحتوى</a>
       <SiteHeader />
       <main id="main" className="site-main relative isolate overflow-x-clip">
-        {pathname !== '/' && (
+        {pathname !== '/' && pathname !== '/build' && (
           <>
             {/* inner pages share the homepage's picture: one soft backdrop and one continuous line from header to footer */}
             <Vine />

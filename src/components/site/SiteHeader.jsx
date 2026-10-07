@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, PackageSearch, Images, Star } from 'lucide-react'
+import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, PackageSearch, Images, Star, Wand2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import Icon from '@/components/Icon.jsx'
@@ -36,7 +36,7 @@ export default function SiteHeader() {
   }, [])
   const accountTo = user ? (user.role === 'admin' ? '/admin' : '/account') : '/login'
 
-  const home = loc.pathname === '/'
+  const home = loc.pathname === '/' || loc.pathname === '/build' // both open on a dark scene
   const clear = home && !scrolled
   const ink = clear ? 'text-on-inverse hover:bg-white/10' : 'text-primary hover:bg-sunken'
   const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', clear ? (isActive ? 'text-accent after:scale-x-100' : 'text-on-inverse/85 hover:text-accent') : (isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary'))
@@ -50,6 +50,7 @@ export default function SiteHeader() {
           </button>
           <nav className="hidden items-center gap-1 lg:flex" aria-label="الرئيسية">
             <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
+            <NavLink to="/build" className={link}>صمم متجرك</NavLink>
             <NavLink to="/work" className={link}>أعمالنا</NavLink>
             <NavLink to="/reviews" className={link}>آراء العملاء</NavLink>
             <NavLink to="/contact" className={link}>تواصل</NavLink>
@@ -100,6 +101,7 @@ export default function SiteHeader() {
           </ul>
           <ul className="mt-5 grid border-t border-border pt-3 text-[15px] font-semibold">
             <li><Link to="/shop" className="flex min-h-12 items-center gap-3 text-foreground"><Search className="size-5 text-primary" />كل الخدمات</Link></li>
+            <li><Link to="/build" className="flex min-h-12 items-center gap-3 font-semibold text-primary"><Wand2 className="size-5 text-primary" />صمم متجرك بنفسك</Link></li>
             <li><Link to="/work" className="flex min-h-12 items-center gap-3 text-foreground"><Images className="size-5 text-primary" />أعمالنا</Link></li>
             <li><Link to="/reviews" className="flex min-h-12 items-center gap-3 text-foreground"><Star className="size-5 text-primary" />آراء العملاء</Link></li>
             <li><Link to="/account" className="flex min-h-12 items-center gap-3 text-foreground"><PackageSearch className="size-5 text-primary" />تتبّع طلبك</Link></li>

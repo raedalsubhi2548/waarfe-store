@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { cn } from '@/lib/utils'
 import { MessageCircle, Mail } from 'lucide-react'
 import Social from '@/components/Social.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
@@ -8,12 +9,13 @@ import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
 /** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
 export default function SiteFooter() {
   const { categories } = useApp()
+  const dark = useLocation().pathname === '/build' // that page is already night: flow straight on
   const col = 'mb-4 text-[13px] font-semibold text-on-inverse/55'
   const item = 'group flex min-h-9 items-center gap-2 text-[14px] text-on-inverse/80 transition-colors hover:text-white'
   return (
-    <footer className="relative mt-10 text-on-inverse">
+    <footer className={cn('relative text-on-inverse', !dark && 'mt-10')}>
       {/* cream melts into green */}
-      <div className="h-40 bg-[linear-gradient(180deg,var(--background),#233759_85%,#1b2b44)] sm:h-56" aria-hidden="true" />
+      <div className={cn('h-40 sm:h-56', dark ? 'bg-[linear-gradient(180deg,#070d18,#1b2b44)]' : 'bg-[linear-gradient(180deg,var(--background),#233759_85%,#1b2b44)]')} aria-hidden="true" />
       <div className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#1b2b44,#0f1a2c)]">
         <span className="pointer-events-none absolute top-0 left-1/2 size-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.06),transparent)]" aria-hidden="true" />
 
@@ -49,6 +51,7 @@ export default function SiteFooter() {
                 <h2 className={col}>رائد</h2>
                 <ul>
                   <li><Link to="/shop" className={item}>كل الخدمات</Link></li>
+                  <li><Link to="/build" className={item}>صمم متجرك بنفسك</Link></li>
                   <li><Link to="/work" className={item}>أعمالنا</Link></li>
                   <li><Link to="/reviews" className={item}>آراء العملاء</Link></li>
                   <li><Link to="/policies" className={item}>السياسات والشروط</Link></li>
