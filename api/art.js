@@ -92,6 +92,7 @@ export default async function handler(req, res) {
   const ym = Math.round((sTop + sBot) / 2)
   const sLeft = scan(x0, x1, 1, (v) => [v, ym])
   const sRight = scan(x1, x0, -1, (v) => [v, ym])
+  if (req.query.debug) return res.json({ W, H, laptop: [x0, y0, x1, y1], screen: [sLeft, sTop, sRight, sBot] })
   const composites = []
   const sw = sRight - sLeft + 1, sh = sBot - sTop + 1
   if (sTop > 0 && sBot > sTop && sLeft > 0 && sRight > sLeft && sw > (x1 - x0) * 0.4 && sh > (y1 - y0) * 0.3) {
