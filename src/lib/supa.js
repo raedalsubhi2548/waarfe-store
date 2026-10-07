@@ -75,6 +75,8 @@ export const supa = {
       email: email.trim(), password, options: { data: { name, phone }, emailRedirectTo: location.origin + '/account' },
     })
     if (error) throw new Error(translateAuthError(error.message))
+    // an already-registered email comes back with no identities and no email is sent (Supabase hides it on purpose)
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) throw new Error('هذا البريد مسجّل مسبقاً، سجّل دخولك أو استخدم «نسيت كلمة المرور؟»')
     // email confirmation on: a code was emailed; the page asks for it
     if (!data.session) return { needsCode: true, email: email.trim() }
     return loadProfile(data.user)
