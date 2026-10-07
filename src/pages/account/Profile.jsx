@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Field, Input, Panel } from '@/components/ui/kit.jsx'
 
 export default function Profile() {
-  const { user, notify } = useApp()
+  const { user, notify, applyUser } = useApp()
   const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '' })
   const [busy, setBusy] = useState(false)
   const save = async (e) => {
     e.preventDefault(); setBusy(true)
-    try { await api.updateProfile(form); notify('تم حفظ بياناتك') } catch (e2) { notify(e2.message, 'err') } finally { setBusy(false) }
+    try { applyUser(await api.updateProfile(form)); notify('تم حفظ بياناتك') } catch (e2) { notify(e2.message, 'err') } finally { setBusy(false) }
   }
   return (
     <Panel title="بياناتي" className="max-w-xl">

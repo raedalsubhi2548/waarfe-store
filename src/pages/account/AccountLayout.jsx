@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { NavLink, Navigate, Outlet, Link, useLocation } from 'react-router-dom'
 import { Receipt, Heart, UserRound, LogOut, LayoutDashboard } from 'lucide-react'
 import { useApp } from '@/state.jsx'
@@ -43,7 +44,7 @@ export default function AccountLayout() {
           </button>
         </nav>
       )}
-      <Outlet />
+      <Suspense fallback={<Skeleton className="h-64" />}><Outlet /></Suspense>
     </div>
   )
 }

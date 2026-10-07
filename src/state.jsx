@@ -31,13 +31,22 @@ export function AppProvider({ children }) {
     setCategories(c); setProducts(p.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))); setCatalogReady(true)
   }, [])
 
+  const sameUser = (a, b) => a === b || (!!a && !!b && a.id === b.id && a.role === b.role && a.name === b.name && a.phone === b.phone && a.email === b.email)
+  const applyUser = useCallback((u) => { setUser((prev) => (sameUser(prev, u) ? prev : u)); setAuthReady(true) }, [])
+
   useEffect(() => {
     refreshCatalog().catch(() => setCatalogReady(true))
-    api.currentUser().then((u) => { setUser(u); setAuthReady(true) }).catch(() => setAuthReady(true))
-    return api.onAuth((u) => setUser(u))
-  }, [refreshCatalog])
+    let alive = true, gotEvent = false
+    api.currentUser().then((u) => { if (alive && !gotEvent) applyUser(u) }, () => alive && setAuthReady(true))
+    const off = api.onAuth((u) => { gotEvent = true; if (alive) applyUser(u) })
+    return () => { alive = false; off() }
+  }, [refreshCatalog, applyUser])
 
-  useEffect(() => { api.getWishlist().then(setWishlistState).catch(() => {}) }, [user?.id])
+  useEffect(() => {
+    let alive = true
+    api.getWishlist().then((w) => { if (alive) setWishlistState(Array.isArray(w) ? w : []) }).catch(() => {})
+    return () => { alive = false }
+  }, [user?.id])
   useEffect(() => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)) } catch { /* ignore */ } }, [cart])
 
   const byId = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p])), [products])
@@ -68,7 +77,7 @@ export function AppProvider({ children }) {
   }
 
   const value = {
-    user, authReady, categories, products, byId, catalogReady, refreshCatalog,
+    user, authReady, applyUser, categories, products, byId, catalogReady, refreshCatalog,
     lines, subtotal, count, addToCart, setQty, setNote, clearCart, cartOpen, setCartOpen,
     wishlist, toggleWish, toast, notify,
   }

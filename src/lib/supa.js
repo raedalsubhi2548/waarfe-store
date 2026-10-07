@@ -36,11 +36,13 @@ function check({ data, error }) { if (error) throw new Error(error.message); ret
 let cachedUser = null
 async function loadProfile(authUser) {
   if (!authUser) return (cachedUser = null)
-  const { data } = await sb.from('profiles').select('*').eq('id', authUser.id).maybeSingle()
+  const { data, error } = await sb.from('profiles').select('*').eq('id', authUser.id).maybeSingle()
+  const prev = cachedUser?.id === authUser.id ? cachedUser : null
+  if (error && prev) return prev // a passing network hiccup must not demote the admin
   cachedUser = {
-    id: authUser.id, email: authUser.email,
+    id: authUser.id, email: authUser.email || '',
     name: data?.name || authUser.user_metadata?.name || '', phone: data?.phone || '',
-    role: data?.role || 'customer', createdAt: data?.created_at || authUser.created_at,
+    role: data?.role || prev?.role || 'customer', createdAt: data?.created_at || authUser.created_at,
   }
   return cachedUser
 }
@@ -64,8 +66,18 @@ export const supa = {
     return loadProfile(data.session?.user)
   },
   onAuth(fn) {
-    const { data } = sb.auth.onAuthStateChange(async (_e, session) => fn(await loadProfile(session?.user)))
-    return () => data.subscription.unsubscribe()
+    let seq = 0, alive = true
+    // Supabase asks not to await its own calls inside this callback: do the profile read right after it returns,
+    // and only let the newest event win (events can finish out of order).
+    const { data } = sb.auth.onAuthStateChange((event, session) => {
+      const my = ++seq
+      if (event === 'TOKEN_REFRESHED' && cachedUser?.id === session?.user?.id) return
+      setTimeout(async () => {
+        const u = await loadProfile(session?.user).catch(() => cachedUser)
+        if (alive && my === seq) fn(u)
+      }, 0)
+    })
+    return () => { alive = false; data.subscription.unsubscribe() }
   },
   async signIn(email, password) {
     const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password })

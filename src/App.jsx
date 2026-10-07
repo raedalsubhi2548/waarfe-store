@@ -1,8 +1,16 @@
 import { lazy as reactLazy, Suspense } from 'react'
+import ErrorBoundary from './components/ErrorBoundary.jsx'
 
-// After a new release the old page may ask for files that no longer exist: reload once to get the fresh ones.
-const lazy = (load) => reactLazy(() => load().then((m) => { sessionStorage.removeItem('raed:reloaded'); return m }).catch((err) => {
-  if (!sessionStorage.getItem('raed:reloaded')) { sessionStorage.setItem('raed:reloaded', '1'); location.reload(); return new Promise(() => {}) }
+// After a release an open tab may ask for page files that no longer exist: reload, at most once per 30 seconds.
+const KEY = 'raed:chunk-reload'
+const lazy = (load) => reactLazy(() => load().catch((err) => {
+  let last
+  try { last = Number(sessionStorage.getItem(KEY)) || 0 } catch { throw err }
+  if (Date.now() - last > 30000) {
+    try { sessionStorage.setItem(KEY, String(Date.now())) } catch { throw err }
+    location.reload()
+    return new Promise(() => {})
+  }
   throw err
 }))
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
@@ -39,6 +47,7 @@ export default function App() {
   return (
     <DirectionProvider dir="rtl">
     <AppProvider>
+      <ErrorBoundary>
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
@@ -73,6 +82,7 @@ export default function App() {
         </Routes>
         <Toast />
       </BrowserRouter>
+      </ErrorBoundary>
     </AppProvider>
     </DirectionProvider>
   )

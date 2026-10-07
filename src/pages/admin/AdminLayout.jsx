@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/kit.jsx'
 import { ConfirmProvider } from '@/components/admin/ui.jsx'
+import ErrorBoundary from '@/components/ErrorBoundary.jsx'
 
 const NAV = [
   { to: '/admin', end: true, icon: LayoutDashboard, label: 'نظرة عامة' },
@@ -100,7 +101,7 @@ export default function AdminLayout() {
         <main id="main" className="min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           <div className="mx-auto max-w-[1180px]">
             {isDemo && <p className="mb-6 rounded-md border-2 border-dashed border-accent bg-accent/10 px-4 py-3 text-sm leading-7"><strong>وضع العرض:</strong> التعديلات محفوظة في هذا المتصفح فقط.</p>}
-            <Suspense fallback={<Skeleton className="h-96" />}><Outlet /></Suspense>
+            <ErrorBoundary resetKey={pathname}><Suspense fallback={<Skeleton className="h-96" />}><Outlet /></Suspense></ErrorBoundary>
           </div>
         </main>
       </div>

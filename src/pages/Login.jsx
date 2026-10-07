@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { ShieldCheck, Receipt, Heart } from 'lucide-react'
 import { api, isDemo } from '@/lib/api.js'
 import { DEMO_ADMIN } from '@/lib/local.js'
@@ -15,12 +15,11 @@ const PERKS = [
 ]
 
 export default function Login() {
-  const { user, authReady, notify } = useApp()
+  const { user, authReady, notify, applyUser } = useApp()
   const [params] = useSearchParams()
   // only same-site paths (blocks //evil.com and /\\evil.com open redirects)
   const rawNext = params.get('next') || ''
   const next = /^\/(?![\/\\])/.test(rawNext) ? rawNext : ''
-  const nav = useNavigate()
   const [mode, setMode] = useState('in') // in · up · code (confirm sign-up) · forgot · reset
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', code: '' })
   const [info, setInfo] = useState('')
@@ -29,7 +28,7 @@ export default function Login() {
 
   if (authReady && user) return <Navigate to={next || (user.role === 'admin' ? '/admin' : '/account')} replace />
 
-  const done = (u, msg) => { notify(msg); nav(next || (u.role === 'admin' ? '/admin' : '/account'), { replace: true }) }
+  const done = (u, msg) => { notify(msg); applyUser(u) } // the <Navigate> above takes over once the user is set
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setBusy(true)
     try {

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import SiteHeader from './site/SiteHeader.jsx'
 import SiteFooter from './site/SiteFooter.jsx'
 import CartDrawer from './CartDrawer.jsx'
+import ErrorBoundary from './ErrorBoundary.jsx'
 import Vine from './brand/Vine.jsx'
 import { useApp } from '../state.jsx'
 import { useSeo } from '../lib/useSeo.js'
@@ -31,7 +32,7 @@ export default function Layout() {
             <span className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60%_420px_at_50%_0%,rgb(27_43_68/0.07),transparent),radial-gradient(45%_30%_at_100%_40%,rgb(27_43_68/0.05),transparent),radial-gradient(45%_30%_at_0%_75%,rgb(195_206_221/0.14),transparent)]" aria-hidden="true" />
           </>
         )}
-        <Suspense fallback={<PageFallback />}><Outlet /></Suspense>
+        <ErrorBoundary resetKey={pathname}><Suspense fallback={<PageFallback />}><Outlet /></Suspense></ErrorBoundary>
       </main>
       <SiteFooter />
       <CartDrawer />
