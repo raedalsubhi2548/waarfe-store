@@ -15,8 +15,8 @@ export default function SiteFooter() {
     <footer className="relative mt-10 text-on-inverse">
       {/* cream melts into green */}
       <div className="h-40 bg-[linear-gradient(180deg,var(--background),#233759_85%,#1b2b44)] sm:h-56" aria-hidden="true" />
-      <div className="relative overflow-hidden bg-[linear-gradient(180deg,#1b2b44,#0f1a2c)]">
-        <span className="pointer-events-none absolute -top-40 left-1/2 size-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.06),transparent)]" aria-hidden="true" />
+      <div className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#1b2b44,#0f1a2c)]">
+        <span className="pointer-events-none absolute top-0 left-1/2 size-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.06),transparent)]" aria-hidden="true" />
 
         <div className="container-w relative pb-10">
           {/* closing invitation */}
