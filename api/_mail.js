@@ -78,7 +78,7 @@ export async function sendOrderEmail(orderOrId, ev) {
 
   const s = SELLER()
   const attachments = ev === 'paid' ? [{ filename: `فاتورة-${order.number}.pdf`, content: await invoicePdf(order, s), contentType: 'application/pdf' }] : []
-  const from = process.env.MAIL_FROM || `${s.name} <${process.env.SMTP_USER}>`
+  const from = process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`
   try {
     await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev), attachments })
     // a copy to the store for new and paid orders
