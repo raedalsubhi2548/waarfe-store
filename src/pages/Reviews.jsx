@@ -5,6 +5,7 @@ import { ALL_REVIEWS } from '@/data/reviews.js'
 import { Button } from '@/components/ui/button'
 import { waLink } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
+import PageIntro from '@/components/site/PageIntro.jsx'
 
 const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-4" fill="currentColor" strokeWidth={0} />)}</span>
 const FILTERS = [['all', 'الكل'], ['long', 'تجارب مفصّلة']]
@@ -14,15 +15,13 @@ export default function Reviews() {
   const list = useMemo(() => ALL_REVIEWS.filter((r) => f === 'all' || r.text.length > 110), [f])
   return (
     <div className="container-w py-10 sm:py-14">
-      <nav className="mb-4 text-sm text-muted-foreground" aria-label="المسار"><Link to="/" className="hover:underline">الرئيسية</Link> / <span>آراء العملاء</span></nav>
-      <header className="relative mb-10 overflow-hidden rounded-xl bg-inverse p-6 text-on-inverse sm:p-10">
-        <span className="pointer-events-none absolute -top-20 -end-20 size-64 rounded-full border-[24px] border-accent/10" aria-hidden="true" />
-        <Stars className="text-accent" />
-        <h1 className="mt-3 font-display text-display-sm font-semibold sm:text-display-md">آراء عملائنا</h1>
-        <p className="mt-2 max-w-xl leading-8 text-on-inverse/80"><span className="tabular">{ALL_REVIEWS.length}</span> رأي مكتوب من عملائنا، وكلها بتقييم <span className="tabular">5.0</span>.</p>
-      </header>
+      <PageIntro crumb="آراء العملاء" title="آراء عملائنا" className="-mt-10 sm:-mt-14">
+        <p className="mx-auto mt-4 inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 text-[15px] text-primary shadow-[0_12px_28px_-18px_rgb(27_43_68/0.6)] ring-1 ring-primary/10">
+          <Stars className="text-primary" /><b className="tabular">5.0</b><span className="h-4 w-px bg-primary/20" /><span><b className="tabular">{ALL_REVIEWS.length}</b> رأي مكتوب من عملائنا</span>
+        </p>
+      </PageIntro>
 
-      <div className="mb-6 flex gap-2 overflow-x-auto [scrollbar-width:none]" role="tablist">
+      <div className="mb-6 flex justify-center gap-2 overflow-x-auto [scrollbar-width:none]" role="tablist">
         {FILTERS.map(([id, l]) => (
           <button key={id} role="tab" aria-selected={f === id} onClick={() => setF(id)}
             className={cn('h-10 shrink-0 rounded-full px-4 text-sm font-semibold ring-1 transition-colors', f === id ? 'bg-primary text-on-inverse ring-primary' : 'text-primary ring-border hover:ring-primary')}>{l}</button>

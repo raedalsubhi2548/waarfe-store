@@ -13,7 +13,7 @@ function Row({ ids, reverse }) {
       <ul className={`flex w-max shrink-0 gap-4 py-4 motion-safe:animate-[marquee_120s_linear_infinite] group-hover/row:[animation-play-state:paused] sm:gap-5 ${reverse ? '[animation-direction:reverse]' : ''}`}>
         {list.map((i, k) => (
           <li key={k} aria-hidden={k >= ids.length || undefined} className="shrink-0">
-            <Link to="/work?tab=banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#ffffff] p-1.5 shadow-[0_1px_2px_rgb(27_43_68/0.06),0_24px_40px_-26px_rgb(27_43_68/0.55)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_32px_50px_-26px_rgb(27_43_68/0.6)]">
+            <Link to="/work#banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#ffffff] p-1.5 shadow-[0_1px_2px_rgb(27_43_68/0.06),0_24px_40px_-26px_rgb(27_43_68/0.55)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_32px_50px_-26px_rgb(27_43_68/0.6)]">
               <img src={lh3(WORK[i], 600)} alt={k < ids.length ? `من أعمال رائد ${k + 1}` : ''} loading="lazy" decoding="async"
                 className="block h-[150px] w-auto min-w-[150px] rounded-[13px] bg-sunken object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:h-[210px] sm:min-w-[210px]" />
             </Link>
@@ -38,7 +38,7 @@ export default function GalleryWall() {
         <Row ids={ROW_B} reverse />
       </div>
       <div className="mt-8 text-center">
-        <Link to="/work?tab=banners" className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[14px] font-medium text-on-inverse shadow-[0_14px_28px_-14px_rgb(27_43_68/0.8)] transition-colors hover:bg-primary-hover">
+        <Link to="/work#banners" className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-[14px] font-medium text-on-inverse shadow-[0_14px_28px_-14px_rgb(27_43_68/0.8)] transition-colors hover:bg-primary-hover">
           شوف كل التصاميم ({WORK.length})<ArrowLeft className="size-4" />
         </Link>
       </div>

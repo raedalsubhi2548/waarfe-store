@@ -70,16 +70,26 @@ const hash = (s = '') => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 
 export function coverFor(p) {
   const h = hash(p.id)
   const glyph = ICONS[p.id] || BY_CATEGORY[p.categoryId] || ICONS['logo-design']
+  // same look as the product photos from /api/art: a framed navy print resting on the store's soft backdrop
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
 <defs>
-<radialGradient id="g" cx="50%" cy="30%" r="85%"><stop offset="0" stop-color="#34507f"/><stop offset=".55" stop-color="#1b2b44"/><stop offset="1" stop-color="#0f1a2c"/></radialGradient>
-<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".45"/><stop offset="1" stop-color="#9fb0c8" stop-opacity="0"/></linearGradient>
+<linearGradient id="b" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#fbfcfe"/><stop offset="1" stop-color="#e6ecf4"/></linearGradient>
+<radialGradient id="f" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#1b2b44" stop-opacity=".10"/><stop offset="1" stop-color="#1b2b44" stop-opacity="0"/></radialGradient>
+<radialGradient id="g" cx="50%" cy="25%" r="90%"><stop offset="0" stop-color="#34507f"/><stop offset=".55" stop-color="#1b2b44"/><stop offset="1" stop-color="#0f1a2c"/></radialGradient>
+<linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".4"/><stop offset="1" stop-color="#9fb0c8" stop-opacity="0"/></linearGradient>
+<filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="11"/></filter>
+<clipPath id="c"><rect x="52" y="78" width="296" height="220" rx="12"/></clipPath>
 </defs>
-<rect width="400" height="400" fill="url(#g)"/>
-<circle cx="200" cy="200" r="118" fill="#ffffff" fill-opacity=".05"/>
-<path d="M92 252 A118 118 0 1 1 300 292" fill="none" stroke="url(#s)" stroke-width="5" stroke-linecap="round" transform="rotate(${(h % 50) - 25} 200 200)"/>
-<path d="M-10 ${352 + (h % 14)} Q140 ${318 + (h % 20)} 230 350 T410 ${336 + (h % 16)}" fill="none" stroke="#ffffff" stroke-opacity=".1" stroke-width="3"/>
-${glyph}
+<rect width="400" height="400" fill="url(#b)"/>
+<rect width="400" height="400" fill="url(#f)"/>
+<path d="M-14 353 Q140 313 248 348 T414 336" fill="none" stroke="#1b2b44" stroke-opacity=".10" stroke-width="1.5"/>
+<rect x="64" y="100" width="272" height="210" rx="12" fill="#1b2b44" fill-opacity=".38" filter="url(#sh)"/>
+<rect x="48" y="74" width="304" height="228" rx="15" fill="#ffffff" stroke="#1b2b44" stroke-opacity=".08"/>
+<g clip-path="url(#c)">
+<rect x="52" y="78" width="296" height="220" fill="url(#g)"/>
+<path d="M110 250 A100 100 0 1 1 290 262" fill="none" stroke="url(#s)" stroke-width="4" stroke-linecap="round" transform="rotate(${(h % 50) - 25} 200 188)"/>
+<g transform="translate(200 188) scale(.8) translate(-200 -200)">${glyph}</g>
+</g>
 </svg>`
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }

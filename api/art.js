@@ -59,35 +59,31 @@ export default async function handler(req, res) {
   const top = Math.round(y0 + lh * 0.065), bottom = Math.round(y0 + lh * 0.795)
   const screen = sharp(src).extract({ left, top, width: right - left, height: bottom - top })
 
-  // if the artwork sits on a plain backdrop (a logo on white, etc.), grow it to a square with that
-  // same colour; a full photo is just cropped to a square instead
-  const s = await screen.clone().removeAlpha().raw().toBuffer({ resolveWithObject: true })
-  const sw = s.info.width, sh = s.info.height, sc = s.info.channels
-  const edge = []
-  for (let x = 0; x < sw; x += 3) edge.push(x, (sh - 1) * sw + x)
-  for (let y = 0; y < sh; y += 3) edge.push(y * sw, y * sw + sw - 1)
-  let mr = 0, mg = 0, mb = 0
-  for (const k of edge) { mr += s.data[k * sc]; mg += s.data[k * sc + 1]; mb += s.data[k * sc + 2] }
-  mr /= edge.length; mg /= edge.length; mb /= edge.length
-  let dev = 0
-  for (const k of edge) dev += Math.abs(s.data[k * sc] - mr) + Math.abs(s.data[k * sc + 1] - mg) + Math.abs(s.data[k * sc + 2] - mb)
-  dev /= edge.length * 3
-  const plain = dev < 14
-
-  let out
-  if (plain) {
-    const side = Math.max(sw, sh)
-    const background = { r: Math.round(mr), g: Math.round(mg), b: Math.round(mb) }
-    out = await sharp(await screen.png().toBuffer())
-      .extend({ top: Math.floor((side - sh) / 2), bottom: Math.ceil((side - sh) / 2), left: Math.floor((side - sw) / 2), right: Math.ceil((side - sw) / 2), background })
-      .resize(SIZE, SIZE, { kernel: 'lanczos3' })
-      .sharpen({ sigma: 0.6 })
-      .webp({ quality: 88 }).toBuffer()
-  } else {
-    out = await screen.resize(SIZE, SIZE, { fit: 'cover', position: 'centre', kernel: 'lanczos3' })
-      .sharpen({ sigma: 0.6 })
-      .webp({ quality: 88 }).toBuffer()
-  }
+  // the artwork becomes a framed print resting on the store's own soft white-and-navy backdrop,
+  // so every card reads as part of the same page
+  const art = await screen.resize(492, 400, { fit: 'inside', kernel: 'lanczos3' }).sharpen({ sigma: 0.6 }).png().toBuffer()
+  const { width: aw, height: ah } = await sharp(art).metadata()
+  const R = 16
+  const rounded = await sharp(art)
+    .composite([{ input: Buffer.from(`<svg width="${aw}" height="${ah}"><rect width="${aw}" height="${ah}" rx="${R}" fill="#fff"/></svg>`), blend: 'dest-in' }])
+    .png().toBuffer()
+  const ax = Math.round((SIZE - aw) / 2), ay = Math.round((SIZE - ah) / 2) - 14
+  const backdrop = `<svg xmlns="http://www.w3.org/2000/svg" width="${SIZE}" height="${SIZE}">
+<defs>
+<linearGradient id="b" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#fbfcfe"/><stop offset="1" stop-color="#e6ecf4"/></linearGradient>
+<radialGradient id="g" cx="50%" cy="100%" r="70%"><stop offset="0" stop-color="#1b2b44" stop-opacity=".10"/><stop offset="1" stop-color="#1b2b44" stop-opacity="0"/></radialGradient>
+<filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect width="${SIZE}" height="${SIZE}" fill="url(#b)"/>
+<rect width="${SIZE}" height="${SIZE}" fill="url(#g)"/>
+<path d="M-20 ${SIZE - 70} Q ${SIZE * 0.35} ${SIZE - 130} ${SIZE * 0.62} ${SIZE - 78} T ${SIZE + 20} ${SIZE - 96}" fill="none" stroke="#1b2b44" stroke-opacity=".10" stroke-width="2"/>
+<rect x="${ax + 18}" y="${ay + 30}" width="${aw - 36}" height="${ah - 10}" rx="${R}" fill="#1b2b44" fill-opacity=".38" filter="url(#s)"/>
+<rect x="${ax - 6}" y="${ay - 6}" width="${aw + 12}" height="${ah + 12}" rx="${R + 5}" fill="#ffffff"/>
+<rect x="${ax - 6.5}" y="${ay - 6.5}" width="${aw + 13}" height="${ah + 13}" rx="${R + 5.5}" fill="none" stroke="#1b2b44" stroke-opacity=".08"/>
+</svg>`
+  const out = await sharp(Buffer.from(backdrop))
+    .composite([{ input: rounded, left: ax, top: ay }])
+    .webp({ quality: 88 }).toBuffer()
 
   res.setHeader('Content-Type', 'image/webp')
   res.setHeader('Cache-Control', 'public, max-age=31536000, s-maxage=31536000, immutable')

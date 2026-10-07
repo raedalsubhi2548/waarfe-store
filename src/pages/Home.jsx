@@ -96,10 +96,15 @@ function Hero() {
             <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
-          <div className="mt-9 flex items-center justify-center gap-5 text-[13.5px] text-on-inverse/75 md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
-            <span className="flex items-center gap-2"><Stars className="text-[#9fb0c8]" /><b className="tabular font-semibold text-on-inverse">5.0</b> تقييم عملائنا</span>
-            <span className="h-4 w-px bg-on-inverse/25" />
-            <span><b dir="ltr" className="font-semibold text-on-inverse">+200</b> طلب نفّذناه</span>
+          <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
+            <Link to="/reviews" className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-[#0f1a2c]/55 py-2 ps-2 pe-4 text-[13px] sm:gap-4 sm:py-2.5 sm:ps-3 sm:pe-5 text-white shadow-[0_18px_40px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/20 backdrop-blur-md transition-colors hover:bg-[#0f1a2c]/70 sm:text-[15.5px]">
+              <span className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-primary sm:gap-2 sm:px-3">
+                <b className="tabular text-[15px] font-bold leading-none sm:text-[19px]">5.0</b><Stars className="text-primary [&_svg]:size-3 sm:[&_svg]:size-[15px]" />
+              </span>
+              <span className="leading-tight">تقييم عملائنا</span>
+              <span className="h-5 w-px bg-white/30 sm:h-6" />
+              <span className="flex items-baseline gap-1.5 leading-tight"><b dir="ltr" className="tabular text-[16px] font-bold sm:text-[21px]">+200</b>طلب نفّذناه</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -151,7 +156,7 @@ function PaymentsStrip() {
   return (
     <SceneBanner img={`${ART}/raed-installments.webp`} href={waLink('السلام عليكم، أبي أعرف عن تقسيط قيمة الخدمة')} kicker="ادفع بالطريقة اللي تريحك"
       title="قسّم قيمة متجرك" accent="على دفعات مريحة" body="مدى، Apple Pay، البطاقات أو التحويل البنكي، واسألنا عن التقسيط مع تمارا وتابي."
-      cta="اسألنا عن التقسيط" extra={<PayIcons className="w-full opacity-80" />} />
+      cta="اسألنا عن التقسيط" extra={<PayIcons className="w-full max-w-[460px]" />} />
   )
 }
 

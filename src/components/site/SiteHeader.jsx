@@ -42,7 +42,7 @@ export default function SiteHeader() {
   const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', clear ? (isActive ? 'text-accent after:scale-x-100' : 'text-on-inverse/85 hover:text-accent') : (isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary'))
 
   return (
-    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', clear ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(27_43_68/0.35)] backdrop-blur-xl')}>
+    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', !scrolled ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(27_43_68/0.35)] backdrop-blur-xl')}>
       <div className="container-w grid h-[var(--header-height)] grid-cols-[1fr_auto_1fr] items-center gap-2">
         <div className="flex items-center gap-1">
           <button className={cn(iconBtn, ink, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
