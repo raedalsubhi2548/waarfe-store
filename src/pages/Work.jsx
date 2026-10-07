@@ -35,7 +35,7 @@ export default function Work() {
               {/* the file's own pages, gliding by on hover */}
               <a href={pdfView(s.id)} target="_blank" rel="noreferrer" aria-label={`افتح ملف متجر ${s.name}`} className="relative m-2.5 mb-0 block aspect-[4/3] overflow-hidden rounded-[14px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] [container-type:size]">
                 <FileText className="absolute top-1/2 left-1/2 size-10 -translate-x-1/2 -translate-y-1/2 animate-pulse text-primary/15" strokeWidth={1.2} aria-hidden="true" />
-                <img src={pdfThumb(s.id, 800)} alt={`أول صفحة من ملف متجر ${s.name}`} loading="lazy" decoding="async"
+                <img src={pdfThumb(s.id, 700)} alt={`أول صفحة من ملف متجر ${s.name}`} loading="eager" fetchPriority="high" decoding="async"
                   className="relative w-full select-none transition-[translate] duration-[9s] ease-in-out [translate:0_0] group-hover:[translate:0_calc(-100%+100cqh)]" />
                 <span className="absolute top-3 start-3 z-10 rounded-full bg-primary/90 px-2.5 py-1 text-[11px] font-semibold leading-none text-on-inverse backdrop-blur">PDF</span>
               </a>
