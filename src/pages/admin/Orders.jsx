@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { MessageCircle, Mail, Phone, CreditCard, Landmark, Inbox, ChevronLeft, Copy } from 'lucide-react'
+import { MessageCircle, Mail, Phone, CreditCard, Landmark, Inbox, ChevronLeft, Copy, FileText } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { ORDER_STATUSES } from '@/data/seed.js'
@@ -21,7 +21,7 @@ function OrderDetail({ order, onSaved }) {
   const phone = waPhone(order.customer?.phone)
   const save = async () => {
     setBusy(true)
-    try { await api.updateOrderStatus(order.id, status, note); notify('تم تحديث حالة الطلب'); setNote(''); onSaved() } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
+    try { await api.updateOrderStatus(order.id, status, note); api.notifyOrder?.(order.id, status); notify('تم تحديث حالة الطلب وإشعار العميل'); setNote(''); onSaved() } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
   }
   const sub = order.items.reduce((s, it) => s + it.price * it.qty, 0)
   return (
@@ -63,6 +63,9 @@ function OrderDetail({ order, onSaved }) {
           {order.paymentMethod === 'card' ? <><CreditCard className="size-4" />بطاقة / Apple Pay</> : <><Landmark className="size-4" />تحويل بنكي</>}
           {(order.paymentRef || order.tapId) && <span className="ms-auto font-mono" dir="ltr">{order.paymentRef || order.tapId}</span>}
         </p>
+        {!['pending', 'cancelled'].includes(order.status) && (
+          <Button variant="outline" size="sm" className="mt-3 w-full" onClick={() => api.downloadInvoice(order).catch((e) => notify(e.message, 'err'))}><FileText className="size-4" />تحميل الفاتورة PDF</Button>
+        )}
       </section>
 
       <section className="grid gap-3 rounded-lg bg-surface p-4 ring-1 ring-border">

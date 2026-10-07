@@ -75,7 +75,28 @@ export const supa = {
       email: email.trim(), password, options: { data: { name, phone }, emailRedirectTo: location.origin + '/account' },
     })
     if (error) throw new Error(translateAuthError(error.message))
-    if (!data.session) throw new Error('أرسلنا لك رابط تفعيل على بريدك. فعّله ثم سجّل دخولك.')
+    // email confirmation on: a code was emailed; the page asks for it
+    if (!data.session) return { needsCode: true, email: email.trim() }
+    return loadProfile(data.user)
+  },
+  async verifySignup(email, code) {
+    const { data, error } = await sb.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'signup' })
+    if (error) throw new Error('الرمز غير صحيح أو انتهت صلاحيته')
+    return loadProfile(data.user)
+  },
+  async resendSignup(email) {
+    const { error } = await sb.auth.resend({ type: 'signup', email: email.trim() })
+    if (error) throw new Error(translateAuthError(error.message))
+  },
+  async sendResetCode(email) {
+    const { error } = await sb.auth.resetPasswordForEmail(email.trim())
+    if (error) throw new Error(translateAuthError(error.message))
+  },
+  async resetWithCode(email, code, password) {
+    const { error } = await sb.auth.verifyOtp({ email: email.trim(), token: code.trim(), type: 'recovery' })
+    if (error) throw new Error('الرمز غير صحيح أو انتهت صلاحيته')
+    const { data, error: e2 } = await sb.auth.updateUser({ password })
+    if (e2) throw new Error(translateAuthError(e2.message))
     return loadProfile(data.user)
   },
   async signOut() { await sb.auth.signOut() },
@@ -182,6 +203,23 @@ export const supa = {
     const body = await res.json().catch(() => ({}))
     if (!res.ok) throw new Error(body.error || 'تعذّر التحميل')
     return body.url
+  },
+  // emails for an order moment (server checks who may send what, and sends each one once)
+  async notifyOrder(orderId, event) {
+    const { data } = await sb.auth.getSession()
+    await fetch('/api/order-email', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', authorization: 'Bearer ' + data.session?.access_token },
+      body: JSON.stringify({ orderId, event }),
+    }).catch(() => {})
+  },
+  async downloadInvoice(order) {
+    const { data } = await sb.auth.getSession()
+    const res = await fetch(`/api/invoice?order=${encodeURIComponent(order.id)}`, { headers: { authorization: 'Bearer ' + data.session?.access_token } })
+    if (!res.ok) { const b = await res.json().catch(() => ({})); throw new Error(b.error || 'تعذّر تجهيز الفاتورة') }
+    const url = URL.createObjectURL(await res.blob())
+    const a = Object.assign(document.createElement('a'), { href: url, download: `فاتورة-${order.number}.pdf` })
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000)
   },
   async verifyPayment(orderId, tapId) {
     const res = await fetch(`/api/tap-verify?order=${encodeURIComponent(orderId)}&tap_id=${encodeURIComponent(tapId)}`)

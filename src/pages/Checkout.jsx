@@ -56,6 +56,7 @@ export default function Checkout() {
         window.location.href = redirect
         return
       }
+      if (method === 'bank') api.notifyOrder?.(order.id, 'created') // the customer gets the order + bank details by email
       clearCart()
       nav(`/order/${order.id}?new=1`, { replace: true })
     } catch (e2) { setErr(e2.message); setBusy(false) }

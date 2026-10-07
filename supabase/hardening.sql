@@ -38,3 +38,6 @@ update public.products
        description = replace(coalesce(description, ''), 'وارف', 'رائد'),
        summary = replace(coalesce(summary, ''), 'وارف', 'رائد')
  where name like '%وارف%' or description like '%وارف%' or summary like '%وارف%';
+
+-- 4) Remembers which order emails were already sent (so a retry or webhook never sends one twice).
+alter table public.orders add column if not exists notified text[] not null default '{}';

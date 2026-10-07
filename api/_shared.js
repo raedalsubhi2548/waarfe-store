@@ -28,10 +28,15 @@ export async function confirmCharge(chargeId) {
   if (charge.status !== 'CAPTURED') return { ok: false, status: charge.status, orderId }
   if (Math.abs(Number(charge.amount) - Number(order.total)) > 0.01 || charge.currency !== 'SAR') return { ok: false, reason: 'amount-mismatch', orderId }
   if (order.status === 'pending') {
-    await admin.from('orders').update({
+    const { data: updated } = await admin.from('orders').update({
       status: 'paid', payment_ref: charge.id,
       history: [...(order.history || []), { status: 'paid', at: new Date().toISOString(), note: 'تم الدفع عبر Tap' }],
-    }).eq('id', orderId).eq('status', 'pending')
+    }).eq('id', orderId).eq('status', 'pending').select('*')
+    // only the call that actually marked it paid sends the receipt + invoice (the redirect and the webhook may both arrive)
+    if (updated?.[0]) {
+      const { sendOrderEmail } = await import('./_mail.js')
+      await sendOrderEmail(updated[0], 'paid').catch(() => {})
+    }
   }
   return { ok: true, orderId }
 }

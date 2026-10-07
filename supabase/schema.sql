@@ -294,3 +294,6 @@ end $$;
 drop trigger if exists orders_sanitize on public.orders;
 create trigger orders_sanitize before insert on public.orders
   for each row execute function public.orders_sanitize();
+
+-- 4) Remembers which order emails were already sent (so a retry or webhook never sends one twice).
+alter table public.orders add column if not exists notified text[] not null default '{}';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Check, Clock, Download, MessageCircle } from 'lucide-react'
+import { Check, Clock, Download, MessageCircle, FileText } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
@@ -20,6 +20,13 @@ function DownloadButton({ orderId, productId }) {
     try { window.open(await api.downloadUrl(orderId, productId), '_blank', 'noopener') } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
   }
   return <Button variant="accent" size="sm" className="mt-2 h-9" onClick={go} disabled={busy}><Download />{busy ? 'لحظة…' : 'تحميل الملف'}</Button>
+}
+
+function InvoiceButton({ order }) {
+  const { notify } = useApp()
+  const [busy, setBusy] = useState(false)
+  const go = async () => { setBusy(true); try { await api.downloadInvoice(order) } catch (e) { notify(e.message, 'err') } finally { setBusy(false) } }
+  return <Button variant="outline" onClick={go} disabled={busy}><FileText />{busy ? 'نجهّز الفاتورة…' : 'تحميل الفاتورة PDF'}</Button>
 }
 
 export default function Order() {
@@ -62,6 +69,7 @@ export default function Order() {
       <div className="grid items-start gap-6 lg:grid-cols-[1fr_400px]">
         <Panel title="حالة الطلب" action={<StatusPill status={order.status} />}>
           <OrderTracker status={order.status} />
+          {paid && <div className="mt-5"><InvoiceButton order={order} /></div>}
           {order.status === 'pending' && order.paymentMethod === 'bank' && (
             <div className="mt-6 grid justify-items-start gap-3 rounded-lg bg-sunken p-5">
               <h3 className="font-display font-semibold text-primary">التحويل البنكي</h3>

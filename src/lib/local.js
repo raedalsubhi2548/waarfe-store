@@ -173,6 +173,12 @@ export const local = {
 
   // ---------- payments ----------
   async startPayment(order) { return { redirect: null, order } },
+  async notifyOrder() {},
+  async downloadInvoice() { throw new Error('الفاتورة متاحة في المتجر الحقيقي فقط') },
+  async verifySignup() { throw new Error('غير متاح في وضع العرض') },
+  async resendSignup() {},
+  async sendResetCode() { throw new Error('غير متاح في وضع العرض') },
+  async resetWithCode() { throw new Error('غير متاح في وضع العرض') },
   async downloadUrl(orderId, productId) {
     const o = await this.getOrder(orderId)
     if (!o || ['pending', 'cancelled'].includes(o.status)) throw new Error('يتاح التحميل بعد تأكيد الدفع')
