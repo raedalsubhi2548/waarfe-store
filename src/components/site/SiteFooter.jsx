@@ -6,7 +6,7 @@ import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
 import { WHATSAPP, waLink } from '@/lib/format.js'
 
-/** The page settles into deep navy: no hard edge, the logo sits clearly on white. */
+/** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
 export default function SiteFooter() {
   const { categories } = useApp()
   const col = 'mb-4 text-[13px] font-semibold text-on-inverse/55'
@@ -33,8 +33,8 @@ export default function SiteFooter() {
           <div className="mt-16 grid gap-10 border-t border-white/10 pt-12 lg:grid-cols-[1.1fr_2fr]">
             {/* brand */}
             <div className="flex flex-col items-center gap-4 text-center lg:items-start lg:text-start">
-              <Link to="/" className="grid w-52 place-items-center rounded-[24px] bg-white px-6 py-5 shadow-[0_20px_40px_-20px_rgb(0_0_0/0.6)]" aria-label="رائد — الرئيسية">
-                <img src="/logo.png" alt="رائد Raed" width="458" height="248" className="w-full" />
+              <Link to="/" className="block" aria-label="رائد — الرئيسية">
+                <img src="/logo-white.png" alt="رائد Raed" width="458" height="248" className="h-[78px] w-auto sm:h-[88px]" />
               </Link>
               <p className="max-w-xs text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
               <Social className="foot-social" />

@@ -59,12 +59,13 @@ export const FEATURED = [8, 2, 20, 36, 32, 16, 23, 40, 1, 17, 34, 22].map((n) =>
 
 // Full store designs delivered, as PDF case files
 export const STORE_PDFS = [
-  { name: 'Velvet', id: '1qLce40-i8rLBo7Af7iFJvgN-BU4tI6RF' },
-  { name: 'Glisten', id: '1nXfSIksTDs8b5YN3tqIBcdI_0-sZGccj' },
-  { name: 'مروج اليسر', id: '1Bngc74ohxG9t9nMvfJyWh0ElIfkBnkKR' },
+  { name: 'Velvet', id: '1qLce40-i8rLBo7Af7iFJvgN-BU4tI6RF', mb: 7.4 },
+  { name: 'Glisten', id: '1nXfSIksTDs8b5YN3tqIBcdI_0-sZGccj', mb: 9.3 },
+  { name: 'مروج اليسر', id: '1Bngc74ohxG9t9nMvfJyWh0ElIfkBnkKR', mb: 3.9 },
 ]
 export const pdfThumb = (id, w = 900) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`
 export const pdfView = (id) => `https://drive.google.com/file/d/${id}/view`
+export const pdfDownload = (id) => `https://drive.google.com/uc?export=download&id=${id}`
 
 // Verified against the Salla store (orders_list total, 2026-10-06). Reviews total pending Raed's confirmation.
 export const PROOF = [

@@ -22,7 +22,7 @@ export function WorkGallery({ items, className, grid = false }) {
     <>
       {grid ? (
         // tidy grid: every design sits as a framed print on the store's soft backdrop, same size, all lined up
-        <ul className={cn('grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4', className)}>
+        <ul className={cn('grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 lg:gap-6', className)}>
           {items.map((id, i) => (
             <li key={id}>
               <button type="button" onClick={() => setOpen(i)} aria-label={`عرض التصميم ${i + 1} بحجم كبير`}

@@ -70,8 +70,8 @@ function Hero() {
     <section className="relative -mt-[var(--header-height)] isolate overflow-hidden bg-[#0f1a2c] text-on-inverse">
       {/* the scene */}
       <picture className="absolute inset-0 -z-10">
-        <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile-v2.webp`} />
-        <img src={`${ART}/raed-hero-v2.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
+        <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile-v3.webp`} />
+        <img src={`${ART}/raed-hero-v3.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
           className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
@@ -155,7 +155,7 @@ function LandingPromo() {
 function PaymentsStrip() {
   return (
     <SceneBanner img={`${ART}/raed-installments.webp`} href={waLink('السلام عليكم، أبي أعرف عن تقسيط قيمة الخدمة')} kicker="ادفع بالطريقة اللي تريحك"
-      title="قسّم قيمة متجرك" accent="على دفعات مريحة" body="مدى، Apple Pay، البطاقات أو التحويل البنكي، واسألنا عن التقسيط مع تمارا وتابي."
+      title="قسّم قيمة متجرك" accent="على دفعات مريحة" body="ادفع بـ Apple Pay أو فيزا أو ماستركارد، أو قسّطها مع تمارا وتابي."
       cta="اسألنا عن التقسيط" extra={<PayIcons className="w-full max-w-[460px]" />} />
   )
 }
@@ -190,27 +190,29 @@ const CAT_ART = {
   'digital-products': 'raed-cat-digital.webp',
   'government-services': 'raed-cat-government.webp',
 }
-/** All categories in one row: small arch-topped cards. */
+/** All categories as one still bento: a large tile locked together with four smaller ones, nothing scrolls. */
 function Categories() {
   const { categories, products } = useApp()
   return (
     <section className="container-w">
-      <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 [scrollbar-width:none] sm:mx-auto sm:grid sm:max-w-[1000px] sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:px-0">
+      <ul className="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 sm:gap-4 lg:aspect-[2/1] lg:grid-cols-4 lg:grid-rows-2">
         {categories.map((c, i) => {
           const n = products.filter((p) => p.categoryId === c.id).length
+          const big = i === 0
           return (
-            <Reveal as="li" key={c.id} delay={i * 80} className="w-[136px] shrink-0 snap-start sm:w-auto">
-              <Link to={`/c/${c.id}`} className="group block text-center">
-                <span className="relative block rounded-t-[999px] rounded-b-[18px] bg-[#ffffff] p-[5px] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_22px_36px_-22px_rgb(27_43_68/0.6)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_26px_44px_-22px_rgb(27_43_68/0.8)]">
-                  <span className="relative block aspect-[4/5] overflow-hidden rounded-t-[999px] rounded-b-[14px] bg-[#0f1a2c]">
-                    {CAT_ART[c.id]
-                      ? <img src={`${ART}/${CAT_ART[c.id]}`} alt="" loading="lazy" decoding="async" className="size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.08]" />
-                      : <span className="grid size-full place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#2c4470,#1b2b44_60%,#0f1a2c)] text-on-inverse"><span className="grid size-16 place-items-center rounded-full ring-1 ring-on-inverse/30 shadow-[0_0_40px_-6px_rgb(255_255_255/0.25)]"><Icon name={c.icon} size={28} /></span></span>}
-                    <span className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(transparent,rgb(15_26_44/0.75))]" aria-hidden="true" />
+            <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
+              <Link to={`/c/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
+                {CAT_ART[c.id]
+                  ? <img src={`${ART}/${CAT_ART[c.id]}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
+                  : <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#2c4470,#1b2b44_60%,#0f1a2c)] text-on-inverse"><Icon name={c.icon} size={big ? 44 : 30} /></span>}
+                <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(15_26_44/0.85))]" aria-hidden="true" />
+                <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3.5 sm:p-5">
+                  <span className="text-white">
+                    <b className={cn('block font-semibold leading-snug', big ? 'text-[19px] sm:text-[24px]' : 'text-[14.5px] sm:text-[16px]')}>{c.name}</b>
+                    <span className="tabular text-[12px] text-white/70 sm:text-[13px]">{n} خدمات</span>
                   </span>
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/15 text-white ring-1 ring-white/25 backdrop-blur transition-colors group-hover:bg-white group-hover:text-primary sm:size-9"><ArrowLeft className="size-4" /></span>
                 </span>
-                <span className="mt-3 block text-[15px] font-semibold text-primary">{c.name}</span>
-                <span className="tabular text-[12.5px] text-muted-foreground">{n} خدمات</span>
               </Link>
             </Reveal>
           )
