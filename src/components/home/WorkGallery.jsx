@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { ChevronLeft, ChevronRight, X, FileText, ExternalLink } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { img, STORE_PDFS, pdfThumb, pdfView } from '@/data/work.js'
+import { img } from '@/data/work.js'
 
 /** Masonry of portfolio images (natural ratios) with a keyboard/swipe lightbox. */
 export function WorkGallery({ items, className, grid = false }) {
@@ -73,30 +73,5 @@ export function WorkGallery({ items, className, grid = false }) {
         </Dialog.Portal>
       </Dialog.Root>
     </>
-  )
-}
-
-/** Delivered full-store designs: a browser frame that scrolls the whole store on hover/focus. */
-export function StoreCases({ compact = false }) {
-  return (
-    <ul className={compact ? '-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0' : 'grid gap-4 sm:grid-cols-3'}>
-      {STORE_PDFS.map((s) => (
-        <li key={s.id} className={compact ? 'w-[72%] shrink-0 snap-start sm:w-auto' : undefined}>
-          <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="group block overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border transition-shadow duration-300 hover:shadow-card focus-visible:shadow-card">
-            <div className="flex items-center gap-1.5 border-b border-border bg-sunken px-3 py-2" aria-hidden="true">
-              <span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-border-strong" /><span className="size-2 rounded-full bg-accent" />
-              <span className="ms-2 h-4 flex-1 rounded-full bg-surface" />
-            </div>
-            <div className={`relative overflow-hidden bg-sunken [container-type:size] ${compact ? 'aspect-[4/3]' : 'aspect-[3/4]'}`}>
-              <img src={pdfThumb(s.id, 800)} alt={`تصميم متجر ${s.name}`} loading="lazy" className="w-full transition-[translate] duration-[9000ms] ease-in-out group-hover:[translate:0_calc(-100%+100cqh)] group-focus-visible:[translate:0_calc(-100%+100cqh)]" />
-            </div>
-            <div className="flex items-center justify-between gap-3 p-4">
-              <span className="flex items-center gap-2 font-display font-semibold text-primary"><FileText className="size-4 text-accent-text" />{s.name}</span>
-              <span className="flex items-center gap-1 text-sm text-muted-foreground">المتجر كامل<ExternalLink className="size-3.5" /></span>
-            </div>
-          </a>
-        </li>
-      ))}
-    </ul>
   )
 }

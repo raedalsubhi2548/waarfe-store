@@ -59,9 +59,19 @@ export const FEATURED = [8, 2, 20, 36, 32, 16, 23, 40, 1, 17, 34, 22].map((n) =>
 
 // Full store designs delivered, as PDF case files
 export const STORE_PDFS = [
-  { name: 'Velvet', id: '1qLce40-i8rLBo7Af7iFJvgN-BU4tI6RF', mb: 7.4 },
-  { name: 'Glisten', id: '1nXfSIksTDs8b5YN3tqIBcdI_0-sZGccj', mb: 9.3 },
-  { name: 'مروج اليسر', id: '1Bngc74ohxG9t9nMvfJyWh0ElIfkBnkKR', mb: 3.9 },
+  { name: 'Private Blend', id: '1vXeAoyhaAITP19LyPsUDg3fhOgC9aymj' },
+  { name: 'خزاز', id: '11Bozp1a0TgropGnoocTMXnzVEUWhmH7C' },
+  { name: 'حَلَه', id: '17mllE6_pcsWx_rpbRFKVbjqgEnExqBNd' },
+  { name: 'مُتّسع البن', id: '1xzOcEr2vPTmzx1Pfjj-Rkyg2VyDqEik2' },
+  { name: 'رونق للعبايات', id: '1DJXDNHzxVT_ORVNaaB86idxcddQC4Pnp' },
+  { name: 'Rozona', id: '1qAga030xlNkFpsll8hksrSlYr4zxKTAV' },
+  { name: 'Glisten', id: '1nXfSIksTDs8b5YN3tqIBcdI_0-sZGccj' },
+  { name: 'Velvet', id: '1qLce40-i8rLBo7Af7iFJvgN-BU4tI6RF' },
+  { name: 'كيان بوتيك', id: '1WORrpts1Ly63PM_ybz4NVwc7Orx5Y4kT' },
+  { name: 'ايفا لاين', id: '1KotuOq3e6n1xY7YPGlN4BUEfGNp6Lc21' },
+  { name: 'A/M Elegant', id: '1ZgFieaYDpeAyiBKxclKcJeqeleSNOLA_' },
+  { name: 'مروج اليسر', id: '1Bngc74ohxG9t9nMvfJyWh0ElIfkBnkKR' },
+  { name: 'إتقان التعليم', id: '1ZQQhBJYfOJ-IR3Ugaz5sXLbP_4Kx32aU' },
 ]
 // public image CDN (fast, works without a Google sign-in), same as the design images
 export const pdfThumb = (id, w = 900) => `https://lh3.googleusercontent.com/d/${id}=w${w}`

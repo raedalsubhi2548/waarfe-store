@@ -24,13 +24,27 @@ const isBg = (r, g, b) => {
   return false
 }
 
+const MAX_BYTES = 8e6
 export default async function handler(req, res) {
+  // only the known parameters, so random query strings can't bypass the edge cache and burn compute
+  if (Object.keys(req.query).some((k) => !['f', 'id', 'v'].includes(k))) return res.status(400).end('bad query')
   const f = String(req.query.f || '')
-  if (!/^[\w.-]+\.(jpe?g|png|webp)$/i.test(f)) return res.status(400).end('bad file')
-  const r = await fetch(CDN + f)
-  if (!r.ok) return res.status(404).end('not found')
-  const src = Buffer.from(await r.arrayBuffer())
+  if (!/^[\w.-]{1,120}\.(jpe?g|png|webp)$/i.test(f) || f.includes('..')) return res.status(400).end('bad file')
+  try {
+    const r = await fetch(CDN + f, { signal: AbortSignal.timeout(8000), redirect: 'error' })
+    if (!r.ok) return res.status(404).end('not found')
+    if (Number(r.headers.get('content-length') || 0) > MAX_BYTES) return res.status(413).end('too large')
+    const raw = Buffer.from(await r.arrayBuffer())
+    if (raw.length > MAX_BYTES) return res.status(413).end('too large')
+    // cap the working size so a huge image can't exhaust memory
+    const src = await sharp(raw, { limitInputPixels: 2.5e7 }).resize(1600, 1600, { fit: 'inside', withoutEnlargement: true }).png().toBuffer()
+    return await render(src, res)
+  } catch {
+    return res.status(422).end('could not process')
+  }
+}
 
+async function render(src, res) {
   const { data, info } = await sharp(src).removeAlpha().raw().toBuffer({ resolveWithObject: true })
   const { width: W, height: H, channels: C } = info
 

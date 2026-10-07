@@ -4,8 +4,8 @@ import { cn } from '@/lib/utils'
 // Official badges served by each provider / Salla's CDN (not redrawn).
 export const PAY_METHODS = [
   { name: 'تمارا', src: 'https://cdn.tamara.co/assets/svg/tamara-logo-badge-ar.svg' },
-  // Apple's mark is white, so it sits on the black Apple Pay badge
-  { name: 'Apple Pay', src: 'https://cdn.salla.network/images/payment/applepay.png', dark: true },
+  // Apple's file is a white mark: shown inverted (black) so it matches the other white badges
+  { name: 'Apple Pay', src: 'https://cdn.salla.network/images/payment/applepay.png', invert: true },
   { name: 'تابي', src: 'https://cdn.tabby.ai/assets/logo.svg' },
   { name: 'Visa', src: 'https://cdn.salla.network/images/payment/visa.png' },
   { name: 'Mastercard', src: 'https://cdn.salla.network/images/payment/mastercard.png' },
@@ -17,8 +17,8 @@ export default function PayIcons({ className, bank = false, size = 'md' }) {
   return (
     <ul className={cn('flex flex-nowrap items-center gap-1.5 sm:gap-2', className)} aria-label="طرق الدفع">
       {PAY_METHODS.map((m) => (
-        <li key={m.name} className={cn('grid min-w-0 flex-1 place-items-center rounded-md px-1 shadow-hairline ring-1', m.dark ? 'bg-black ring-black' : 'bg-white ring-black/5', h)} title={m.name}>
-          <img src={m.src} alt={m.name} loading="lazy" className="max-h-[60%] max-w-full object-contain" />
+        <li key={m.name} className={cn('grid min-w-0 flex-1 place-items-center rounded-md px-1 shadow-hairline ring-1', 'bg-white ring-black/5', h)} title={m.name}>
+          <img src={m.src} alt={m.name} loading="lazy" className={cn('max-h-[60%] max-w-full object-contain', m.invert && 'invert')} />
         </li>
       ))}
       {bank && (

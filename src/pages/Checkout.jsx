@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { CreditCard, Landmark, Lock } from 'lucide-react'
 import { useApp } from '@/state.jsx'
@@ -20,6 +20,7 @@ export default function Checkout() {
   const [couponErr, setCouponErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const pending = useRef(null) // { key, order } of a card order whose payment didn't start
 
   useEffect(() => { if (user) setForm((f) => ({ ...f, name: f.name || user.name, phone: f.phone || user.phone, email: user.email })) }, [user])
 
@@ -42,11 +43,14 @@ export default function Checkout() {
     setBusy(true)
     try {
       const items = lines.map(({ product: p, qty, note }) => ({ productId: p.id, name: p.name, price: effectivePrice(p), qty, note: note || '', image: p.image, digital: !!p.digital }))
-      const order = await api.createOrder({
+      // if paying failed a moment ago, retry the same order instead of creating a duplicate
+      const key = `${method}|${total}|${coupon?.code || ''}|${lines.map((l) => l.product.id + 'x' + l.qty).join(',')}`
+      const order = (pending.current?.key === key && pending.current.order) || await api.createOrder({
         items, customer: { name: form.name, phone: form.phone, email: form.email },
         notes: form.notes, coupon: coupon?.code || null, subtotal, discount, total, paymentMethod: method,
       })
       if (method === 'card' && !isDemo) {
+        pending.current = { key, order }
         const { redirect } = await api.startPayment(order)
         clearCart()
         window.location.href = redirect

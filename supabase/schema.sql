@@ -31,13 +31,14 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- customers may edit their name/phone, never their role
+-- customers may edit their name/phone, never their role or email
 create or replace function public.protect_role() returns trigger
 language plpgsql as $$
 begin
   -- auth.uid() is null for the SQL editor and service role, which may change roles
-  if new.role is distinct from old.role and auth.uid() is not null and not public.is_admin() then
+  if auth.uid() is not null and not public.is_admin() then
     new.role := old.role;
+    new.email := old.email;
   end if;
   return new;
 end $$;
@@ -273,3 +274,23 @@ create policy "product images admin delete" on storage.objects for delete using 
 
 -- ---------- make yourself admin (after signing up on the site) ----------
 -- update public.profiles set role = 'admin' where email = 'raed@rraed.com';
+
+-- 2) Order contact details are trimmed to sane sizes, and the email always comes from the signed-in account
+--    (the browser can't put someone else's email on an order or flood it with huge text).
+create or replace function public.orders_sanitize() returns trigger
+language plpgsql security definer set search_path = public as $$
+begin
+  new.customer := jsonb_build_object(
+    'name',  left(coalesce(new.customer->>'name', ''), 120),
+    'phone', left(coalesce(new.customer->>'phone', ''), 20),
+    'email', coalesce((select u.email from auth.users u where u.id = new.user_id), left(coalesce(new.customer->>'email', ''), 160))
+  );
+  new.notes := left(new.notes, 2000);
+  if jsonb_array_length(coalesce(new.items, '[]'::jsonb)) > 50 then
+    raise exception 'too many items';
+  end if;
+  return new;
+end $$;
+drop trigger if exists orders_sanitize on public.orders;
+create trigger orders_sanitize before insert on public.orders
+  for each row execute function public.orders_sanitize();

@@ -6,7 +6,8 @@ export const admin = createClient((process.env.VITE_SUPABASE_URL || '').trim().r
 })
 export const TAP = 'https://api.tap.company/v2'
 export const tapHeaders = () => ({ authorization: `Bearer ${process.env.TAP_SECRET_KEY}`, 'content-type': 'application/json' })
-export const siteUrl = (req) => process.env.SITE_URL || `https://${req.headers['x-forwarded-host'] || req.headers.host}`
+// payment return/webhook addresses: from config, or the deployment's own production domain — never a request header
+export const siteUrl = () => (process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'https://waarfe-store.vercel.app')).replace(/\/$/, '')
 
 export async function userFromRequest(req) {
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '')

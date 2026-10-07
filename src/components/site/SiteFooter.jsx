@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom'
-import { MessageCircle, ArrowLeft } from 'lucide-react'
-import Icon from '@/components/Icon.jsx'
+import { MessageCircle, Mail } from 'lucide-react'
 import Social from '@/components/Social.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
-import { WHATSAPP, waLink } from '@/lib/format.js'
+import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
 
 /** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
 export default function SiteFooter() {
@@ -30,27 +29,28 @@ export default function SiteFooter() {
             </a>
           </div>
 
-          <div className="mt-16 grid gap-10 border-t border-white/10 pt-12 lg:grid-cols-[1.1fr_2fr]">
+          <div className="mt-16 grid gap-12 border-t border-white/10 pt-12 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
             {/* brand */}
-            <div className="flex flex-col items-center gap-4 text-center lg:items-start lg:text-start">
+            <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-start">
               <Link to="/" className="block" aria-label="رائد — الرئيسية">
-                <img src="/logo-white.png" alt="رائد Raed" width="458" height="248" className="h-[78px] w-auto sm:h-[88px]" />
+                <img src="/logo-white.png" alt="رائد Raed" width="458" height="248" className="h-[76px] w-auto sm:h-[84px]" />
               </Link>
-              <p className="max-w-xs text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
+              <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
               <Social className="foot-social" />
             </div>
 
+            {/* links: two tidy columns on phones, four on desktop */}
             <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
               <nav aria-label="الأقسام">
                 <h2 className={col}>الأقسام</h2>
-                <ul>{categories.map((c) => <li key={c.id}><Link to={`/c/${c.id}`} className={item}><Icon name={c.icon} size={15} className="opacity-60" />{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
+                <ul>{categories.map((c) => <li key={c.id}><Link to={`/c/${c.id}`} className={item}>{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
               </nav>
               <nav aria-label="رائد">
                 <h2 className={col}>رائد</h2>
                 <ul>
+                  <li><Link to="/shop" className={item}>كل الخدمات</Link></li>
                   <li><Link to="/work" className={item}>أعمالنا</Link></li>
                   <li><Link to="/reviews" className={item}>آراء العملاء</Link></li>
-                  <li><Link to="/contact" className={item}>تواصل معنا</Link></li>
                   <li><Link to="/policies" className={item}>السياسات والشروط</Link></li>
                 </ul>
               </nav>
@@ -60,17 +60,26 @@ export default function SiteFooter() {
                   <li><Link to="/account" className={item}>تتبّع طلباتك</Link></li>
                   <li><Link to="/account/wishlist" className={item}>أمنياتي</Link></li>
                   <li><Link to="/cart" className={item}>السلة</Link></li>
-                  <li><Link to="/shop" className={item}>كل الخدمات<ArrowLeft className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100" /></Link></li>
                 </ul>
               </nav>
-              <div className="col-span-2 sm:col-span-1">
-                <h2 className={col}>طرق الدفع</h2>
-                <PayIcons size="sm" />
+              <div>
+                <h2 className={col}>تواصل معنا</h2>
+                <ul>
+                  <li><a href={waLink('السلام عليكم')} target="_blank" rel="noreferrer" className={item}><MessageCircle className="size-4 opacity-60" /><span dir="ltr" className="tabular">0{WHATSAPP.slice(3)}</span></a></li>
+                  <li><a href={`mailto:${EMAIL}`} className={item}><Mail className="size-4 opacity-60" /><span dir="ltr">{EMAIL}</span></a></li>
+                  <li><Link to="/contact" className={item}>صفحة التواصل</Link></li>
+                </ul>
               </div>
             </div>
           </div>
 
-          <p className="mt-12 border-t border-white/10 pt-6 text-center text-xs text-on-inverse/50">© {new Date().getFullYear()} رائد</p>
+          {/* bottom bar: payments + rights, on one clean line on desktop */}
+          <div className="mt-12 flex flex-col items-center gap-5 border-t border-white/10 pt-7 lg:flex-row-reverse lg:justify-between">
+            <PayIcons size="sm" className="w-full max-w-[320px]" />
+            <p className="text-center text-[13px] text-on-inverse/55 lg:text-start">
+              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">رائد</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

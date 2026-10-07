@@ -19,7 +19,7 @@ export default function Coupons() {
   useEffect(() => { load() }, [])
   const add = async (e) => {
     e.preventDefault()
-    try { await api.saveCoupon({ ...f, value: Number(f.value), active: true, expiresAt: f.expiresAt || null }); setF(BLANK); load(); notify('أُضيف الكود') } catch (er) { notify(er.message, 'err') }
+    try { await api.saveCoupon({ ...f, value: Number(f.value), active: true, expiresAt: f.expiresAt ? `${f.expiresAt}T23:59:59+03:00` : null }); setF(BLANK); load(); notify('أُضيف الكود') } catch (er) { notify(er.message, 'err') }
   }
   const toggle = async (c) => { try { await api.saveCoupon({ ...c, active: !c.active }); load() } catch (e) { notify(e.message, 'err') } }
   const del = async (c) => {

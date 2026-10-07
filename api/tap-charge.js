@@ -12,9 +12,16 @@ export default async function handler(req, res) {
   if (!order || order.user_id !== user.id) return res.status(404).json({ error: 'الطلب غير موجود' })
   if (order.status !== 'pending') return res.status(409).json({ error: 'هذا الطلب مدفوع مسبقاً' })
 
+  // a retry (second tab, back button) reuses the open charge instead of creating a second one for the same order
+  if (order.payment_ref) {
+    const prev = await fetch(`${TAP}/charges/${encodeURIComponent(order.payment_ref)}`, { headers: tapHeaders() }).then((x) => (x.ok ? x.json() : null)).catch(() => null)
+    if (prev?.status === 'CAPTURED') return res.status(409).json({ error: 'هذا الطلب مدفوع مسبقاً' })
+    if (prev?.status === 'INITIATED' && prev.transaction?.url) return res.status(200).json({ url: prev.transaction.url })
+  }
+
   const phone = String(order.customer?.phone || '').replace(/\D/g, '').replace(/^(966|0)/, '')
   const [first, ...rest] = String(order.customer?.name || 'عميل').split(' ')
-  const base = siteUrl(req)
+  const base = siteUrl()
   const r = await fetch(`${TAP}/charges`, {
     method: 'POST',
     headers: tapHeaders(),

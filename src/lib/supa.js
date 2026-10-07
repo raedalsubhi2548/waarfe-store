@@ -27,7 +27,7 @@ const productRow = (p) => ({
 const order = (r) => r && ({
   id: r.id, number: r.number, userId: r.user_id, customer: r.customer, items: r.items,
   subtotal: Number(r.subtotal), discount: Number(r.discount), coupon: r.coupon, total: Number(r.total),
-  status: r.status, notes: r.notes, paymentMethod: r.payment_method, history: r.history || [], createdAt: r.created_at,
+  status: r.status, notes: r.notes, paymentMethod: r.payment_method, paymentRef: r.payment_ref || null, history: r.history || [], createdAt: r.created_at,
 })
 const coupon = (r) => ({ code: r.code, type: r.type, value: Number(r.value), active: r.active, expiresAt: r.expires_at })
 
@@ -123,7 +123,7 @@ export const supa = {
   // Prices are recomputed in the database (place_order) — the browser never sets the total.
   async createOrder({ items, customer, notes, coupon: code, paymentMethod }) {
     const id = check(await sb.rpc('place_order', {
-      p_items: items.map((i) => ({ product_id: i.productId, qty: i.qty })),
+      p_items: items.map((i) => ({ product_id: i.productId, qty: i.qty, note: String(i.note || '').slice(0, 1000) })),
       p_customer: customer, p_notes: notes || '', p_coupon: code || null, p_payment_method: paymentMethod,
     }))
     return order(check(await sb.from('orders').select('*').eq('id', id).single()))

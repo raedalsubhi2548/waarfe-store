@@ -17,7 +17,9 @@ const PERKS = [
 export default function Login() {
   const { user, authReady, notify } = useApp()
   const [params] = useSearchParams()
-  const next = params.get('next') || ''
+  // only same-site paths (blocks //evil.com and /\\evil.com open redirects)
+  const rawNext = params.get('next') || ''
+  const next = /^\/(?![\/\\])/.test(rawNext) ? rawNext : ''
   const nav = useNavigate()
   const [mode, setMode] = useState('in')
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '' })
@@ -76,7 +78,7 @@ export default function Login() {
           بالمتابعة توافق على <Link to="/policies" className="font-semibold text-primary underline underline-offset-4">السياسات والشروط</Link>
         </p>
 
-        {isDemo && (
+        {isDemo && import.meta.env.DEV && (
           <div className="mt-6 rounded-md border-2 border-dashed border-accent bg-accent/10 p-4 text-sm leading-7">
             <strong>وضع العرض</strong> — البيانات محفوظة في متصفحك فقط. دخول الإدارة:{' '}
             <button type="button" className="font-bold text-primary underline underline-offset-4" onClick={() => { setMode('in'); setForm({ ...form, email: DEMO_ADMIN.email, password: DEMO_ADMIN.password }) }}>

@@ -61,7 +61,7 @@ function OrderDetail({ order, onSaved }) {
         </dl>
         <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
           {order.paymentMethod === 'card' ? <><CreditCard className="size-4" />بطاقة / Apple Pay</> : <><Landmark className="size-4" />تحويل بنكي</>}
-          {order.tapId && <span className="ms-auto font-mono" dir="ltr">{order.tapId}</span>}
+          {(order.paymentRef || order.tapId) && <span className="ms-auto font-mono" dir="ltr">{order.paymentRef || order.tapId}</span>}
         </p>
       </section>
 
