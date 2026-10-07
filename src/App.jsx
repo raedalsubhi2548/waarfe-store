@@ -1,4 +1,10 @@
-import { lazy, Suspense } from 'react'
+import { lazy as reactLazy, Suspense } from 'react'
+
+// After a new release the old page may ask for files that no longer exist: reload once to get the fresh ones.
+const lazy = (load) => reactLazy(() => load().then((m) => { sessionStorage.removeItem('raed:reloaded'); return m }).catch((err) => {
+  if (!sessionStorage.getItem('raed:reloaded')) { sessionStorage.setItem('raed:reloaded', '1'); location.reload(); return new Promise(() => {}) }
+  throw err
+}))
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { DirectionProvider } from '@radix-ui/react-direction'
 import { AppProvider } from './state.jsx'
