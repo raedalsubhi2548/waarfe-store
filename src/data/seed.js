@@ -403,8 +403,32 @@ const RAW_PRODUCTS = [
   },
 ]
 
-// Old store images carried the previous brand; every service gets a Raed cover until the owner uploads one.
-export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: coverFor(p) }))
+// The original service artwork, re-coloured from green to navy by /api/art (falls back to a drawn cover).
+const ART = {
+  "salla-store-design": "445a5540-372a-49e7-a850-a20c1188e655-500x500-2iDddQUZOFOchpjOctqwg85nRjBF0sWQZKdTeSRS.jpg",
+  "landing-page-design": "3f17aace-af9c-4009-a569-106e3c331ea1-500x500-8jLI2QhaiNa8vi2E1dwVwVpfQEvn826CX7S6a8BN.jpg",
+  "banner-design": "5ff3feac-a1ac-4913-ac3f-52feba5e6970-500x500-QNO4DgjZwroJmnuRkn4fvgHk7dEBPWTBxozLbsYH.jpg",
+  "logo-design": "f11cc346-3f40-4016-934c-3eb3b6a9ce5c-500x500-8h3o96mNzUp4kYAvJozyXIcT4zADVf3hom6jhsLq.jpg",
+  "add-product-options": "062a16d7-f24f-4347-9976-81af0790bb2a-500x500-rukrq8BJMDoiMW0rAeXvYIT3VOoxXiOg6R71CAV1.jpg",
+  "add-products": "8096e339-8c47-4586-b5b8-11416a9180d2-500x500-hGUXZfIiOptGvN3tbLcPMXFAn5jZLNJTNxNhFEox.jpg",
+  "ai-integration-chatgpt-claude-salla": "d056639d-6f09-4d54-86e4-c3a9a8cdc856-500x500-QRCXJs2okSSSRhNDoeYO8VivUQjoatEI2oWFtdqT.webp",
+  "snapchat-ads-creation": "0f0db848-dc1e-4271-abde-6bf3f8b231d6-500x500-PIqTSuZRonHNiGXPDmKl8LZWMfH2ssiqH605496P.jpg",
+  "tiktok-ads-creation": "d0c8e61e-fc0c-4a89-9ae7-3201f50fa49d-500x500-r0taBZ5qdkVGNhjQoPQ1kjyfD5gOt9px3mkwVJa8.jpg",
+  "instagram-ads-creation": "627cbdf0-4dee-4de1-9f10-9842a7d9d4d8-500x500-XqhGmj2epkKdPU4MJMQkbduW5eaQ1hYaM25LLiBl.jpg",
+  "pixel-integration": "40d8116e-02ec-44c0-a5f9-39f9ff77a71d-500x500-lvXiVh7UHuOGU1b7XI99ubwClJFfzAC7byTPs8z5.jpg",
+  "google-tools-integration": "e24d0865-1861-4327-be05-c8b73c0a8aad-500x500-s2GKyYt8KR4VOpf8SUnfiipwZhfcWmB6eG7T4r7Q.jpg",
+  "salla-subscription": "2c8c08c1-c201-4433-a386-64d095145354-500x500-Z6ok9nfRZ2P00pDKmacdN6b0gkAILyYCdKUdT1er.jpg",
+  "salla-theme": "68a73e5d-4e34-4769-b9bd-1e21bc0ebc9d-500x500-ptnVQRA542VufLXNUSsZuyST4fMJcN5fHiaoLb3c.jpg",
+  "buy-domain": "3887b7c9-277c-4b06-9a09-16517c61acf8-500x500-mF7ABf4RN08McssPtrh1LmMKGeg0BaIK4myVp53P.jpg",
+  "issue-commercial-registration-saudi": "58090d27-76b4-437c-b4c6-1d3d1fde5e38-500x500-8U1qwPAcMZniZhLrK5FwGSuWXcqfhlcUoXvVa8Z3.jpg",
+  "freelance-certificate-family-platform": "8aada159-a24a-47c0-ac7b-250de9c5561f-500x500-TXw8JFDjz7sGfXt99bkqKUeKEtfda0pCSlhvWWJ3.jpg",
+  "business-verification": "6effe700-f66a-4816-b986-980f732503ae-500x500-tjEGR6IubvFGUrCKrqZbXLAHFiERGpyr3MZgjxLE.jpg",
+  "tabby-registration": "06aa6da6-4122-4b1a-a35a-a779cc38a85d-500x500-UPEq2FUZ9l7YuKQTTehjySpDFvCUbUzxiaqLLs2a.jpg",
+  "tmara-registration": "53e50bde-0edb-4062-bdcc-43202907aa1b-500x500-He3aZqkDy3zuPLZ4hW0pykCURzDd3ElgRiSE92ZJ.jpg",
+  "waarfe-ai-ad-campaigns-guide": "883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg"
+}
+export const artUrl = (file) => `/api/art?f=${encodeURIComponent(file)}`
+export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: ART[p.id] ? artUrl(ART[p.id]) : coverFor(p) }))
 
 export const ORDER_STATUSES = [
   { id: 'pending', label: 'بانتظار الدفع' },
