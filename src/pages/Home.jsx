@@ -110,7 +110,7 @@ function Hero() {
       </div>
 
       {/* melt softly into the cream page — no hard edge */}
-      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,transparent,rgb(251_252_254/0.55)_55%,var(--background))] sm:h-56" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-x-0 -bottom-px h-48 bg-[linear-gradient(180deg,transparent,rgb(251_252_254/0.7)_45%,var(--background)_82%)] sm:h-72" aria-hidden="true" />
     </section>
   )
 }
