@@ -381,7 +381,7 @@ const RAW_PRODUCTS = [
 - صور المنتجات واضحة ووصفها مكتمل`,
   },
   {
-    id: 'raed-ai-ad-campaigns-guide', name: 'دليل رائد لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', price: 150, salePrice: 129, categoryId: 'digital-products',
+    id: 'waarfe-ai-ad-campaigns-guide', name: 'دليل رائد لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', price: 150, salePrice: 129, categoryId: 'digital-products',
     image: 'https://cdn.salla.sa/zvxNvp/883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg',
     featured: true, sort: 1, digital: true,
     summary: 'أطلق وأدر حملاتك على تيك توك وسناب وميتا بمحادثة بالعربي مع الذكاء الاصطناعي — خطوة بخطوة بالصور.',

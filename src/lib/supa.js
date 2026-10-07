@@ -1,5 +1,6 @@
 // Live backend: Supabase (auth + Postgres + storage). Schema in supabase/schema.sql.
 import { createClient } from '@supabase/supabase-js'
+import { coverFor } from './cover.js'
 
 // accept the URL with or without a trailing /rest/v1/ (common copy-paste from the dashboard)
 const url = (import.meta.env.VITE_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
@@ -7,15 +8,19 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const sb = url && key ? createClient(url, key) : null
 
 // --- row <-> object mapping (DB is snake_case, UI is camelCase) ---
+// Rows imported from the old store carry its name and its green images; show the Raed brand instead.
+const LEGACY_IMG = /cdn\.salla\.(sa|network)|^data:/
+const rebrand = (t) => (typeof t === 'string' ? t.replace(/وارف(?![\u0621-\u064A])/g, 'رائد') : t)
 const product = (r) => r && ({
-  id: r.id, name: r.name, price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
-  categoryId: r.category_id, image: r.image, badge: r.badge, featured: r.featured, sort: r.sort,
-  summary: r.summary, description: r.description, active: r.active, digital: r.digital, perUnit: r.per_unit,
+  id: r.id, name: rebrand(r.name), price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
+  categoryId: r.category_id, badge: r.badge, featured: r.featured, sort: r.sort,
+  summary: rebrand(r.summary), description: rebrand(r.description), active: r.active, digital: r.digital, perUnit: r.per_unit,
   createdAt: r.created_at,
+  image: !r.image || LEGACY_IMG.test(r.image) ? coverFor({ id: r.id, categoryId: r.category_id }) : r.image,
 })
 const productRow = (p) => ({
   id: p.id, name: p.name, price: p.price, sale_price: p.salePrice || null, category_id: p.categoryId,
-  image: p.image, badge: p.badge || null, featured: !!p.featured, sort: p.sort ?? 0, summary: p.summary,
+  image: p.image && !p.image.startsWith('data:') ? p.image : null, badge: p.badge || null, featured: !!p.featured, sort: p.sort ?? 0, summary: p.summary,
   description: p.description, active: p.active !== false, digital: !!p.digital, per_unit: p.perUnit || null,
 })
 const order = (r) => r && ({

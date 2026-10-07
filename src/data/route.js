@@ -18,6 +18,6 @@ export const STOPS = [
   {
     key: 'grow', title: 'سوّق', name: 'الحملات والذكاء',
     text: 'حملات سناب وتيك توك وإنستغرام، وربط متجرك بـ ChatGPT وClaude.',
-    ids: ['snapchat-ads-creation', 'tiktok-ads-creation', 'instagram-ads-creation', 'ai-integration-chatgpt-claude-salla', 'raed-ai-ad-campaigns-guide'],
+    ids: ['snapchat-ads-creation', 'tiktok-ads-creation', 'instagram-ads-creation', 'ai-integration-chatgpt-claude-salla', 'waarfe-ai-ad-campaigns-guide'],
   },
 ]
