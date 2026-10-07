@@ -10,7 +10,7 @@ export const sb = url && key ? createClient(url, key) : null
 // --- row <-> object mapping (DB is snake_case, UI is camelCase) ---
 // Rows imported from the old store carry its name and its green images; show the Raed brand instead.
 const LEGACY_IMG = /cdn\.salla\.(sa|network)|^data:/
-const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=3` : coverFor({ id: r.id, categoryId: r.category_id }))
+const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=4` : coverFor({ id: r.id, categoryId: r.category_id }))
 const rebrand = (t) => (typeof t === 'string' ? t.replace(/وارف(?![\u0621-\u064A])/g, 'رائد') : t)
 const product = (r) => r && ({
   id: r.id, name: rebrand(r.name), price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
