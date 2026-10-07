@@ -14,7 +14,7 @@ const data = { products: seedProducts, categories: seedCategories, faq: FAQ, rev
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const money = (n) => `${n} ر.س`
 const price = (p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)
-const nav = `<nav><a href="/">الرئيسية</a> · <a href="/shop">كل الخدمات</a> · ${seedCategories.map((c) => `<a href="/c/${c.id}">${esc(c.name)}</a>`).join(' · ')} · <a href="/build">صمم متجرك</a> · <a href="/work">أعمالنا</a> · <a href="/reviews">آراء العملاء</a> · <a href="/contact">تواصل معنا</a></nav>`
+const nav = `<nav><a href="/">الرئيسية</a> · <a href="/shop">كل الخدمات</a> · ${seedCategories.map((c) => `<a href="/c/${c.id}">${esc(c.name)}</a>`).join(' · ')} · <a href="/work">أعمالنا</a> · <a href="/reviews">آراء العملاء</a> · <a href="/contact">تواصل معنا</a></nav>`
 const list = (ps) => `<ul>${ps.map((p) => `<li><a href="/p/${p.id}">${esc(p.name)}</a> — ${money(price(p))}</li>`).join('')}</ul>`
 
 function body(path) {
@@ -26,13 +26,12 @@ function body(path) {
   if (id) { const p = seedProducts.find((x) => x.id === id); return `<h1>${esc(p.name)}</h1><p><strong>${money(price(p))}</strong></p><p>${esc(p.summary || '')}</p><div>${esc(p.description || '').replace(/\n/g, '<br>')}</div>` }
   if (path === '/reviews') return `<h1>آراء العملاء</h1>${ALL_REVIEWS.map((r) => `<blockquote><p>${esc(r.text)}</p><cite>${esc(r.name)}${r.city ? '، ' + esc(r.city) : ''}</cite></blockquote>`).join('')}`
   if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/966536090915">0536090915</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
-  if (path === '/build') return `<h1>صمم متجرك بنفسك</h1><p>اختر اسم متجرك ونشاطه وألوانه والثيم والشعار، وشوف متجرك يتشكّل قدامك قبل ما نبنيه لك على سلة.</p>`
   if (path === '/work') return `<h1>أعمالنا</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
   if (path === '/policies') return `<h1>السياسات والشروط</h1>`
   return ''
 }
 
-const routes = ['/', '/shop', '/build', '/work', '/reviews', '/contact', '/policies',
+const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
   ...seedCategories.map((c) => `/c/${c.id}`), ...seedProducts.map((p) => `/p/${p.id}`)]
 
 for (const path of routes) {

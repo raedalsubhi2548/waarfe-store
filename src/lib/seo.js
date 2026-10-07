@@ -130,7 +130,6 @@ export function seoFor(path, data = {}) {
       ],
     }
   }
-  if (path === '/build') return { ...base, title: t('صمم متجرك بنفسك'), description: clip(`صمم متجرك في سلة بنفسك: اختر الاسم والنشاط والألوان والثيم والشعار، وشوف متجرك يتشكّل قدامك على الجوال والكمبيوتر قبل ما نبنيه لك.`), jsonLd: [crumbs([['الرئيسية', '/'], ['صمم متجرك', '/build']])] }
   if (path === '/work') return { ...base, title: t('أعمالنا'), description: clip(`متاجر صممها ${SITE.name} في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.`), jsonLd: [crumbs([['الرئيسية', '/'], ['أعمالنا', '/work']])] }
   if (path === '/reviews') return { ...base, title: t('آراء العملاء'), description: clip(`${reviews.length} رأي مكتوب من عملاء ${SITE.name} عن تصميم المتاجر والخدمات، وكلها بتقييم 5 من 5.`), jsonLd: [crumbs([['الرئيسية', '/'], ['آراء العملاء', '/reviews']])] }
   if (path === '/contact') return { ...base, title: t('تواصل معنا'), description: clip(`تواصل مع ${SITE.name} على واتساب 0536090915 أو على البريد ${SITE.email}، ونرد عليك بنفس اليوم.`), jsonLd: [ORG(), crumbs([['الرئيسية', '/'], ['تواصل معنا', '/contact']])] }
