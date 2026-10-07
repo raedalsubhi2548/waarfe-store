@@ -403,7 +403,8 @@ const RAW_PRODUCTS = [
   },
 ]
 
-// The original service artwork, re-coloured from green to navy by /api/art (falls back to a drawn cover).
+// The original laptop mockups, lifted off the old green background by /api/art and placed on navy.
+// The guide's cover carries the old logo, so it keeps its drawn cover.
 const ART = {
   "salla-store-design": "445a5540-372a-49e7-a850-a20c1188e655-500x500-2iDddQUZOFOchpjOctqwg85nRjBF0sWQZKdTeSRS.jpg",
   "landing-page-design": "3f17aace-af9c-4009-a569-106e3c331ea1-500x500-8jLI2QhaiNa8vi2E1dwVwVpfQEvn826CX7S6a8BN.jpg",
@@ -424,8 +425,7 @@ const ART = {
   "freelance-certificate-family-platform": "8aada159-a24a-47c0-ac7b-250de9c5561f-500x500-TXw8JFDjz7sGfXt99bkqKUeKEtfda0pCSlhvWWJ3.jpg",
   "business-verification": "6effe700-f66a-4816-b986-980f732503ae-500x500-tjEGR6IubvFGUrCKrqZbXLAHFiERGpyr3MZgjxLE.jpg",
   "tabby-registration": "06aa6da6-4122-4b1a-a35a-a779cc38a85d-500x500-UPEq2FUZ9l7YuKQTTehjySpDFvCUbUzxiaqLLs2a.jpg",
-  "tmara-registration": "53e50bde-0edb-4062-bdcc-43202907aa1b-500x500-He3aZqkDy3zuPLZ4hW0pykCURzDd3ElgRiSE92ZJ.jpg",
-  "waarfe-ai-ad-campaigns-guide": "883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg"
+  "tmara-registration": "53e50bde-0edb-4062-bdcc-43202907aa1b-500x500-He3aZqkDy3zuPLZ4hW0pykCURzDd3ElgRiSE92ZJ.jpg"
 }
 export const artUrl = (file) => `/api/art?f=${encodeURIComponent(file)}`
 export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: ART[p.id] ? artUrl(ART[p.id]) : coverFor(p) }))
