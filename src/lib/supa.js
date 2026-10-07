@@ -10,7 +10,7 @@ export const sb = url && key ? createClient(url, key) : null
 // --- row <-> object mapping (DB is snake_case, UI is camelCase) ---
 // Rows imported from the old store carry its name and its green images; show the Raed brand instead.
 const LEGACY_IMG = /cdn\.salla\.(sa|network)|^data:/
-const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}` : coverFor({ id: r.id, categoryId: r.category_id }))
+const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=2` : coverFor({ id: r.id, categoryId: r.category_id }))
 const rebrand = (t) => (typeof t === 'string' ? t.replace(/وارف(?![\u0621-\u064A])/g, 'رائد') : t)
 const product = (r) => r && ({
   id: r.id, name: rebrand(r.name), price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
@@ -21,7 +21,7 @@ const product = (r) => r && ({
 })
 const productRow = (p) => ({
   id: p.id, name: p.name, price: p.price, sale_price: p.salePrice || null, category_id: p.categoryId,
-  image: !p.image || p.image.startsWith('data:') ? null : p.image.startsWith('/api/art?f=') ? 'https://cdn.salla.sa/zvxNvp/' + decodeURIComponent(p.image.slice(11)) : p.image, badge: p.badge || null, featured: !!p.featured, sort: p.sort ?? 0, summary: p.summary,
+  image: !p.image || p.image.startsWith('data:') ? null : p.image.startsWith('/api/art?f=') ? 'https://cdn.salla.sa/zvxNvp/' + decodeURIComponent(p.image.slice(11).split('&')[0]) : p.image, badge: p.badge || null, featured: !!p.featured, sort: p.sort ?? 0, summary: p.summary,
   description: p.description, active: p.active !== false, digital: !!p.digital, per_unit: p.perUnit || null,
 })
 const order = (r) => r && ({

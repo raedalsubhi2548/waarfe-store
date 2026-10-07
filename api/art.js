@@ -1,7 +1,8 @@
-// GET /api/art?f=<file on the old Salla CDN>
-// Lifts the product mockup (the laptop and its screen) out of the old green artwork and places it
-// on the Raed navy background. Cached at the edge for a year, so each image is processed once.
+// GET /api/art?f=<file on the old Salla CDN>&id=<product id>
+// Lifts the laptop out of the old green artwork, clears its screen and draws the service's own
+// line icon on it, then places it on the Raed navy background. Cached at the edge for a year, so each image is processed once.
 import sharp from 'sharp'
+import { glyphFor } from '../src/lib/cover.js'
 
 const CDN = 'https://cdn.salla.sa/zvxNvp/'
 const SIZE = 600
@@ -72,8 +73,40 @@ export default async function handler(req, res) {
     data[k * 4 + 3] = edge ? 150 : 255
   }
 
+  // find the screen: inside the black bezel, scanning in from each side of the laptop
+  const dark = (x, y) => { const i = px(x, y); const [, s2, l] = hsl(data[i], data[i + 1], data[i + 2]); return l < 0.22 && s2 < 0.5 }
+  const solid = (x, y) => !bg[y * W + x]
+  const scan = (from, to, step, at) => { // returns first index after a dark run
+    let seenDark = false
+    for (let v = from; step > 0 ? v <= to : v >= to; v += step) {
+      const [x, y] = at(v)
+      if (!solid(x, y)) continue
+      if (dark(x, y)) seenDark = true
+      else if (seenDark) return v
+    }
+    return -1
+  }
+  const cx = Math.round((x0 + x1) / 2)
+  const sTop = scan(y0, y1, 1, (v) => [cx, v])
+  const sBot = scan(y1, y0, -1, (v) => [cx, v])
+  const ym = Math.round((sTop + sBot) / 2)
+  const sLeft = scan(x0, x1, 1, (v) => [v, ym])
+  const sRight = scan(x1, x0, -1, (v) => [v, ym])
+  const composites = []
+  const sw = sRight - sLeft + 1, sh = sBot - sTop + 1
+  if (sTop > 0 && sBot > sTop && sLeft > 0 && sRight > sLeft && sw > (x1 - x0) * 0.4 && sh > (y1 - y0) * 0.3) {
+    const g = Math.round(sh * 0.9)
+    const screen = `<svg xmlns="http://www.w3.org/2000/svg" width="${sw}" height="${sh}">
+<defs><radialGradient id="g" cx="50%" cy="30%" r="90%"><stop offset="0" stop-color="#34507f"/><stop offset=".6" stop-color="#1b2b44"/><stop offset="1" stop-color="#0f1a2c"/></radialGradient></defs>
+<rect width="${sw}" height="${sh}" fill="url(#g)"/>
+<svg x="${Math.round((sw - g) / 2)}" y="${Math.round((sh - g) / 2)}" width="${g}" height="${g}" viewBox="104 104 192 192">${glyphFor({ id: String(req.query.id || ''), categoryId: '' })}</svg>
+</svg>`
+    composites.push({ input: Buffer.from(screen), left: sLeft, top: sTop })
+  }
+
   const pad = 2
-  const cut = await sharp(data, { raw: info })
+  const withScreen = composites.length ? await sharp(data, { raw: info }).composite(composites).raw().toBuffer() : data
+  const cut = await sharp(withScreen, { raw: info })
     .extract({ left: Math.max(0, x0 - pad), top: Math.max(0, y0 - pad), width: Math.min(W, x1 + pad) - Math.max(0, x0 - pad) + 1, height: Math.min(H, y1 + pad) - Math.max(0, y0 - pad) + 1 })
     .resize({ width: Math.round(SIZE * 0.78), height: Math.round(SIZE * 0.62), fit: 'inside' })
     .png().toBuffer({ resolveWithObject: true })

@@ -427,8 +427,8 @@ const ART = {
   "tabby-registration": "06aa6da6-4122-4b1a-a35a-a779cc38a85d-500x500-UPEq2FUZ9l7YuKQTTehjySpDFvCUbUzxiaqLLs2a.jpg",
   "tmara-registration": "53e50bde-0edb-4062-bdcc-43202907aa1b-500x500-He3aZqkDy3zuPLZ4hW0pykCURzDd3ElgRiSE92ZJ.jpg"
 }
-export const artUrl = (file) => `/api/art?f=${encodeURIComponent(file)}`
-export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: ART[p.id] ? artUrl(ART[p.id]) : coverFor(p) }))
+export const artUrl = (file, id) => `/api/art?f=${encodeURIComponent(file)}&id=${encodeURIComponent(id)}&v=2`
+export const seedProducts = RAW_PRODUCTS.map((p) => ({ ...p, image: ART[p.id] ? artUrl(ART[p.id], p.id) : coverFor(p) }))
 
 export const ORDER_STATUSES = [
   { id: 'pending', label: 'بانتظار الدفع' },

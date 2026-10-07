@@ -62,6 +62,9 @@ const BY_CATEGORY = {
   'digital-products': ICONS['waarfe-ai-ad-campaigns-guide'],
 }
 
+/** Just the line drawing for a service (shared with /api/art, which puts it on the laptop screen). */
+export const glyphFor = (p) => ICONS[p.id] || BY_CATEGORY[p.categoryId] || ICONS['logo-design']
+
 const hash = (s = '') => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7)
 
 export function coverFor(p) {
