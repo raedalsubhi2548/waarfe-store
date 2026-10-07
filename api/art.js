@@ -55,8 +55,8 @@ export default async function handler(req, res) {
   // every mockup uses the same laptop, so the screen sits at a fixed place inside its box;
   // trim a hair more so no bezel shows
   const lw = x1 - x0, lh = y1 - y0
-  const left = Math.round(x0 + lw * 0.105), right = Math.round(x0 + lw * 0.895)
-  const top = Math.round(y0 + lh * 0.05), bottom = Math.round(y0 + lh * 0.84)
+  const left = Math.round(x0 + lw * 0.115), right = Math.round(x0 + lw * 0.885)
+  const top = Math.round(y0 + lh * 0.065), bottom = Math.round(y0 + lh * 0.795)
   const screen = sharp(src).extract({ left, top, width: right - left, height: bottom - top })
 
   // if the artwork sits on a plain backdrop (a logo on white, etc.), grow it to a square with that
