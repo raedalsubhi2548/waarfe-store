@@ -22,14 +22,14 @@ export function WorkGallery({ items, className, grid = false }) {
     <>
       {grid ? (
         // tidy grid: every design sits as a framed print on the store's soft backdrop, same size, all lined up
-        <ul className={cn('grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5', className)}>
+        <ul className={cn('grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4', className)}>
           {items.map((id, i) => (
             <li key={id}>
               <button type="button" onClick={() => setOpen(i)} aria-label={`عرض التصميم ${i + 1} بحجم كبير`}
-                className="group relative grid aspect-[4/5] w-full place-items-center overflow-hidden rounded-[14px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] p-3 ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-26px_rgb(27_43_68/0.6)] sm:p-4">
+                className="group relative grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-[14px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] p-2.5 ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-26px_rgb(27_43_68/0.6)] sm:p-3.5">
                 <span className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-[radial-gradient(60%_80%_at_50%_100%,rgb(27_43_68/0.08),transparent)]" aria-hidden="true" />
                 <img src={img(id, 600)} alt={`تصميم ${i + 1} من أعمال رائد`} loading="lazy" decoding="async"
-                  className="relative max-h-full max-w-full rounded-[8px] object-contain shadow-[0_14px_28px_-14px_rgb(27_43_68/0.55)] ring-4 ring-white transition-transform duration-700 ease-emphasized group-hover:scale-[1.03]" />
+                  className="relative max-h-full max-w-full rounded-[8px] object-contain shadow-[0_14px_28px_-14px_rgb(27_43_68/0.55)] ring-[3px] ring-white transition-transform duration-700 ease-emphasized group-hover:scale-[1.03]" />
                 <span className="tabular absolute bottom-2 end-2 rounded-full bg-white/85 px-2 py-0.5 text-[10.5px] font-semibold text-primary/70 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">{i + 1}</span>
               </button>
             </li>
