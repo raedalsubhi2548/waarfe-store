@@ -70,8 +70,8 @@ function Hero() {
     <section className="relative -mt-[var(--header-height)] isolate overflow-hidden bg-[#0f1a2c] text-on-inverse">
       {/* the scene */}
       <picture className="absolute inset-0 -z-10">
-        <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile.webp`} />
-        <img src={`${ART}/raed-hero.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
+        <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile-v2.webp`} />
+        <img src={`${ART}/raed-hero-v2.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
           className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
