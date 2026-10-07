@@ -59,5 +59,29 @@
     "api/*.js": {
       "includeFiles": "api/_assets/**"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "waarfe-store.vercel.app"
+        }
+      ],
+      "destination": "https://rraed.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.rraed.com"
+        }
+      ],
+      "destination": "https://rraed.com/$1",
+      "permanent": true
+    }
+  ]
 }

@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import { seedProducts, seedCategories } from '../src/data/seed.js'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
-import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
+import { SITE, WA_LOCAL, seoFor, headHtml } from '../src/lib/seo.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
 const template = readFileSync(join(DIST, 'index.html'), 'utf8')
@@ -25,8 +25,8 @@ function body(path) {
   const id = path.match(/^\/p\/(.+)$/)?.[1]
   if (id) { const p = seedProducts.find((x) => x.id === id); return `<h1>${esc(p.name)}</h1><p><strong>${money(price(p))}</strong></p><p>${esc(p.summary || '')}</p><div>${esc(p.description || '').replace(/\n/g, '<br>')}</div>` }
   if (path === '/reviews') return `<h1>آراء العملاء</h1>${ALL_REVIEWS.map((r) => `<blockquote><p>${esc(r.text)}</p><cite>${esc(r.name)}${r.city ? '، ' + esc(r.city) : ''}</cite></blockquote>`).join('')}`
-  if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/966536090915">0536090915</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
-  if (path === '/work') return `<h1>أعمالنا</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
+  if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/${SITE.phone.slice(1)}">${WA_LOCAL}</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
+  if (path === '/work') return `<h1>أعمالنا: متاجر سلة صممناها</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
   if (path === '/policies') return `<h1>السياسات والشروط</h1>`
   return ''
 }
@@ -40,7 +40,7 @@ for (const path of routes) {
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description"[^>]*>\s*/, '')
     .replace('</head>', `    ${headHtml(s)}\n  </head>`)
-    .replace('<div id="root"></div>', `<div id="root"><div class="prerender">${nav}${body(path)}<p><a href="https://wa.me/966536090915">واتساب 0536090915</a> · <a href="mailto:${SITE.email}">${SITE.email}</a></p></div></div>`)
+    .replace('<div id="root"></div>', `<div id="root"><div class="prerender">${nav}${body(path)}<p><a href="https://wa.me/${SITE.phone.slice(1)}">واتساب ${WA_LOCAL}</a> · <a href="mailto:${SITE.email}">${SITE.email}</a></p></div></div>`)
   const file = path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1) + '.html')
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)
@@ -64,6 +64,8 @@ Disallow: /checkout
 Disallow: /cart
 Disallow: /order/
 Disallow: /login
+Disallow: /api/
+Allow: /api/art
 
 Sitemap: ${url('/sitemap.xml')}
 `)

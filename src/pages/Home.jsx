@@ -71,7 +71,7 @@ function Hero() {
       {/* the scene */}
       <picture className="absolute inset-0 -z-10">
         <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile-v3.webp`} />
-        <img src={`${ART}/raed-hero-v3.webp`} alt="" width="2800" height="1188" fetchPriority="high" decoding="async"
+        <img src={`${ART}/raed-hero-v3.webp`} alt="تصميم متاجر سلة من رائد على الجوال واللابتوب" width="2800" height="1188" fetchPriority="high" decoding="async"
           className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
@@ -88,6 +88,7 @@ function Hero() {
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(251_252_254/0.6))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(251_252_254/0.6))] md:hidden" />
           </p>
           <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in_850ms_var(--p-ease-emphasized)_both]">
+            <span className="sr-only">تصميم متاجر سلة في السعودية: </span>
             <span className="block">متجرك يستاهل</span>
             <span className="block font-light text-[#dfe6f1]">تصميم يليق فيه</span>
           </h1>
@@ -203,7 +204,7 @@ function Categories() {
             <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
               <Link to={`/c/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
                 {CAT_ART[c.id]
-                  ? <img src={`${ART}/${CAT_ART[c.id]}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
+                  ? <img src={`${ART}/${CAT_ART[c.id]}`} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
                   : <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#2c4470,#1b2b44_60%,#0f1a2c)] text-on-inverse"><Icon name={c.icon} size={big ? 44 : 30} /></span>}
                 <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(15_26_44/0.85))]" aria-hidden="true" />
                 <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3.5 sm:p-5">

@@ -2,18 +2,22 @@
 // data. Used at runtime (useSeo) and at build time (scripts/prerender.mjs) so crawlers that do
 // not run JavaScript still get the full head for every public page.
 
+// WhatsApp number from the same setting the storefront uses (VITE_WHATSAPP), in the browser and at build time
+const WA = String((typeof import.meta !== 'undefined' && import.meta.env?.VITE_WHATSAPP) || (typeof process !== 'undefined' && process.env?.VITE_WHATSAPP) || '966536090915')
+export const WA_LOCAL = '0' + WA.replace(/^966/, '')
+
 export const SITE = {
   name: 'رائد',
   nameEn: 'Raed',
-  // Browser: the address the visitor is on. Build: SITE_URL, else the Vercel production domain
-  // (the custom domain once it is connected), else rraed.com.
-  url: typeof window !== 'undefined' ? window.location.origin
-    : (process.env.SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'https://rraed.com')),
-  phone: '+966536090915',
+  // One home for search engines: every canonical, sitemap entry and social card points at rraed.com,
+  // whichever address (vercel.app, www) a visitor or crawler arrived on.
+  url: ((typeof process !== 'undefined' && process.env?.SITE_URL) || 'https://rraed.com').replace(/\/$/, ''),
+  phone: '+' + WA,
   email: 'info@rraed.com',
   logo: '/logo.png',
   ogImage: '/og.jpg',
   tagline: 'تصميم متاجر سلة وصفحات الهبوط والتسويق والخدمات التجارية',
+  keywords: 'تصميم متجر سلة، تصميم متاجر سلة، مصمم متاجر سلة، تصميم متجر إلكتروني، تصميم صفحة هبوط، تصميم شعار، تصميم بنرات، إعلانات سناب شات، إعلانات تيك توك، ربط بكسل سناب، ربط قوقل أناليتكس بسلة، سجل تجاري إلكتروني، وثيقة العمل الحر، توثيق المتجر، التسجيل في تابي، التسجيل في تمارا، ثيمات سلة، اشتراك سلة',
   description: 'رائد: تصميم متاجر سلة احترافية، صفحات هبوط مبرمجة بدون اشتراك شهري، حملات إعلانية على سناب وتيك توك وإنستغرام، ربط أدوات قوقل والبكسل، والخدمات الحكومية للمتاجر في السعودية.',
 }
 
@@ -23,6 +27,37 @@ const CAT_ART = {
   subscriptions: '/brand/ai/raed-cat-subscriptions.webp',
   'government-services': '/brand/ai/raed-cat-government.webp',
   'digital-products': '/brand/ai/raed-cat-digital.webp',
+}
+
+// Search titles/descriptions per service and section: the words people actually search in Saudi.
+const SEO_CAT = {
+  'design-services': ['تصميم متاجر سلة وصفحات هبوط وشعارات', 'تصميم متجر سلة احترافي، صفحات هبوط مبرمجة بدون اشتراك شهري، تصميم شعار وبنرات إعلانية، وإضافة المنتجات. أسعار ثابتة وتنفيذ سريع من رائد.'],
+  'marketing-services': ['إعلانات سناب وتيك توك وربط البكسل', 'إنشاء حملات إعلانية على سناب شات وتيك توك وإنستغرام، ربط البكسل وأدوات قوقل، وربط متجرك بالذكاء الاصطناعي. خدمات تسويق المتاجر من رائد.'],
+  subscriptions: ['اشتراك سلة وثيمات سلة وحجز دومين', 'تفعيل اشتراك سلة، شراء ثيمات سلة الأصلية وتركيبها، وحجز دومين باسم متجرك وربطه بسلة. كل اللي يحتاجه متجرك من رائد.'],
+  'government-services': ['سجل تجاري ووثيقة عمل حر وتوثيق المتجر', 'إصدار سجل تجاري إلكتروني، وثيقة العمل الحر، توثيق المتجر في منصة الأعمال، والتسجيل في تابي وتمارا. نجهّز طلبك ونتابعه لك من رائد.'],
+  'digital-products': ['أدلة رقمية للتجارة الإلكترونية', 'أدلة عملية تحمّلها فوراً بعد الشراء، منها دليل إطلاق الحملات الإعلانية بالذكاء الاصطناعي من رائد.'],
+}
+const SEO_PRODUCT = {
+  'salla-store-design': ['تصميم متجر سلة احترافي جاهز للبيع', 'تصميم متجر سلة متكامل جاهز للبيع من أول يوم: بنرات، أقسام، منتجات، شحن ودفع. مصمم متاجر سلة بتسليم من يومين إلى ستة أيام.'],
+  'landing-page-design': ['تصميم صفحة هبوط مبرمجة بدون اشتراك شهري', 'تصميم صفحة هبوط مستقلة مبرمجة بـ HTML وCSS وJavaScript، بدون اشتراكات شهرية، مع دومين واستضافة سنة هدية. صفحة هبوط تبيع لمنتجك.'],
+  'banner-design': ['تصميم بنرات إعلانية لمتجر سلة والسوشال', 'تصميم بنر إعلاني بجودة عالية بمقاسات سلة أو السوشال ميديا، بنص تسويقي واضح داخل التصميم.'],
+  'logo-design': ['تصميم شعار لوجو احترافي لمتجرك', 'تصميم لوجو احترافي يعبّر عن نشاطك، يسلَّم بجودة عالية وبصيغ متعددة جاهزة للمتجر والسوشال.'],
+  'add-product-options': ['إضافة منتجات سلة مع الخيارات والكميات', 'إضافة منتج في متجر سلة بكل خياراته من مقاسات وألوان وروائح، مع سعر وصور كل خيار.'],
+  'add-products': ['إضافة منتجات لمتجر سلة', 'إدخال منتجاتك في متجر سلة بالاسم والوصف والسعر والصور، وجاهزة للبيع.'],
+  'ai-integration-chatgpt-claude-salla': ['ربط متجر سلة بالذكاء الاصطناعي ChatGPT وClaude', 'ربط متجرك في سلة بـ ChatGPT أو Claude عبر تقنية MCP الرسمية: أدر الطلبات والمنتجات والمخزون والتقارير بأوامر نصية بالعربي.'],
+  'snapchat-ads-creation': ['إنشاء حملة إعلانية على سناب شات', 'إعلانات سناب شات لمتجرك: حملة كاملة بهدف واضح واستهداف حسب المدينة والعمر والاهتمامات، وهيكل حملة جاهز للانطلاق.'],
+  'tiktok-ads-creation': ['إنشاء حملة إعلانية على تيك توك', 'إعلانات تيك توك لمتجرك: حملة جاهزة للانطلاق بهدف واضح واستهداف دقيق للفئة المهتمة بمنتجك.'],
+  'instagram-ads-creation': ['إنشاء حملة إعلانية على إنستغرام', 'إعلانات إنستغرام الممولة لمتجرك، تصل لعملائك المستهدفين مع ضبط كامل لإعدادات الحملة.'],
+  'pixel-integration': ['ربط بكسل سناب وتيك توك وميتا بمتجر سلة', 'ربط البكسل بمتجرك وضبط أحداث التتبع: زيارة الصفحات، مشاهدة المنتج، الإضافة للسلة، وإتمام الشراء.'],
+  'google-tools-integration': ['ربط قوقل أناليتكس وتاج مانجر بمتجر سلة', 'ربط Google Analytics بمتجرك في سلة، مع خيار Google Tag Manager وSearch Console وMerchant Center.'],
+  'salla-subscription': ['تفعيل اشتراك سلة وسلة برو', 'تفعيل اشتراك متجرك في سلة على الباقة الأنسب لك، مع خيار الترقية لسلة برو.'],
+  'salla-theme': ['شراء ثيم سلة «ثيم عالي» الأصلي وتركيبه', 'شراء ثيمات سلة الأصلية المرخّصة: نركّب «ثيم عالي» ونفعّله على متجرك، مع ضبط الإعدادات ودعم بعد التركيب.'],
+  'buy-domain': ['حجز دومين لمتجر سلة وربطه', 'شراء دومين رسمي باسم متجرك وربطه بمتجر سلة، مع التأكد من التفعيل.'],
+  'issue-commercial-registration-saudi': ['إصدار سجل تجاري إلكتروني للمتجر', 'إصدار سجل تجاري إلكتروني عبر وزارة التجارة، مع اختيار النشاط المناسب ومتابعة الطلب حتى الإصدار.'],
+  'freelance-certificate-family-platform': ['إصدار وثيقة العمل الحر', 'إصدار وثيقة العمل الحر الرسمية عبر منصة الأسر المنتجة، مع اختيار المهنة المناسبة لنشاطك.'],
+  'business-verification': ['توثيق المتجر في منصة الأعمال', 'توثيق متجرك الإلكتروني في منصة الأعمال والحصول على علامة التوثيق الرسمية، مع تجهيز الطلب ومتابعته حتى القبول.'],
+  'tabby-registration': ['التسجيل في تابي وتفعيل التقسيط بمتجرك', 'تفعيل الدفع بالتقسيط عبر تابي في متجرك، مع تجهيز طلب التسجيل لنسبة قبول أعلى.'],
+  'tmara-registration': ['التسجيل في تمارا وتفعيل التقسيط بمتجرك', 'تفعيل الدفع بالتقسيط عبر تمارا في متجرك، مع متابعة طلب التسجيل حتى التفعيل.'],
 }
 
 const abs = (p) => (p?.startsWith('http') ? p : SITE.url.replace(/\/$/, '') + p)
@@ -74,6 +109,7 @@ export function seoFor(path, data = {}) {
       ...base,
       title: `${SITE.name} | تصميم متاجر سلة وصفحات هبوط وتسويق إلكتروني`,
       description: SITE.description,
+      keywords: SITE.keywords,
       jsonLd: [ORG(), WEBSITE(),
         faq.length && { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map((q) => ({ '@type': 'Question', name: q.q, acceptedAnswer: { '@type': 'Answer', text: q.a } })) },
       ].filter(Boolean),
@@ -82,8 +118,9 @@ export function seoFor(path, data = {}) {
   if (path === '/shop') {
     return {
       ...base,
-      title: t('كل الخدمات'),
-      description: clip(`كل خدمات ${SITE.name} بأسعار ثابتة: ${categories.map((c) => c.name).join('، ')}.`),
+      title: t('كل الخدمات: تصميم متاجر سلة وتسويق وخدمات حكومية'),
+      description: clip(`كل خدمات ${SITE.name} بأسعار ثابتة: تصميم متجر سلة، صفحات هبوط، إعلانات سناب وتيك توك، ربط البكسل، سجل تجاري، وثيقة العمل الحر والتسجيل في تابي وتمارا.`),
+      keywords: SITE.keywords,
       jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop']]), itemList(products)],
     }
   }
@@ -94,8 +131,8 @@ export function seoFor(path, data = {}) {
     const list = products.filter((p) => p.categoryId === c.id)
     return {
       ...base,
-      title: t(c.name),
-      description: clip(`${c.name} من ${SITE.name}: ${c.blurb || ''} ${list.slice(0, 4).map((p) => p.name).join('، ')}.`),
+      title: t(SEO_CAT[c.id]?.[0] || c.name),
+      description: clip(SEO_CAT[c.id]?.[1] || `${c.name} من ${SITE.name}: ${c.blurb || ''} ${list.slice(0, 4).map((p) => p.name).join('، ')}.`),
       image: abs(CAT_ART[c.id] || SITE.ogImage),
       jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop'], [c.name, `/c/${c.id}`]]), itemList(list)],
     }
@@ -109,8 +146,8 @@ export function seoFor(path, data = {}) {
     return {
       ...base,
       type: 'product',
-      title: t(p.name),
-      description: clip(p.summary || p.description || `${p.name} من ${SITE.name}.`),
+      title: t(SEO_PRODUCT[p.id]?.[0] || p.name),
+      description: clip(SEO_PRODUCT[p.id]?.[1] || p.summary || p.description || `${p.name} من ${SITE.name}.`),
       image: img,
       price: price(p),
       jsonLd: [
@@ -125,14 +162,13 @@ export function seoFor(path, data = {}) {
           brand: { '@type': 'Brand', name: SITE.name },
           category: c?.name,
           offers: { '@type': 'Offer', url: abs(`/p/${p.id}`), priceCurrency: 'SAR', price: String(price(p)), availability: 'https://schema.org/InStock', seller: { '@id': abs('/#org') } },
-          ...(reviews.length ? { aggregateRating: { '@type': 'AggregateRating', ratingValue: '5', bestRating: '5', reviewCount: String(reviews.length) } } : {}),
         },
       ],
     }
   }
-  if (path === '/work') return { ...base, title: t('أعمالنا'), description: clip(`متاجر صممها ${SITE.name} في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.`), jsonLd: [crumbs([['الرئيسية', '/'], ['أعمالنا', '/work']])] }
-  if (path === '/reviews') return { ...base, title: t('آراء العملاء'), description: clip(`${reviews.length} رأي مكتوب من عملاء ${SITE.name} عن تصميم المتاجر والخدمات، وكلها بتقييم 5 من 5.`), jsonLd: [crumbs([['الرئيسية', '/'], ['آراء العملاء', '/reviews']])] }
-  if (path === '/contact') return { ...base, title: t('تواصل معنا'), description: clip(`تواصل مع ${SITE.name} على واتساب 0536090915 أو على البريد ${SITE.email}، ونرد عليك بنفس اليوم.`), jsonLd: [ORG(), crumbs([['الرئيسية', '/'], ['تواصل معنا', '/contact']])] }
+  if (path === '/work') return { ...base, title: t('أعمالنا: متاجر سلة صممناها وتصاميم سوشال ميديا'), description: clip(`نماذج من أعمال ${SITE.name}: 13 متجر سلة صممناها كاملة، وبنرات وتصاميم سوشال ميديا لعملائنا. شوف شغلنا قبل ما تطلب.`), jsonLd: [crumbs([['الرئيسية', '/'], ['أعمالنا', '/work']])] }
+  if (path === '/reviews') return { ...base, title: t('آراء العملاء في تصميم متاجر سلة'), description: clip(`${reviews.length} رأي مكتوب من عملاء ${SITE.name} عن تصميم متاجر سلة والخدمات، وكلها بتقييم 5 من 5.`), jsonLd: [crumbs([['الرئيسية', '/'], ['آراء العملاء', '/reviews']])] }
+  if (path === '/contact') return { ...base, title: t('تواصل معنا'), description: clip(`تواصل مع ${SITE.name} على واتساب ${WA_LOCAL} أو على البريد ${SITE.email}، ونرد عليك بنفس اليوم.`), jsonLd: [ORG(), crumbs([['الرئيسية', '/'], ['تواصل معنا', '/contact']])] }
   if (path === '/policies') return { ...base, title: t('السياسات والشروط'), description: clip(`سياسة الاستخدام والإلغاء والاسترجاع والخصوصية في ${SITE.name}.`) }
   // private or transactional pages
   return { ...base, title: SITE.name, description: SITE.description, robots: 'noindex,nofollow' }
@@ -152,7 +188,8 @@ export function headHtml(s) {
   return [
     `<title>${e(s.title)}</title>`,
     `<meta name="description" content="${e(s.description)}" />`,
-    `<meta name="robots" content="${e(s.robots)}" />`,
+    `<meta name="robots" content="${e(s.robots === 'index,follow' ? 'index,follow,max-image-preview:large' : s.robots)}" />`,
+    ...(s.keywords ? [`<meta name="keywords" content="${e(s.keywords)}" />`] : []),
     `<link rel="canonical" href="${e(s.canonical)}" />`,
     `<meta property="og:site_name" content="${e(SITE.name)}" />`,
     `<meta property="og:locale" content="ar_SA" />`,
@@ -161,6 +198,7 @@ export function headHtml(s) {
     `<meta property="og:description" content="${e(s.description)}" />`,
     `<meta property="og:url" content="${e(s.canonical)}" />`,
     `<meta property="og:image" content="${e(s.image)}" />`,
+    `<meta property="og:image:alt" content="${e(s.title)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${e(s.title)}" />`,
     `<meta name="twitter:description" content="${e(s.description)}" />`,

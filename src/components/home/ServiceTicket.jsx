@@ -20,7 +20,7 @@ export default function ServiceTicket({ p, className }) {
       </span>
       <article className="relative flex h-full flex-col rounded-[14px] bg-white p-2.5 pt-3.5 shadow-[0_1px_2px_rgb(27_43_68/0.08),0_18px_32px_-22px_rgb(27_43_68/0.5)] ring-1 ring-[#1b2b44]/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_28px_44px_-24px_rgb(27_43_68/0.6)]">
         <Link to={`/p/${p.id}`} className="relative block overflow-hidden rounded-[10px] bg-sunken">
-          <img src={p.image} alt="" loading="lazy" decoding="async" width="500" height="500" onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = 1; e.currentTarget.src = coverFor(p) } }}
+          <img src={p.image} alt={p.name} loading="lazy" decoding="async" width="500" height="500" onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = 1; e.currentTarget.src = coverFor(p) } }}
             className="aspect-square w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
         </Link>
         <button type="button" onClick={() => toggleWish(p.id)} aria-pressed={wished} aria-label={wished ? 'إزالة من الأمنيات' : 'إضافة إلى الأمنيات'}

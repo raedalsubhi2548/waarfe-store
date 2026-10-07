@@ -16,6 +16,7 @@ export function useSeo(path, data) {
     document.title = s.title
     meta('description', s.description)
     meta('robots', s.robots)
+    if (s.keywords) meta('keywords', s.keywords)
     set('link[rel="canonical"]', () => { const l = document.createElement('link'); l.rel = 'canonical'; return l }, { href: s.canonical })
     meta('og:type', s.type, true); meta('og:title', s.title, true); meta('og:description', s.description, true)
     meta('og:url', s.canonical, true); meta('og:image', s.image, true)
