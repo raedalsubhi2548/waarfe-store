@@ -16,7 +16,7 @@ export default function Orders() {
     <Empty icon={Receipt} title="ما عندك طلبات للحين" action={<Button asChild><Link to="/shop">تصفّح الخدمات</Link></Button>}>أول خطوة لمتجرك تبدأ من هنا.</Empty>
   )
   const active = orders.filter((o) => !['completed', 'cancelled'].includes(o.status)).length
-  const spent = orders.filter((o) => o.status !== 'cancelled').reduce((s, o) => s + o.total, 0)
+  const spent = orders.filter((o) => !['pending', 'cancelled'].includes(o.status)).reduce((s, o) => s + o.total, 0)
   return (
     <>
       <dl className="mb-6 grid grid-cols-3 divide-x divide-border overflow-hidden rounded-lg bg-surface shadow-hairline ring-1 ring-border">

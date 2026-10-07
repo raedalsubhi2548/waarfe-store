@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Check, Clock, Download, MessageCircle, FileText } from 'lucide-react'
+import { Check, Clock, Download, MessageCircle, FileText, Lock } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
@@ -32,7 +32,8 @@ function InvoiceButton({ order }) {
 export default function Order() {
   const { id } = useParams()
   const [params] = useSearchParams()
-  const { user, authReady } = useApp()
+  const { user, authReady, clearCart, notify } = useApp()
+  const [paying, setPaying] = useState(false)
   const [order, setOrder] = useState(undefined)
   const [verifying, setVerifying] = useState(false)
   const isNew = params.get('new') || params.get('tap_id')
@@ -42,7 +43,12 @@ export default function Order() {
     let alive = true
     const load = () => api.getOrder(id).then((o) => alive && setOrder(o)).catch(() => alive && setOrder(null))
     const tap = params.get('tap_id')
-    if (tap && api.verifyPayment) { setVerifying(true); api.verifyPayment(id, tap).finally(() => { setVerifying(false); load() }) } else load()
+    if (tap && api.verifyPayment) {
+      setVerifying(true)
+      api.verifyPayment(id, tap).then((r) => {
+        if (r?.ok) { clearCart(); try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
+      }).finally(() => { if (alive) setVerifying(false); load() })
+    } else load()
     return () => { alive = false }
   }, [id, authReady, user?.id, params])
 
@@ -50,6 +56,10 @@ export default function Order() {
   if (!order) return <div className="container-w py-14"><Empty title="ما لقينا الطلب" action={<Button asChild><Link to="/account">طلباتي</Link></Button>}>تأكد إنك مسجّل دخول بنفس الحساب اللي طلبت فيه.</Empty></div>
 
   const paid = order.status !== 'pending' && order.status !== 'cancelled'
+  const payNow = async () => {
+    setPaying(true)
+    try { const { redirect } = await api.startPayment(order); window.location.href = redirect } catch (e) { notify(e.message, 'err'); setPaying(false) }
+  }
   return (
     <div className="container-w py-10 sm:py-14">
       {isNew ? (
@@ -58,7 +68,7 @@ export default function Order() {
           <div>
             <h1 className={cn('font-display text-2xl font-semibold sm:text-3xl', !paid && 'text-primary')}>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
             <p className={cn('mt-1', paid ? 'text-on-inverse/80' : 'text-muted-foreground')}>
-              <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع. تواصل معنا لإكمالها.'}
+              <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع، تقدر تكملها الحين.'}
             </p>
           </div>
         </div>
@@ -70,6 +80,9 @@ export default function Order() {
         <Panel title="حالة الطلب" action={<StatusPill status={order.status} />}>
           <OrderTracker status={order.status} />
           {paid && <div className="mt-5"><InvoiceButton order={order} /></div>}
+          {order.status === 'pending' && order.paymentMethod === 'card' && (
+            <div className="mt-5"><Button size="lg" onClick={payNow} disabled={paying}><Lock />{paying ? 'نحوّلك لبوابة الدفع…' : `أكمل الدفع ${money(order.total)}`}</Button></div>
+          )}
           {order.status === 'pending' && order.paymentMethod === 'bank' && (
             <div className="mt-6 grid justify-items-start gap-3 rounded-lg bg-sunken p-5">
               <h3 className="font-display font-semibold text-primary">التحويل البنكي</h3>

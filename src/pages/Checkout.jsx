@@ -20,10 +20,21 @@ export default function Checkout() {
   const [couponErr, setCouponErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
-  const pending = useRef(null) // { key, order } of a card order whose payment didn't start
+  const [leaving, setLeaving] = useState(false) // on the way to Tap: keep this screen, don't bounce to the empty cart
+  // a card order whose payment didn't finish (failed to start, or the customer came back from Tap) is reused, not duplicated
+  const pending = useRef(null)
+  if (pending.current === null) { try { pending.current = JSON.parse(sessionStorage.getItem('raed:pending-order') || 'false') || undefined } catch { pending.current = undefined } }
+
+  // back button from Tap restores this page from the cache with the old "leaving" state
+  useEffect(() => {
+    const back = (e) => { if (e.persisted) { setLeaving(false); setBusy(false) } }
+    window.addEventListener('pageshow', back)
+    return () => window.removeEventListener('pageshow', back)
+  }, [])
 
   useEffect(() => { if (user) setForm((f) => ({ ...f, name: f.name || user.name, phone: f.phone || user.phone, email: user.email })) }, [user])
 
+  if (leaving) return <div className="container-w grid min-h-[50vh] place-items-center py-14"><p className="flex items-center gap-3 text-lg font-semibold text-primary"><Lock className="size-5" />نحوّلك لبوابة الدفع الآمنة…</p></div>
   if (!authReady) return <div className="container-w py-14"><Skeleton className="h-96" /></div>
   if (!user) return <Navigate to="/login?next=/checkout" replace />
   if (lines.length === 0) return <Navigate to="/cart" replace />
@@ -51,15 +62,21 @@ export default function Checkout() {
       })
       if (method === 'card' && !isDemo) {
         pending.current = { key, order }
+        try { sessionStorage.setItem('raed:pending-order', JSON.stringify({ key, order: { id: order.id, number: order.number } })) } catch { /* private mode */ }
         const { redirect } = await api.startPayment(order)
-        clearCart()
+        // the cart is emptied only after Tap confirms the payment (on the order page), so a cancelled payment keeps it
+        setLeaving(true)
         window.location.href = redirect
         return
       }
       if (method === 'bank') api.notifyOrder?.(order.id, 'created') // the customer gets the order + bank details by email
       clearCart()
       nav(`/order/${order.id}?new=1`, { replace: true })
-    } catch (e2) { setErr(e2.message); setBusy(false) }
+    } catch (e2) {
+      // a remembered order that's already paid or gone can't be reused; the next try starts a fresh one
+      if (/مدفوع|غير موجود/.test(e2.message)) { pending.current = undefined; try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
+      setErr(e2.message); setBusy(false)
+    }
   }
 
   const f = (k) => ({ value: form[k], onChange: (e) => setForm({ ...form, [k]: e.target.value }) })
