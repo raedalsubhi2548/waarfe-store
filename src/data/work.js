@@ -63,7 +63,8 @@ export const STORE_PDFS = [
   { name: 'Glisten', id: '1nXfSIksTDs8b5YN3tqIBcdI_0-sZGccj', mb: 9.3 },
   { name: 'مروج اليسر', id: '1Bngc74ohxG9t9nMvfJyWh0ElIfkBnkKR', mb: 3.9 },
 ]
-export const pdfThumb = (id, w = 900) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`
+// public image CDN (fast, works without a Google sign-in), same as the design images
+export const pdfThumb = (id, w = 900) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
 export const pdfView = (id) => `https://drive.google.com/file/d/${id}/view`
 export const pdfDownload = (id) => `https://drive.google.com/uc?export=download&id=${id}`
 
