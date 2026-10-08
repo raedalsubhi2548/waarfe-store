@@ -29,7 +29,7 @@ export function Medallion({ className, size = 'md' }) {
     <span className={cn('relative grid place-items-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#ffffff,#eef2f8)] shadow-[0_18px_40px_-14px_rgb(0_0_0/0.45),inset_0_0_0_1px_rgb(195_206_221/0.6)]', size === 'lg' ? 'size-32 p-6' : 'size-24 p-[18px]', className)}>
       <span className="absolute inset-[5px] rounded-full border border-accent/70" aria-hidden="true" />
       <span className="absolute inset-[9px] rounded-full border border-dashed border-accent/40" aria-hidden="true" />
-      <img src="/logo.png" alt="رائد Raed" width="600" height="580" className="relative w-full" />
+      <img src="/logo.png" alt="منصة رائد Raed" width="600" height="580" className="relative w-full" />
     </span>
   )
 }

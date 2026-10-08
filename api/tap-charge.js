@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       currency: 'SAR',
       customer_initiated: true,
       threeDSecure: true,
-      description: `طلب رائد #${order.number}`,
+      description: `طلب منصة رائد #${order.number}`,
       metadata: { order_id: order.id },
       reference: { order: String(order.number) },
       receipt: { email: true, sms: false },

@@ -71,7 +71,7 @@ export default function AccountSheet({ open, onOpenChange }) {
           <>
             <div className="mt-4 rounded-xl bg-inverse p-5 text-on-inverse">
               <span className="grid size-12 place-items-center rounded-full bg-accent text-accent-foreground"><UserRound className="size-6" /></span>
-              <p className="mt-3 font-display text-xl font-semibold">حسابك في رائد</p>
+              <p className="mt-3 font-display text-xl font-semibold">حسابك في منصة رائد</p>
               <p className="mt-1 text-sm leading-6 text-on-inverse/75">سجّل دخولك وتابع طلباتك وأمنياتك من مكان واحد.</p>
             </div>
             <div className="mt-5 grid gap-2">

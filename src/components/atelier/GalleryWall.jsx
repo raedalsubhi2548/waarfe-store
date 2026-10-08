@@ -14,7 +14,7 @@ function Row({ ids, reverse }) {
         {list.map((i, k) => (
           <li key={k} aria-hidden={k >= ids.length || undefined} className="shrink-0">
             <Link to="/work#banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#ffffff] p-1.5 shadow-[0_1px_2px_rgb(27_43_68/0.06),0_24px_40px_-26px_rgb(27_43_68/0.55)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_32px_50px_-26px_rgb(27_43_68/0.6)]">
-              <img src={lh3(WORK[i], 600)} alt={k < ids.length ? `من أعمال رائد ${k + 1}` : ''} loading="lazy" decoding="async"
+              <img src={lh3(WORK[i], 600)} alt={k < ids.length ? `من أعمال منصة رائد ${k + 1}` : ''} loading="lazy" decoding="async"
                 className="block h-[150px] w-auto min-w-[150px] rounded-[13px] bg-sunken object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:h-[210px] sm:min-w-[210px]" />
             </Link>
           </li>
@@ -27,9 +27,9 @@ function Row({ ids, reverse }) {
 /** Our banner & social work drifting slowly in two rows; hover pauses a row. */
 export default function GalleryWall() {
   return (
-    <section className="relative py-14 sm:py-20" aria-label="معرض أعمال رائد">
+    <section className="relative py-14 sm:py-20" aria-label="معرض أعمال منصة رائد">
       <div className="container-w mb-6 flex flex-col items-center gap-2 text-center sm:mb-8">
-        <p className="text-[14px] font-medium text-primary/55">من مكتب رائد</p>
+        <p className="text-[14px] font-medium text-primary/55">من مكتب منصة رائد</p>
         <h2 className="font-display text-[2.1rem] font-bold leading-[1.45] text-primary sm:text-[2.75rem]">بنرات وتصاميم سوشال ميديا</h2>
         <p className="max-w-md text-[15px] leading-7 text-muted-foreground">نماذج حقيقية من شغلنا لعملائنا، مرّر عليها عشان توقف.</p>
       </div>

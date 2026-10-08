@@ -52,13 +52,13 @@ function SideFoot({ user, dark }) {
 
 const Brand = ({ dark }) => (
   <Link to="/admin" className="flex items-center gap-3">
-    <img src={dark ? '/logo-white.png' : '/logo.png'} alt="رائد" className="h-11 w-auto" />
+    <img src={dark ? '/logo-white.png' : '/logo.png'} alt="منصة رائد" className="h-11 w-auto" />
     <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-bold', dark ? 'bg-white/10 text-white/80' : 'bg-accent/25 text-accent-text')}>لوحة التحكم</span>
   </Link>
 )
 
 export default function AdminLayout() {
-  useEffect(() => { let m = document.querySelector('meta[name="robots"]'); if (!m) { m = document.createElement('meta'); m.name = 'robots'; document.head.appendChild(m) } m.content = 'noindex,nofollow'; document.title = 'لوحة التحكم | رائد' }, [])
+  useEffect(() => { let m = document.querySelector('meta[name="robots"]'); if (!m) { m = document.createElement('meta'); m.name = 'robots'; document.head.appendChild(m) } m.content = 'noindex,nofollow'; document.title = 'لوحة التحكم | منصة رائد' }, [])
   const { user, authReady } = useApp()
   const { pathname } = useLocation()
   const [menu, setMenu] = useState(false)

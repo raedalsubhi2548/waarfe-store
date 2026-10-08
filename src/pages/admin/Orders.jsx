@@ -38,7 +38,7 @@ function OrderDetail({ order, onSaved }) {
         </div>
         {phone && (
           <Button asChild variant="outline" size="sm" className="mt-3 w-full">
-            <a href={`https://wa.me/${phone}?text=${encodeURIComponent(`السلام عليكم ${order.customer?.name || ''}، معك رائد بخصوص طلبك رقم #${order.number}`)}`} target="_blank" rel="noreferrer"><MessageCircle className="size-4" />راسل العميل على واتساب</a>
+            <a href={`https://wa.me/${phone}?text=${encodeURIComponent(`السلام عليكم ${order.customer?.name || ''}، معك منصة رائد بخصوص طلبك رقم #${order.number}`)}`} target="_blank" rel="noreferrer"><MessageCircle className="size-4" />راسل العميل على واتساب</a>
           </Button>
         )}
       </section>

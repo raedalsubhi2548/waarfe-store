@@ -28,7 +28,7 @@ export function WorkGallery({ items, className, grid = false }) {
               <button type="button" onClick={() => setOpen(i)} aria-label={`عرض التصميم ${i + 1} بحجم كبير`}
                 className="group relative grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-[14px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] p-2.5 ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1 hover:shadow-[0_24px_40px_-26px_rgb(27_43_68/0.6)] sm:p-3.5">
                 <span className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-[radial-gradient(60%_80%_at_50%_100%,rgb(27_43_68/0.08),transparent)]" aria-hidden="true" />
-                <img src={img(id, 600)} alt={`تصميم ${i + 1} من أعمال رائد`} loading="lazy" decoding="async"
+                <img src={img(id, 600)} alt={`تصميم ${i + 1} من أعمال منصة رائد`} loading="lazy" decoding="async"
                   className="relative max-h-full max-w-full rounded-[8px] object-contain shadow-[0_14px_28px_-14px_rgb(27_43_68/0.55)] ring-[3px] ring-white transition-transform duration-700 ease-emphasized group-hover:scale-[1.03]" />
                 <span className="tabular absolute bottom-2 end-2 rounded-full bg-white/85 px-2 py-0.5 text-[10.5px] font-semibold text-primary/70 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">{i + 1}</span>
               </button>
@@ -60,10 +60,10 @@ export function WorkGallery({ items, className, grid = false }) {
             onTouchStart={(e) => { startX = e.touches[0].clientX }}
             onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - startX; if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1) }}
           >
-            <Dialog.Title className="sr-only">معرض أعمال رائد</Dialog.Title>
+            <Dialog.Title className="sr-only">معرض أعمال منصة رائد</Dialog.Title>
             <Dialog.Description className="sr-only">تصميم {open + 1} من {items.length}. استخدم الأسهم للتنقل.</Dialog.Description>
             {open >= 0 && (
-              <img key={items[open]} src={img(items[open], 1800)} alt={`تصميم ${open + 1} من أعمال رائد`} className="max-h-[86vh] max-w-full rounded-md object-contain shadow-overlay motion-safe:animate-[fade-in_240ms]" />
+              <img key={items[open]} src={img(items[open], 1800)} alt={`تصميم ${open + 1} من أعمال منصة رائد`} className="max-h-[86vh] max-w-full rounded-md object-contain shadow-overlay motion-safe:animate-[fade-in_240ms]" />
             )}
             <Dialog.Close className="absolute top-4 end-4 grid size-12 place-items-center rounded-full bg-background text-primary" aria-label="إغلاق"><X className="size-6" /></Dialog.Close>
             <button onClick={() => go(-1)} className="absolute start-3 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-background/90 text-primary" aria-label="السابق"><ChevronRight className="size-6" /></button>

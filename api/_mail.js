@@ -5,7 +5,7 @@ import { admin, siteUrl } from './_shared.js'
 import { invoicePdf, money } from './_invoice.js'
 
 export const SELLER = () => ({
-  name: 'رائد',
+  name: 'منصة رائد',
   email: process.env.STORE_EMAIL || 'info@rraed.com',
   phone: '0536090915',
   site: (process.env.SITE_URL || 'rraed.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
@@ -40,7 +40,7 @@ function html(order, ev) {
 <body style="margin:0;background:#f3f6fa;font-family:Tahoma,'Segoe UI',Arial,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6fa;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:18px;overflow:hidden;direction:rtl;text-align:right">
-<tr><td style="background:#1b2b44;padding:26px 28px" align="center"><img src="${base}/logo-white.png" width="150" alt="رائد" style="display:block;border:0;height:auto"></td></tr>
+<tr><td style="background:#1b2b44;padding:26px 28px" align="center"><img src="${base}/logo-white.png" width="150" alt="منصة رائد" style="display:block;border:0;height:auto"></td></tr>
 <tr><td style="padding:30px 28px 8px">
 <p style="margin:0;font-size:13px;color:#6b7686">طلب رقم ${order.number}</p>
 <h1 style="margin:6px 0 10px;font-size:24px;color:#1b2b44">${e.title}</h1>
@@ -52,7 +52,7 @@ ${Number(order.discount) > 0 ? `<tr><td style="padding:8px 0;font-size:13px;colo
 <tr><td style="padding:12px 0;font-size:16px;font-weight:bold;color:#1b2b44">الإجمالي</td><td style="padding:12px 0;font-size:16px;font-weight:bold;color:#1b2b44;text-align:left" dir="ltr">${money(order.total)} ر.س</td></tr></table></td></tr>
 <tr><td style="padding:10px 28px 30px" align="center"><a href="${base}/order/${order.id}" style="display:inline-block;background:#1b2b44;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;padding:13px 30px;border-radius:999px">تابع طلبك</a></td></tr>
 <tr><td style="padding:18px 28px;background:#f8fafc;border-top:1px solid #e9edf3;font-size:12px;line-height:1.8;color:#6b7686" align="center">
-${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</a>${s.phone ? ` · <span dir="ltr">${esc(s.phone)}</span>` : ''}<br>وصلك هذا الإيميل لأن عندك طلب في متجر ${esc(s.name)}.</td></tr>
+${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</a>${s.phone ? ` · <span dir="ltr">${esc(s.phone)}</span>` : ''}<br>وصلك هذا الإيميل لأن عندك طلب في ${esc(s.name)}.</td></tr>
 </table></td></tr></table></body></html>`
 }
 

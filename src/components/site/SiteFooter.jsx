@@ -32,8 +32,8 @@ export default function SiteFooter() {
           <div className="mt-16 grid gap-12 border-t border-white/10 pt-12 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
             {/* brand */}
             <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-start">
-              <Link to="/" className="block" aria-label="رائد — الرئيسية">
-                <img src="/logo-white.png" alt="رائد Raed" width="458" height="248" className="h-[76px] w-auto sm:h-[84px]" />
+              <Link to="/" className="block" aria-label="منصة رائد — الرئيسية">
+                <img src="/logo-white.png" alt="منصة رائد Raed" width="458" height="248" className="h-[76px] w-auto sm:h-[84px]" />
               </Link>
               <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
               <Social className="foot-social" />
@@ -45,8 +45,8 @@ export default function SiteFooter() {
                 <h2 className={col}>الأقسام</h2>
                 <ul>{categories.map((c) => <li key={c.id}><Link to={`/c/${c.id}`} className={item}>{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
               </nav>
-              <nav aria-label="رائد">
-                <h2 className={col}>رائد</h2>
+              <nav aria-label="منصة رائد">
+                <h2 className={col}>منصة رائد</h2>
                 <ul>
                   <li><Link to="/shop" className={item}>كل الخدمات</Link></li>
                   <li><Link to="/work" className={item}>أعمالنا</Link></li>
@@ -77,7 +77,7 @@ export default function SiteFooter() {
           <div className="mt-12 flex flex-col items-center gap-5 border-t border-white/10 pt-7 lg:flex-row-reverse lg:justify-between">
             <PayIcons size="sm" className="w-full max-w-[320px]" />
             <p className="text-center text-[13px] text-on-inverse/55 lg:text-start">
-              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">رائد</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
+              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">منصة رائد</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
             </p>
           </div>
         </div>
