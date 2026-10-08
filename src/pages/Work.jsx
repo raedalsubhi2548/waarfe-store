@@ -22,8 +22,8 @@ export default function Work() {
     <div className="container-w">
       <PageIntro crumb="أعمالنا" title="أعمالنا" lead="كل شغلنا في صفحة وحدة: متاجر سلّمناها كاملة، وتصاميم بنرات وسوشال ميديا لعملائنا.">
         <div className="mt-7 flex flex-wrap justify-center gap-3">
-          <a href="#stores" className={jump}><FileText className="size-4" />ملفات المتاجر <span className="tabular opacity-60">{STORE_PDFS.length}</span></a>
-          <a href="#banners" className={jump}><Images className="size-4" />صور التصاميم <span className="tabular opacity-60">{WORK.length}</span></a>
+          <a href="#stores" className={jump}><FileText className="size-4" />ملفات المتاجر <span className="tabular opacity-80">{STORE_PDFS.length}</span></a>
+          <a href="#banners" className={jump}><Images className="size-4" />صور التصاميم <span className="tabular opacity-80">{WORK.length}</span></a>
         </div>
       </PageIntro>
 
@@ -33,7 +33,7 @@ export default function Work() {
           {STORE_PDFS.map((s, i) => (
             <li key={s.id} className="group flex flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_44px_-28px_rgb(27_43_68/0.6)] ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1">
               {/* the file's own pages, gliding by on hover */}
-              <a href={pdfView(s.id)} target="_blank" rel="noreferrer" aria-label={`افتح ملف متجر ${s.name}`} className="relative m-2 mb-0 block aspect-[4/5] overflow-hidden rounded-[13px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] [container-type:size] sm:m-2.5 sm:mb-0 sm:aspect-[4/3]">
+              <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="relative m-2 mb-0 block aspect-[4/5] overflow-hidden rounded-[13px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] [container-type:size] sm:m-2.5 sm:mb-0 sm:aspect-[4/3]">
                 <FileText className="absolute top-1/2 left-1/2 size-10 -translate-x-1/2 -translate-y-1/2 animate-pulse text-primary/15" strokeWidth={1.2} aria-hidden="true" />
                 <img src={pdfThumb(s.id, 700)} alt={`أول صفحة من ملف متجر ${s.name}`} loading={i < 6 ? 'eager' : 'lazy'} decoding="async"
                   className="relative w-full select-none transition-[translate] duration-[9s] ease-in-out [translate:0_0] group-hover:[translate:0_calc(-100%+100cqh)]" />
