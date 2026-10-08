@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Qty, Textarea, Skeleton } from '@/components/ui/kit.jsx'
 import { money, effectivePrice, parseDescription, waLink, optKey, unitPrice, missingOptions } from '@/lib/format.js'
 import { fromSlug, toSlug, productPath } from '@/lib/slug.js'
+import { trackAddToCart } from '@/lib/analytics.js'
 import NotFound from './NotFound.jsx'
 
 export default function Product() {
@@ -45,6 +46,7 @@ export default function Product() {
     const miss = missingOptions(p, sel)
     if (miss.length) { setOptErr(`اختر: ${miss.join('، ')}`); return }
     addToCart(p.id, qty, note, sel)
+    trackAddToCart(p, qty, unitPrice(p, sel))
   }
 
   return (

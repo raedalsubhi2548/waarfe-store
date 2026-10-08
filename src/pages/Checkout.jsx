@@ -6,6 +6,7 @@ import { api, isDemo } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
 import { money } from '@/lib/format.js'
 import OptionList from '@/components/OptionList.jsx'
+import { trackBeginCheckout } from '@/lib/analytics.js'
 import { Button } from '@/components/ui/button'
 import { PageHead, Panel, Field, Input, Textarea, Skeleton } from '@/components/ui/kit.jsx'
 
@@ -33,6 +34,8 @@ export default function Checkout() {
     return () => window.removeEventListener('pageshow', back)
   }, [])
 
+  const counted = useRef(false)
+  useEffect(() => { if (!counted.current && lines.length) { counted.current = true; trackBeginCheckout(lines, subtotal) } }, [lines, subtotal])
   useEffect(() => { if (user) setForm((f) => ({ ...f, name: f.name || user.name, phone: f.phone || user.phone, email: user.email })) }, [user])
 
   if (leaving) return <div className="container-w grid min-h-[50vh] place-items-center py-14"><p className="flex items-center gap-3 text-lg font-semibold text-primary"><Lock className="size-5" />نحوّلك لبوابة الدفع الآمنة…</p></div>

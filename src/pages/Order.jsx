@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { money, dateTime, waLink } from '@/lib/format.js'
 import { Button } from '@/components/ui/button'
 import OptionList from '@/components/OptionList.jsx'
+import { trackPurchase } from '@/lib/analytics.js'
 import { Panel, OrderTracker, StatusPill, statusLabel, Skeleton, Empty } from '@/components/ui/kit.jsx'
 
 export { statusLabel }
@@ -42,12 +43,13 @@ export default function Order() {
   useEffect(() => {
     if (!authReady) return
     let alive = true
-    const load = () => api.getOrder(id).then((o) => alive && setOrder(o)).catch(() => alive && setOrder(null))
+    let paidNow = false
+    const load = () => api.getOrder(id).then((o) => { if (paidNow && o && o.status !== 'pending') trackPurchase(o); if (alive) setOrder(o) }).catch(() => alive && setOrder(null))
     const tap = params.get('tap_id')
     if (tap && api.verifyPayment) {
       setVerifying(true)
       api.verifyPayment(id, tap).then((r) => {
-        if (r?.ok) { clearCart(); try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
+        if (r?.ok) { paidNow = true; clearCart(); try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
       }).finally(() => { if (alive) setVerifying(false); load() })
     } else load()
     return () => { alive = false }

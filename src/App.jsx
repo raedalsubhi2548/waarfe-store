@@ -14,6 +14,7 @@ const lazy = (load) => reactLazy(() => load().catch((err) => {
   throw err
 }))
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { usePageViews } from './lib/analytics.js'
 import { DirectionProvider } from '@radix-ui/react-direction'
 import { AppProvider } from './state.jsx'
 import Layout, { PageFallback } from './components/Layout.jsx'
@@ -43,12 +44,15 @@ const Categories = lazy(() => import('./pages/admin/Categories.jsx'))
 const Customers = lazy(() => import('./pages/admin/Customers.jsx'))
 const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
 
+function PageViews() { usePageViews(); return null }
+
 export default function App() {
   return (
     <DirectionProvider dir="rtl">
     <AppProvider>
       <ErrorBoundary>
       <BrowserRouter>
+        <PageViews />
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
