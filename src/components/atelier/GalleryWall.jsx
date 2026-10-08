@@ -25,13 +25,13 @@ function Row({ ids, reverse }) {
 }
 
 /** Our banner & social work drifting slowly in two rows; hover pauses a row. */
-export default function GalleryWall() {
+export default function GalleryWall({ eyebrow = 'من مكتب منصة رائد', title = 'بنرات وتصاميم سوشال ميديا', text = 'نماذج حقيقية من شغلنا لعملائنا، مرّر عليها عشان توقف.' }) {
   return (
-    <section className="cv-auto relative py-14 sm:py-20" aria-label="معرض أعمال منصة رائد">
+    <section className="cv-auto relative py-14 sm:py-20" aria-label={title || "معرض الأعمال"}>
       <div className="container-w mb-6 flex flex-col items-center gap-2 text-center sm:mb-8">
-        <p className="text-[14px] font-medium text-primary/55">من مكتب منصة رائد</p>
-        <h2 className="font-display text-[2.1rem] font-bold leading-[1.45] text-primary sm:text-[2.75rem]">بنرات وتصاميم سوشال ميديا</h2>
-        <p className="max-w-md text-[15px] leading-7 text-muted-foreground">نماذج حقيقية من شغلنا لعملائنا، مرّر عليها عشان توقف.</p>
+        {eyebrow && <p className="text-[14px] font-medium text-primary/55">{eyebrow}</p>}
+        {title && <h2 className="font-display text-[2.1rem] font-bold leading-[1.45] text-primary sm:text-[2.75rem]">{title}</h2>}
+        {text && <p className="max-w-md text-[15px] leading-7 text-muted-foreground">{text}</p>}
       </div>
       <div className="grid gap-1">
         <Row ids={ROW_A} />

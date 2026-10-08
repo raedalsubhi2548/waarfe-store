@@ -19,7 +19,7 @@ const data = { products, categories, faq: FAQ, reviews: ALL_REVIEWS }
 // embedded for hydration; `<` escaped so no product text can close the script tag
 const catalogJson = `<script type="application/json" id="__catalog">${JSON.stringify(catalog).replace(/</g, '\\u003c')}</script>`
 // the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
-const hero = mergeSettings(catalog.settings).hero
+const hero = mergeSettings(catalog.settings).home.find((b) => b.on && b.type === 'hero') || { image: '', imageMobile: '' }
 const attr = (u) => u.replace(/["<>&]/g, encodeURIComponent)
 const HERO_PRELOAD = `    <link rel="preload" as="image" href="${attr(hero.imageMobile || hero.image || '/brand/ai/raed-hero-mobile-v3.webp')}" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="${attr(hero.image || '/brand/ai/raed-hero-v3.webp')}" media="(min-width: 768px)" fetchpriority="high" />\n`
 

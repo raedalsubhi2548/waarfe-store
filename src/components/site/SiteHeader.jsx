@@ -38,7 +38,8 @@ export default function SiteHeader() {
   }, [])
   const accountTo = user ? '/account' : '/login'
 
-  const home = loc.pathname === '/' || loc.pathname === '/admin/preview' // the designer previews the home page there
+  // the clear header floats over a dark hero: only when the home page starts with one (the designer previews it at /admin/preview)
+  const home = (loc.pathname === '/' || loc.pathname === '/admin/preview') && settings.home.find((b) => b.on)?.type === 'hero'
   const clear = home && !scrolled
   const ink = clear ? 'text-on-inverse hover:bg-white/10' : 'text-primary hover:bg-sunken'
   const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', clear ? (isActive ? 'text-accent after:scale-x-100' : 'text-on-inverse/85 hover:text-accent') : (isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary'))
@@ -55,10 +56,9 @@ export default function SiteHeader() {
             {user && <span className="absolute top-2 end-2 size-2 rounded-full bg-success ring-2 ring-background" aria-hidden="true" />}
           </button>
           <nav className="hidden items-center gap-1 lg:flex" aria-label="الرئيسية">
-            <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
-            <NavLink to="/work" className={link}>أعمالنا</NavLink>
-            <NavLink to="/reviews" className={link}>آراء العملاء</NavLink>
-            <NavLink to="/contact" className={link}>تواصل</NavLink>
+            {settings.header.links.map((l) => /^https:/i.test(l.to)
+              ? <a key={l.label + l.to} href={l.to} target="_blank" rel="noopener noreferrer" className={link({ isActive: false })}>{l.label}</a>
+              : <NavLink key={l.label + l.to} to={l.to} className={link}>{l.label}</NavLink>)}
           </nav>
         </div>
 
@@ -69,11 +69,13 @@ export default function SiteHeader() {
         </Link>
 
         <div className="flex items-center justify-end gap-0.5">
-          <button className={cn(iconBtn, ink)} onClick={() => setSearch(true)} aria-label="بحث"><Search className="size-[21px]" /></button>
+          {settings.header.search && <button className={cn(iconBtn, ink)} onClick={() => setSearch(true)} aria-label="بحث"><Search className="size-[21px]" /></button>}
+{settings.header.wishlist && (
           <Link className={cn(iconBtn, ink, 'hidden sm:grid')} to="/account/wishlist" aria-label={`الأمنيات (${wishlist.length})`}>
             <Heart className="size-[21px]" />
             {wishlist.length > 0 && <span className="absolute top-1.5 end-1.5 size-2 rounded-full bg-danger" />}
           </Link>
+          )}
           <Link className={cn(iconBtn, ink, 'hidden lg:grid')} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
           <button
             onClick={() => setCartOpen(true)}

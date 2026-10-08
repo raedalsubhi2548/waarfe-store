@@ -4,7 +4,7 @@ import { ArrowLeft, Quote } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { FAQ } from '@/data/content.js'
 import { ALL_REVIEWS } from '@/data/reviews.js'
-import { waLink, money, effectivePrice } from '@/lib/format.js'
+import { money, effectivePrice } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
 import StarsSvg from '@/components/brand/Stars.jsx'
 const Stars = (p) => <StarsSvg size={14} {...p} />
@@ -35,16 +35,8 @@ function Head({ eyebrow, title }) {
   )
 }
 
-const TITLE_TEXT = {
-  new: ['جديدنا ومميزاتنا', 'الأكثر طلباً عند عملائنا'],
-  categories: ['كل ما يحتاجه متجرك', 'أقسام المتجر'],
-  'design-services': ['نصمم لعلامتك', 'خدمات التصميم'],
-  'marketing-services': ['نوصّلك لعملائك', 'خدمات التسويق'],
-  'government-services': ['أوراقك الرسمية', 'الخدمات الحكومية'],
-  reviews: ['آراء عملائنا', 'وش قالوا عن شغلنا'],
-}
-function Title({ id, className }) {
-  const [eyebrow, title] = TITLE_TEXT[id]
+function Title({ eyebrow, title, className }) {
+  if (!title && !eyebrow) return null
   return <Reveal className={cn('container-w', className)}><SectionTitle eyebrow={eyebrow} title={title} /></Reveal>
 }
 
@@ -67,14 +59,14 @@ function Shelf({ items }) {
 const DUST = Array.from({ length: 16 }, (_, i) => ({ l: (i * 61) % 100, t: 20 + ((i * 37) % 70), d: 8 + (i % 5) * 1.8, w: i * 0.9, s: 2 + (i % 3) }))
 const ART = '/brand/ai'
 
-function Hero() {
-  const { settings: { hero: h } } = useApp()
+function Hero({ b: h, first }) {
+  const H = first ? 'h1' : 'h2'
   return (
-    <section className="relative -mt-[var(--header-height)] isolate overflow-hidden bg-[var(--p-green-950)] text-on-inverse">
+    <section className={cn('relative isolate overflow-hidden bg-[var(--p-green-950)] text-on-inverse', first && '-mt-[var(--header-height)]')}>
       {/* the scene */}
       <picture className="absolute inset-0 -z-10">
         <source media="(max-width: 767px)" srcSet={h.imageMobile || h.image || `${ART}/raed-hero-mobile-v3.webp`} />
-        <img src={h.image || `${ART}/raed-hero-v3.webp`} alt="تصميم متاجر سلة من منصة رائد على الجوال واللابتوب" width="2800" height="1188" fetchpriority="high"
+        <img src={h.image || `${ART}/raed-hero-v3.webp`} alt={h.image ? h.title1 : 'تصميم متاجر سلة من منصة رائد على الجوال واللابتوب'} width="2800" height="1188" fetchpriority="high"
           className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
@@ -85,54 +77,55 @@ function Hero() {
         <span key={i} className="pointer-events-none absolute -z-10 rounded-full bg-[var(--p-cream-200)]/60 motion-safe:animate-[dust_var(--d)_linear_infinite]" style={{ left: `${d.l}%`, top: `${d.t}%`, width: d.s, height: d.s, '--d': `${d.d}s`, '--dx': `${(i % 2 ? 1 : -1) * (10 + i * 2)}px`, animationDelay: `${d.w}s` }} aria-hidden="true" />
       ))}
 
-      <div className="container-w relative flex min-h-[640px] flex-col justify-start pt-[calc(var(--header-height)+92px)] pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32 md:pt-[calc(var(--header-height)+40px)]">
+      <div className={cn('container-w relative flex min-h-[640px] flex-col justify-start pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32', first ? 'pt-[calc(var(--header-height)+92px)] md:pt-[calc(var(--header-height)+40px)]' : 'pt-24 md:pt-16')}>
         <div className="mx-auto max-w-[560px] text-center md:ms-0 md:me-auto md:text-start lg:ms-[2%]">
           <p className="inline-flex items-center gap-3 text-[14px] font-medium text-on-inverse/70 motion-safe:animate-[rise-in-solid_700ms_var(--p-ease-emphasized)_both]">
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(251_252_254/0.6))]" />{h.eyebrow}<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(251_252_254/0.6))] md:hidden" />
           </p>
-          <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in-solid_850ms_var(--p-ease-emphasized)_both]">
-            <span className="sr-only">تصميم متاجر سلة في السعودية: </span>
+          <H className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in-solid_850ms_var(--p-ease-emphasized)_both]">
+            {first && <span className="sr-only">تصميم متاجر سلة في السعودية: </span>}
             <span className="block">{h.title1}</span>
             {h.title2 && <span className="block font-light text-[var(--p-cream-200)]">{h.title2}</span>}
-          </h1>
+          </H>
           <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_color-mix(in_srgb,var(--p-green-950)_90%,transparent)] md:mx-0 motion-safe:animate-[rise-in-solid_1s_var(--p-ease-emphasized)_both]">{h.text}</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in-solid_1.15s_var(--p-ease-emphasized)_both]">
             <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white">{/^https:/i.test(h.ctaLink) ? <a href={h.ctaLink} target="_blank" rel="noopener noreferrer">{h.cta}<ArrowLeft className="size-4" /></a> : <Link to={h.ctaLink}>{h.cta}<ArrowLeft className="size-4" /></Link>}</Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
-          <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in-solid_1.3s_var(--p-ease-emphasized)_both]">
+          {h.showStats && <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in-solid_1.3s_var(--p-ease-emphasized)_both]">
             <Link to="/reviews" className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-[var(--p-green-950)]/55 py-2 ps-2 pe-4 text-[13px] sm:gap-4 sm:py-2.5 sm:ps-3 sm:pe-5 text-white shadow-[0_18px_40px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/20 backdrop-blur-md transition-colors hover:bg-[var(--p-green-950)]/70 sm:text-[15.5px]">
               <span className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-primary sm:gap-2 sm:px-3">
-                <b className="tabular text-[15px] font-bold leading-none sm:text-[19px]">5.0</b><Stars className="text-primary [&_svg]:size-3 sm:[&_svg]:size-[15px]" />
+                <b className="tabular text-[15px] font-bold leading-none sm:text-[19px]">5.0</b><StarsSvg size={13} />
               </span>
               <span className="leading-tight">تقييم عملائنا</span>
               <span className="h-5 w-px bg-white/30 sm:h-6" />
               <span className="flex items-baseline gap-1.5 leading-tight"><b dir="ltr" className="tabular text-[16px] font-bold sm:text-[21px]">+200</b>طلب نفّذناه</span>
             </Link>
-          </div>
+          </div>}
         </div>
       </div>
 
       {/* melt softly into the cream page — no hard edge */}
-      <span className="pointer-events-none absolute inset-x-0 -bottom-px h-48 bg-[linear-gradient(180deg,transparent,rgb(251_252_254/0.7)_45%,var(--background)_82%)] sm:h-72" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-x-0 -bottom-px h-48 bg-[linear-gradient(180deg,transparent,color-mix(in_srgb,var(--background)_70%,transparent)_45%,var(--background)_82%)] sm:h-72" aria-hidden="true" />
     </section>
   )
 }
 
 /** A scene that dissolves into the page: the picture melts at every edge, our words sit beside it on the same cream. */
+const BUILT_IN = /^\/brand\/ai\/raed-(landing|installments)\.webp$/
 function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra }) {
   const inner = (
     <>
       <span className="relative block aspect-[16/10] w-full overflow-hidden sm:aspect-auto sm:h-full">
-        <img src={img} srcSet={`${img.replace('.webp', '-800.webp')} 800w, ${img} 1600w`} sizes="(max-width: 640px) 92vw, 50vw" alt="" loading="lazy" decoding="async"
+        <img src={img} srcSet={BUILT_IN.test(img) ? `${img.replace('.webp', '-800.webp')} 800w, ${img} 1600w` : undefined} sizes="(max-width: 640px) 92vw, 50vw" alt="" loading="lazy" decoding="async"
           className="size-full object-cover object-left transition-transform duration-[2s] ease-[cubic-bezier(.16,1,.3,1)] [mask-image:radial-gradient(ellipse_62%_62%_at_50%_50%,black_38%,transparent_100%)] group-hover:scale-[1.04]" />
       </span>
       <div className="relative flex flex-col justify-center px-2 pb-4 sm:py-10">
         <span className="text-[14px] font-medium text-primary/60">{kicker}</span>
-        <h2 className="mt-2 font-display text-[2rem] font-bold leading-[1.45] text-primary sm:text-[2.5rem]"><span className="block">{title}</span><span className="block font-normal text-primary/60">{accent}</span></h2>
-        <p className="mt-2 max-w-md text-[15px] leading-[1.9] text-muted-foreground">{body}</p>
+        <h2 className="mt-2 font-display text-[2rem] font-bold leading-[1.45] text-primary sm:text-[2.5rem]"><span className="block">{title}</span>{accent && <span className="block font-normal text-primary/60">{accent}</span>}</h2>
+        {body && <p className="mt-2 max-w-md text-[15px] leading-[1.9] text-muted-foreground">{body}</p>}
         <div className="mt-6 flex flex-wrap items-center gap-4">
-          <span className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-[14px] font-semibold text-on-inverse shadow-[0_14px_30px_-14px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>
+          {cta && <span className="inline-flex h-11 items-center gap-2 rounded-full bg-primary px-5 text-[14px] font-semibold text-on-inverse shadow-[0_14px_30px_-14px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] transition-transform group-hover:-translate-y-0.5">{cta}<ArrowLeft className="size-4" /></span>}
           {extra}
         </div>
       </div>
@@ -141,39 +134,59 @@ function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra })
   const cls = 'group relative grid items-center gap-2 sm:min-h-[360px] sm:grid-cols-[0.9fr_1.1fr]'
   return (
     <Reveal className="container-w mx-auto max-w-[1100px] py-4">
-      {to ? <Link to={to} className={cls}>{inner}</Link> : <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a>}
+      {to ? <Link to={to} className={cls}>{inner}</Link> : href ? <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a> : <div className={cls}>{inner}</div>}
     </Reveal>
   )
 }
 
-function LandingPromo() {
+/** linkProps: an internal path opens in the store, an https address in a new tab. */
+const linkTo = (link) => (!link ? {} : /^https:/i.test(link) ? { href: link } : { to: link })
+
+function ImageTextBlock({ b }) {
   const { byId } = useApp()
-  const p = byId['landing-page-design']
-  return (
-    <SceneBanner img={`${ART}/raed-landing.webp`} to="/landing-page-design" kicker="طفشت من الاشتراكات الشهرية؟"
-      title="صفحة هبوط مبرمجة لك" accent="بدون اشتراك شهري" body="مبرمجة بـ HTML وCSS وJavaScript، مع دومين واستضافة سنة هدية."
-      cta="اطلبها الحين" extra={p && <span className="tabular text-xl font-semibold text-primary">{money(effectivePrice(p))}</span>} />
-  )
+  const p = b.priceOf && byId[b.priceOf]
+  const extra = (p || b.payIcons) && <>{p && <span className="tabular text-xl font-semibold text-primary">{money(effectivePrice(p))}</span>}{b.payIcons && <PayIcons className="w-full max-w-[460px]" />}</>
+  return <SceneBanner img={b.image || `${ART}/raed-landing.webp`} {...linkTo(b.link)} kicker={b.kicker} title={b.title} accent={b.accent} body={b.text} cta={b.cta} extra={extra} />
 }
 
-function PaymentsStrip() {
+function BannerBlock({ b }) {
+  if (!b.image) return null
+  const pic = (
+    <picture>
+      {b.imageMobile && <source media="(max-width: 767px)" srcSet={b.imageMobile} />}
+      <img src={b.image} alt={b.alt || ''} loading="lazy" decoding="async" className={cn('block h-auto w-full', b.size === 'container' && 'rounded-[20px]')} />
+    </picture>
+  )
+  const l = linkTo(b.link)
+  const body = l.to ? <Link to={l.to} className="block">{pic}</Link> : l.href ? <a href={l.href} target="_blank" rel="noopener noreferrer" className="block">{pic}</a> : pic
+  return <Reveal className={cn('py-4 sm:py-6', b.size === 'container' && 'container-w mx-auto max-w-[1100px]')}>{body}</Reveal>
+}
+
+function TextBlock({ b }) {
+  const l = linkTo(b.link)
   return (
-    <SceneBanner img={`${ART}/raed-installments.webp`} href={waLink('السلام عليكم، أبي أعرف عن تقسيط قيمة الخدمة')} kicker="ادفع بالطريقة اللي تريحك"
-      title="قسّم قيمة متجرك" accent="على دفعات مريحة" body="ادفع بـ Apple Pay أو فيزا أو ماستركارد، أو قسّطها مع تمارا وتابي."
-      cta="اسألنا عن التقسيط" extra={<PayIcons className="w-full max-w-[460px]" />} />
+    <section className={cn('container-w mx-auto max-w-3xl py-12 sm:py-16', b.align === 'center' ? 'text-center' : 'text-start')}>
+      <Reveal>
+        {b.eyebrow && <p className="mb-1 text-[14px] font-medium text-primary/55">{b.eyebrow}</p>}
+        {b.title && <h2 className="text-balance font-display text-[2rem] font-bold leading-[1.45] text-primary sm:text-[2.5rem]">{b.title}</h2>}
+        {b.text && <p className="mt-4 whitespace-pre-line text-[16px] leading-[2] text-muted-foreground">{b.text}</p>}
+        {b.cta && (l.to || l.href) && (
+          <div className="mt-7">
+            <Button asChild size="lg" className="px-7">{l.to ? <Link to={l.to}>{b.cta}<ArrowLeft className="size-4" /></Link> : <a href={l.href} target="_blank" rel="noopener noreferrer">{b.cta}<ArrowLeft className="size-4" /></a>}</Button>
+          </div>
+        )}
+      </Reveal>
+    </section>
   )
 }
 
 /* ---------------- Promise strip (true facts only) ---------------- */
-function Promises() {
-  const items = [
-    { art: 'clock', t: 'تسليم المتجر', d: 'من يومين إلى 6 أيام' },
-    { art: 'shield', t: 'دفع آمن', d: 'مدى، فيزا، ماستركارد وApple Pay' },
-    { art: 'chat', t: 'تواصل مباشر', d: 'على واتساب طول التنفيذ' },
-  ]
+function Promises({ b, afterHero }) {
+  const items = b.items.map((x) => ({ art: x.icon, t: x.title, d: x.text }))
+  if (!items.length) return null
   return (
-    <section className="container-w relative z-10 -mt-16 sm:-mt-24">
-      <ul className="mx-auto grid max-w-4xl grid-cols-3 gap-2 px-1 py-4 sm:px-6">
+    <section className={cn('container-w relative z-10', afterHero ? '-mt-16 sm:-mt-24' : 'py-6')}>
+      <ul className={cn('mx-auto grid max-w-4xl gap-2 px-1 py-4 sm:px-6', ['grid-cols-1', 'grid-cols-2', 'grid-cols-3', 'grid-cols-2 sm:grid-cols-4'][items.length - 1])}>
         {items.map((x, i) => (
           <Reveal as="li" key={x.t} delay={i * 100} className="flex flex-col items-center gap-2 text-center sm:flex-row sm:justify-center sm:gap-4 sm:text-start">
             <LineArt name={x.art} tone="green" className="size-10 shrink-0 text-primary sm:size-12" delay={i * 0.15} />
@@ -227,29 +240,22 @@ function Categories() {
   )
 }
 
-function CategoryShelf({ id }) {
-  const { products, catalogReady } = useApp()
-  const items = products.filter((p) => p.categoryId === id).slice(0, 4)
-  if (!catalogReady || !items.length) return null
+function ProductsBlock({ b }) {
+  const { products, byId, catalogReady } = useApp()
+  if (!catalogReady) return <div className="container-w grid grid-cols-2 gap-6 py-16 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <div key={i} className="aspect-square animate-pulse rounded-xl bg-sunken" />)}</div>
+  const list = b.source === 'picked' ? b.ids.map((id) => byId[id]).filter(Boolean)
+    : b.source === 'category' ? products.filter((p) => p.categoryId === b.category)
+      : b.source === 'featured' ? products.filter((p) => p.featured)
+        : [...products].sort((x, y) => String(y.createdAt || '').localeCompare(String(x.createdAt || '')))
+  const items = list.slice(0, b.limit)
+  if (!items.length) return null
   return (
     <section className="cv-auto py-12 sm:py-16">
-      <Title id={id} className="mb-10 sm:mb-14" />
+      <Title eyebrow={b.eyebrow} title={b.title} className="mb-10 sm:mb-14" />
       <div className="container-w">
         <Shelf items={items} />
-        <ViewAll to={`/${id}`} />
+        {b.viewAll && <ViewAll to={b.viewAllTo || (b.source === 'category' && b.category ? `/${b.category}` : '/shop')} />}
       </div>
-    </section>
-  )
-}
-
-function New() {
-  const { byId, catalogReady } = useApp()
-  const items = ['salla-store-design', 'landing-page-design', 'google-tools-integration', 'ai-integration-chatgpt-claude-salla'].map((id) => byId[id]).filter(Boolean)
-  if (!catalogReady) return <div className="container-w grid grid-cols-2 gap-6 py-16 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <div key={i} className="aspect-square animate-pulse rounded-xl bg-sunken" />)}</div>
-  return (
-    <section className="cv-auto py-12 sm:py-16">
-      <Title id="new" className="mb-10 sm:mb-14" />
-      <div className="container-w"><Shelf items={items} /><ViewAll to="/shop" /></div>
     </section>
   )
 }
@@ -280,12 +286,12 @@ function ReviewRow({ items, reverse }) {
   )
 }
 
-function Reviews() {
+function Reviews({ b }) {
   const short = ALL_REVIEWS.filter((r) => r.text.length < 170).slice(0, 20)
   const half = Math.ceil(short.length / 2)
   return (
     <section className="cv-auto py-12 sm:py-16">
-      <Title id="reviews" className="mb-10 sm:mb-12" />
+      <Title eyebrow={b.eyebrow} title={b.title} className="mb-10 sm:mb-12" />
       <div className="grid gap-2">
         <ReviewRow items={short.slice(0, half)} />
         <ReviewRow items={short.slice(half)} reverse />
@@ -295,37 +301,54 @@ function Reviews() {
   )
 }
 
+function CategoriesBlock({ b }) {
+  return (
+    <section className="cv-auto py-12 sm:py-16">
+      <Title eyebrow={b.eyebrow} title={b.title} className="mb-10 sm:mb-14" />
+      <Categories />
+    </section>
+  )
+}
+
+function FaqBlock({ b }) {
+  return (
+    <section className="cv-auto container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
+      <Head eyebrow={b.eyebrow} title={b.title} />
+      <Accordion type="single" collapsible className="grid gap-3">
+        {FAQ.map((q, i) => (
+          <AccordionItem key={q.q} value={String(i)}>
+            <AccordionTrigger>{q.q}</AccordionTrigger>
+            <AccordionContent>{q.a} {q.link && <Link className="font-semibold text-primary underline underline-offset-4" to={q.link}>السياسات والشروط</Link>}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  )
+}
+
+const RENDER = {
+  hero: Hero, banner: BannerBlock, promises: Promises, products: ProductsBlock, categories: CategoriesBlock,
+  imageText: ImageTextBlock, text: TextBlock, gallery: ({ b }) => <GalleryWall eyebrow={b.eyebrow} title={b.title} text={b.text} />, reviews: Reviews, faq: FaqBlock,
+}
+
+// The home page is the owner's list of blocks (store designer); the original layout until they change it.
 export default function Home() {
+  const { settings } = useApp()
+  const blocks = settings.home.filter((b) => b.on)
+  const top = blocks[0]?.type === 'hero' ? blocks[0] : null
+  const rest = top ? blocks.slice(1) : blocks
   return (
     <>
-      <Hero />
-      <div className="relative isolate">
-        <Vine />
-        <span className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_18%_at_95%_14%,color-mix(in_srgb,var(--p-green-900)_7%,transparent),transparent),radial-gradient(40%_14%_at_5%_34%,color-mix(in_srgb,var(--p-gold-400)_12%,transparent),transparent),radial-gradient(50%_16%_at_100%_56%,color-mix(in_srgb,var(--p-green-900)_6%,transparent),transparent),radial-gradient(45%_14%_at_0%_78%,color-mix(in_srgb,var(--p-green-900)_6%,transparent),transparent)]" aria-hidden="true" />
-      <Promises />
-      <New />
-      <LandingPromo />
-      <section className="cv-auto py-12 sm:py-16">
-        <Title id="categories" className="mb-10 sm:mb-14" />
-        <Categories />
-      </section>
-      <CategoryShelf id="design-services" />
-      <CategoryShelf id="marketing-services" />
-      <PaymentsStrip />
-      <CategoryShelf id="government-services" />
-      <GalleryWall />
-      <Reviews />
-      <section className="cv-auto container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
-        <Head eyebrow="قبل ما تطلب" title="أسئلة تتكرر" />
-        <Accordion type="single" collapsible className="grid gap-3">
-          {FAQ.map((q, i) => (
-            <AccordionItem key={q.q} value={String(i)}>
-              <AccordionTrigger>{q.q}</AccordionTrigger>
-              <AccordionContent>{q.a} {q.link && <Link className="font-semibold text-primary underline underline-offset-4" to={q.link}>السياسات والشروط</Link>}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </section>
+      {top ? <div data-block={top.id}><Hero b={top} first /></div> : <h1 className="sr-only">{settings.home.find((b) => b.type === 'hero')?.title1 || 'الرئيسية'}</h1>}
+      <div className={cn('relative isolate', !top && 'pt-6')}>
+        {settings.background.decor && <>
+          <Vine />
+          <span className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(45%_18%_at_95%_14%,color-mix(in_srgb,var(--p-green-900)_7%,transparent),transparent),radial-gradient(40%_14%_at_5%_34%,color-mix(in_srgb,var(--p-gold-400)_12%,transparent),transparent),radial-gradient(50%_16%_at_100%_56%,color-mix(in_srgb,var(--p-green-900)_6%,transparent),transparent),radial-gradient(45%_14%_at_0%_78%,color-mix(in_srgb,var(--p-green-900)_6%,transparent),transparent)]" aria-hidden="true" />
+        </>}
+        {rest.map((b, i) => {
+          const C = RENDER[b.type]
+          return <div key={b.id} data-block={b.id}><C b={b} afterHero={i === 0 && !!top} /></div>
+        })}
       </div>
     </>
   )

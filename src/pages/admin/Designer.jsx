@@ -1,14 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Smartphone, Monitor, Upload, RotateCcw, Check, Loader2, ImageIcon, Undo2 } from 'lucide-react'
+import {
+  Smartphone, Monitor, Upload, RotateCcw, Check, Loader2, ImageIcon, Undo2, ChevronUp, ChevronDown, Eye, EyeOff, Trash2, Plus, Pencil, X,
+  Sparkles, Image as ImageLucide, BadgeCheck, LayoutGrid, Shapes, PanelLeft, Type, GalleryHorizontal, MessageSquareQuote, CircleHelp, Copy,
+} from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
-import { DEFAULT_SETTINGS, PRESETS, mergeSettings } from '@/lib/theme.js'
+import { DEFAULT_SETTINGS, PRESETS, BLOCKS, BLOCK_DEFAULTS, ICONS, DEFAULT_HEADER_LINKS, DEFAULT_ABOUT, defaultHome, mergeSettings } from '@/lib/theme.js'
 import { Button } from '@/components/ui/button'
-import { Field, Input, Textarea, Panel, Switch } from '@/components/ui/kit.jsx'
+import { Field, Input, Textarea, Select, Panel, Switch } from '@/components/ui/kit.jsx'
 import { AdminHead, useConfirm } from '@/components/admin/ui.jsx'
 
 const MAX_IMAGE = 4 * 1024 * 1024
+const BLOCK_ICON = { Sparkles, Image: ImageLucide, BadgeCheck, LayoutGrid, Shapes, PanelLeft, Type, GalleryHorizontal, MessageSquareQuote, CircleHelp }
+const ICON_NAMES = { store: 'متجر', landing: 'صفحة', analytics: 'إحصائيات', shield: 'حماية', chat: 'محادثة', clock: 'ساعة' }
+const uid = () => 'b' + Math.random().toString(36).slice(2, 8)
 
 /** One image slot: upload, preview on the background it will sit on, back to the original. */
 function ImageSlot({ label, hint, value, fallback, dark, onChange, tall }) {
@@ -28,13 +34,13 @@ function ImageSlot({ label, hint, value, fallback, dark, onChange, tall }) {
     <div className="grid gap-2">
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-sm font-semibold text-primary">{label}</span>
-        {value && value !== fallback && <button type="button" onClick={() => onChange('')} className="text-xs font-semibold text-muted-foreground hover:text-primary">رجوع للأصلي</button>}
+        {value && value !== fallback && <button type="button" onClick={() => onChange('')} className="text-xs font-semibold text-muted-foreground hover:text-danger">{fallback ? 'رجوع للأصلي' : 'إزالة'}</button>}
       </div>
       <button type="button" onClick={() => input.current.click()} disabled={busy}
-        className={cn('group relative grid place-items-center overflow-hidden rounded-md ring-1 ring-border transition-shadow hover:ring-2 hover:ring-accent', tall ? 'h-36' : 'h-24', dark ? 'bg-[#0f1a2c]' : 'bg-[#f3f6fa]')}>
-        {shown ? <img src={shown} alt="" className={cn(tall ? 'size-full object-cover' : 'max-h-16 max-w-[80%] object-contain')} /> : <ImageIcon className="size-7 text-muted-foreground" />}
+        className={cn('group relative grid place-items-center overflow-hidden rounded-md ring-1 ring-border transition-shadow hover:ring-2 hover:ring-accent', tall ? 'h-32' : 'h-24', dark ? 'bg-[#0f1a2c]' : 'bg-[#f3f6fa]')}>
+        {shown ? <img src={shown} alt="" className={cn(tall ? 'size-full object-cover' : 'max-h-16 max-w-[80%] object-contain')} /> : <span className="grid justify-items-center gap-1 text-xs text-muted-foreground"><ImageIcon className="size-6" />ارفع صورة</span>}
         <span className="absolute inset-0 grid place-items-center bg-black/45 text-sm font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
-          {busy ? <Loader2 className="size-5 animate-spin" /> : <span className="flex items-center gap-2"><Upload className="size-4" />تغيير الصورة</span>}
+          {busy ? <Loader2 className="size-5 animate-spin" /> : <span className="flex items-center gap-2"><Upload className="size-4" />{shown ? 'تغيير الصورة' : 'رفع صورة'}</span>}
         </span>
       </button>
       {hint && <p className="text-xs leading-5 text-muted-foreground">{hint}</p>}
@@ -58,9 +64,181 @@ function ColorField({ label, value, onChange }) {
   )
 }
 
+const LinkHint = 'صفحة داخل المتجر مثل /shop أو /salla-store-design، أو رابط يبدأ بـ https://'
+
+/** Choose services for a products block: tick them in the order they should appear. */
+function ProductPicker({ value, onChange }) {
+  const { products } = useApp()
+  const [q, setQ] = useState('')
+  const list = products.filter((p) => !q || p.name.includes(q))
+  const toggle = (id) => onChange(value.includes(id) ? value.filter((x) => x !== id) : value.length < 12 ? [...value, id] : value)
+  return (
+    <div className="grid gap-2">
+      <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="ابحث عن خدمة" className="h-10" />
+      <ul className="grid max-h-56 gap-1 overflow-y-auto rounded-md p-1 ring-1 ring-border">
+        {list.map((p) => {
+          const n = value.indexOf(p.id)
+          return (
+            <li key={p.id}>
+              <button type="button" onClick={() => toggle(p.id)} className={cn('flex w-full items-center gap-2 rounded px-2 py-1.5 text-start text-sm', n >= 0 ? 'bg-primary/10 font-semibold text-primary' : 'hover:bg-sunken')}>
+                <span className={cn('grid size-5 shrink-0 place-items-center rounded-full text-[11px] ring-1', n >= 0 ? 'bg-primary text-on-inverse ring-primary' : 'ring-border-strong')}>{n >= 0 ? n + 1 : ''}</span>
+                <span className="truncate">{p.name}</span>
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+      <p className="text-xs text-muted-foreground">{value.length} مختارة (حتى 12). الترتيب حسب اختيارك.</p>
+    </div>
+  )
+}
+
+function ItemsEditor({ value, onChange }) {
+  const set = (i, k, v) => onChange(value.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
+  return (
+    <div className="grid gap-3">
+      {value.map((x, i) => (
+        <div key={i} className="grid gap-2 rounded-md p-3 ring-1 ring-border">
+          <div className="flex items-center gap-2">
+            <Select value={x.icon} onChange={(e) => set(i, 'icon', e.target.value)} className="h-10 w-32">{ICONS.map((n) => <option key={n} value={n}>{ICON_NAMES[n]}</option>)}</Select>
+            <Input value={x.title} maxLength={40} onChange={(e) => set(i, 'title', e.target.value)} placeholder="العنوان" className="h-10" />
+            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))} className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label="حذف"><X className="size-4" /></button>
+          </div>
+          <Input value={x.text} maxLength={60} onChange={(e) => set(i, 'text', e.target.value)} placeholder="سطر توضيحي" className="h-10" />
+        </div>
+      ))}
+      {value.length < 4 && <Button type="button" variant="outline" size="sm" onClick={() => onChange([...value, { icon: 'store', title: '', text: '' }])}><Plus className="size-4" />أضف ميزة</Button>}
+    </div>
+  )
+}
+
+/** The form for one block, built from its field list in theme.js. */
+function BlockForm({ block, onChange }) {
+  const { categories, products } = useApp()
+  const def = BLOCKS[block.type]
+  const set = (k, v) => onChange({ ...block, [k]: v })
+  const shown = (key) => block.type !== 'products' || (key !== 'category' || block.source === 'category') && (key !== 'ids' || block.source === 'picked')
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {def.fields.filter(([key]) => shown(key)).map(([key, label, kind, opt]) => {
+        const v = block[key]
+        const wide = ['textarea', 'image', 'products', 'items', 'switch'].includes(kind) || key === 'title' || key === 'text'
+        let control
+        if (kind === 'text') control = <Input value={v} maxLength={opt} onChange={(e) => set(key, e.target.value)} />
+        else if (kind === 'textarea') control = <Textarea value={v} maxLength={opt} onChange={(e) => set(key, e.target.value)} />
+        else if (kind === 'link') control = <Input value={v} dir="ltr" onChange={(e) => set(key, e.target.value.trim())} placeholder="/shop" />
+        else if (kind === 'image') return <div key={key} className="sm:col-span-2"><ImageSlot tall label={label} value={v} fallback={block.type === 'hero' ? (key === 'image' ? '/brand/ai/raed-hero-v3.webp' : '/brand/ai/raed-hero-mobile-v3.webp') : ''} onChange={(x) => set(key, x)} /></div>
+        else if (kind === 'switch') return <div key={key} className="sm:col-span-2"><Switch checked={!!v} onChange={(x) => set(key, x)} label={label} /></div>
+        else if (kind === 'select') control = <Select value={v} onChange={(e) => set(key, e.target.value)}>{opt.map(([x, t]) => <option key={x} value={x}>{t}</option>)}</Select>
+        else if (kind === 'number') control = <Input type="number" min={opt[0]} max={opt[1]} value={v} onChange={(e) => set(key, Number(e.target.value))} dir="ltr" className="tabular" />
+        else if (kind === 'category') control = <Select value={v} onChange={(e) => set(key, e.target.value)}><option value="">اختر قسم</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Select>
+        else if (kind === 'product') control = <Select value={v} onChange={(e) => set(key, e.target.value)}><option value="">بدون</option>{products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select>
+        else if (kind === 'products') control = <ProductPicker value={v} onChange={(x) => set(key, x)} />
+        else if (kind === 'items') control = <ItemsEditor value={v} onChange={(x) => set(key, x)} />
+        return <Field key={key} label={label} hint={kind === 'link' ? LinkHint : undefined} className={wide ? 'sm:col-span-2' : ''}>{control}</Field>
+      })}
+    </div>
+  )
+}
+
+/** The home page as a list of blocks: reorder, hide, edit, duplicate, delete, add. */
+function HomeBlocks({ blocks, onChange, focus }) {
+  const confirm = useConfirm()
+  const [open, setOpen] = useState(null)
+  const [adding, setAdding] = useState(false)
+  const move = (i, d) => { const n = [...blocks]; [n[i], n[i + d]] = [n[i + d], n[i]]; onChange(n) }
+  const update = (i, b) => onChange(blocks.map((x, j) => (j === i ? b : x)))
+  const remove = async (i) => {
+    if (!(await confirm({ title: `حذف «${BLOCKS[blocks[i].type].name}»؟`, body: 'ينحذف من الصفحة الرئيسية. تقدر ترجعه بزر «تراجع» قبل النشر.' }))) return
+    onChange(blocks.filter((_, j) => j !== i))
+  }
+  const add = (type) => {
+    const b = { id: uid(), type, on: true, ...structuredClone(BLOCK_DEFAULTS[type]) }
+    onChange([...blocks, b]); setAdding(false); setOpen(b.id); focus(b.id)
+  }
+  const label = (b) => b.title || b.title1 || b.kicker || b.alt || (b.type === 'promises' ? b.items.map((x) => x.title).join('، ') : '')
+  return (
+    <div className="grid gap-2">
+      {blocks.map((b, i) => {
+        const def = BLOCKS[b.type]; const I = BLOCK_ICON[def.icon] || Type; const isOpen = open === b.id
+        return (
+          <div key={b.id} className={cn('rounded-lg bg-surface ring-1 transition-shadow', isOpen ? 'shadow-card ring-primary/40' : 'ring-border', !b.on && 'opacity-60')}>
+            <div className="flex items-center gap-2 p-2.5 ps-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-md bg-sunken text-primary"><I className="size-[18px]" /></span>
+              <button type="button" onClick={() => { setOpen(isOpen ? null : b.id); if (!isOpen) focus(b.id) }} className="min-w-0 flex-1 text-start">
+                <b className="block truncate text-sm font-semibold text-primary">{def.name}</b>
+                <span className="block truncate text-xs text-muted-foreground">{label(b) || def.hint}</span>
+              </button>
+              <div className="flex shrink-0 items-center">
+                <IconB onClick={() => move(i, -1)} disabled={i === 0} label="لفوق"><ChevronUp className="size-4" /></IconB>
+                <IconB onClick={() => move(i, 1)} disabled={i === blocks.length - 1} label="لتحت"><ChevronDown className="size-4" /></IconB>
+                <IconB onClick={() => update(i, { ...b, on: !b.on })} label={b.on ? 'إخفاء' : 'إظهار'}>{b.on ? <Eye className="size-4" /> : <EyeOff className="size-4" />}</IconB>
+                <IconB onClick={() => { setOpen(isOpen ? null : b.id); if (!isOpen) focus(b.id) }} label="تعديل" active={isOpen}><Pencil className="size-4" /></IconB>
+              </div>
+            </div>
+            {isOpen && (
+              <div className="grid gap-4 border-t border-border p-4">
+                <BlockForm block={b} onChange={(nb) => update(i, nb)} />
+                <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-3">
+                  <Button type="button" variant="ghost" size="sm" onClick={() => { const c = { ...structuredClone(b), id: uid() }; const n = [...blocks]; n.splice(i + 1, 0, c); onChange(n) }}><Copy className="size-4" />تكرار</Button>
+                  <Button type="button" variant="ghost" size="sm" className="text-danger hover:bg-danger-soft" onClick={() => remove(i)}><Trash2 className="size-4" />حذف العنصر</Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {adding ? (
+        <div className="rounded-lg bg-surface p-3 ring-2 ring-accent">
+          <div className="mb-2 flex items-center justify-between"><b className="text-sm text-primary">اختر عنصر تضيفه</b><IconB onClick={() => setAdding(false)} label="إغلاق"><X className="size-4" /></IconB></div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {Object.entries(BLOCKS).map(([type, d]) => {
+              const I = BLOCK_ICON[d.icon] || Type
+              return (
+                <button key={type} type="button" onClick={() => add(type)} className="flex items-start gap-2.5 rounded-md p-2.5 text-start ring-1 ring-border hover:bg-sunken hover:ring-border-strong">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-md bg-primary text-accent"><I className="size-4" /></span>
+                  <span><b className="block text-sm font-semibold text-primary">{d.name}</b><span className="text-xs leading-5 text-muted-foreground">{d.hint}</span></span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      ) : (
+        <button type="button" onClick={() => setAdding(true)} className="flex h-12 items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border-strong text-sm font-semibold text-primary hover:border-primary hover:bg-sunken">
+          <Plus className="size-4" />إضافة عنصر للصفحة الرئيسية
+        </button>
+      )}
+    </div>
+  )
+}
+
+const IconB = ({ onClick, disabled, label, active, children }) => (
+  <button type="button" onClick={onClick} disabled={disabled} aria-label={label} title={label}
+    className={cn('grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-sunken hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent', active && 'bg-primary/10 text-primary')}>{children}</button>
+)
+
+function HeaderLinks({ value, onChange }) {
+  const set = (i, k, v) => onChange(value.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
+  const move = (i, d) => { const n = [...value]; [n[i], n[i + d]] = [n[i + d], n[i]]; onChange(n) }
+  return (
+    <div className="grid gap-2">
+      {value.map((l, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Input value={l.label} maxLength={24} onChange={(e) => set(i, 'label', e.target.value)} placeholder="الاسم" className="h-10 flex-1" />
+          <Input value={l.to} dir="ltr" onChange={(e) => set(i, 'to', e.target.value.trim())} placeholder="/shop" className="h-10 flex-1" />
+          <IconB onClick={() => move(i, -1)} disabled={i === 0} label="لفوق"><ChevronUp className="size-4" /></IconB>
+          <IconB onClick={() => onChange(value.filter((_, j) => j !== i))} label="حذف"><X className="size-4" /></IconB>
+        </div>
+      ))}
+      {value.length < 6 && <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={() => onChange([...value, { label: '', to: '' }])}><Plus className="size-4" />أضف رابط</Button>}
+      <p className="text-xs leading-5 text-muted-foreground">تظهر في هيدر الكمبيوتر. {LinkHint}</p>
+    </div>
+  )
+}
+
 /** The live store inside the designer, as a phone or a desktop screen. */
-function Preview({ draft }) {
-  const frame = useRef()
+function Preview({ draft, frame }) {
   const box = useRef()
   const [device, setDevice] = useState('mobile')
   const [width, setWidth] = useState(800)
@@ -70,14 +248,14 @@ function Preview({ draft }) {
     const on = (e) => { if (e.origin === location.origin && e.data?.type === 'raed:preview-ready') send() }
     addEventListener('message', on)
     return () => removeEventListener('message', on)
-  }, [draft])
+  }, [draft, frame])
   useEffect(() => {
     const ro = new ResizeObserver(([e]) => setWidth(e.contentRect.width))
     ro.observe(box.current)
     return () => ro.disconnect()
   }, [])
   const desk = device === 'desktop'
-  const scale = desk ? Math.min(1, width / 1280) : 1
+  const scale = desk ? Math.min(1, (width - 24) / 1280) : 1
   return (
     <div className="grid gap-3">
       <div className="flex items-center justify-between gap-3">
@@ -90,11 +268,11 @@ function Preview({ draft }) {
           ))}
         </div>
       </div>
-      <div ref={box} className="grid justify-items-center overflow-hidden rounded-xl bg-[#e9eef5] p-3 ring-1 ring-border sm:p-5">
+      <div ref={box} className="grid justify-items-center overflow-hidden rounded-xl bg-[#e9eef5] p-3 ring-1 ring-border">
         <div className={cn('overflow-hidden bg-white shadow-[0_30px_60px_-30px_rgb(15_26_44/0.6)]', desk ? 'rounded-lg' : 'rounded-[34px] ring-[10px] ring-[#0f1a2c]')}
-          style={desk ? { width: 1280 * scale, height: 820 * scale } : { width: 375, height: 740 }}>
+          style={desk ? { width: 1280 * scale, height: 800 * scale } : { width: 375, height: 720 }}>
           <iframe ref={frame} src="/admin/preview" title="معاينة المتجر"
-            style={desk ? { width: 1280, height: 820, transform: `scale(${scale})`, transformOrigin: 'top right' } : { width: 375, height: 740 }}
+            style={desk ? { width: 1280, height: 800, transform: `scale(${scale})`, transformOrigin: 'top right' } : { width: 375, height: 720 }}
             className="block border-0" />
         </div>
       </div>
@@ -102,25 +280,23 @@ function Preview({ draft }) {
   )
 }
 
+const TABS = [['home', 'الصفحة الرئيسية'], ['brand', 'الشعار والألوان والخلفية'], ['chrome', 'الهيدر والفوتر']]
+
 export default function Designer() {
   const { savedSettings, refreshSettings, notify } = useApp()
   const confirm = useConfirm()
   const saved = useMemo(() => mergeSettings(savedSettings), [savedSettings])
   const [draft, setDraft] = useState(saved)
+  const [tab, setTab] = useState('home')
   const [busy, setBusy] = useState(false)
   const touched = useRef(false)
+  const frame = useRef()
   // the saved settings can arrive after the page opens: take them as long as nothing was edited yet
   useEffect(() => { if (!touched.current) setDraft(saved) }, [saved])
-  const dirty = JSON.stringify(draft) !== JSON.stringify(saved)
-  const set = (path, value) => {
-    touched.current = true
-    setDraft((d) => {
-      const n = structuredClone(d); const keys = path.split('.'); let o = n
-      keys.slice(0, -1).forEach((k) => { o = o[k] }); o[keys.at(-1)] = value
-      return n
-    })
-  }
-  const h = draft.hero, a = draft.announcement, c = draft.colors
+  const dirty = JSON.stringify(mergeSettings(draft)) !== JSON.stringify(saved)
+  const patch = (fn) => { touched.current = true; setDraft((d) => { const n = structuredClone(d); fn(n); return n }) }
+  const post = (msg) => frame.current?.contentWindow?.postMessage(msg, location.origin)
+  const c = draft.colors, a = draft.announcement
 
   const publish = async () => {
     setBusy(true)
@@ -133,82 +309,98 @@ export default function Designer() {
     } catch (er) { notify(er.message, 'err') } finally { setBusy(false) }
   }
   const resetAll = async () => {
-    if (!(await confirm({ title: 'ترجع التصميم الأصلي؟', body: 'يرجع الشعار والألوان والواجهة لتصميم المنصة الأصلي. ما يتغير شي عند الزوار إلا لما تضغط «نشر».', ok: 'رجّع الأصلي' }))) return
+    if (!(await confirm({ title: 'ترجع التصميم الأصلي؟', body: 'يرجع الشعار والألوان والصفحة الرئيسية والهيدر والفوتر لتصميم المنصة الأصلي. ما يتغير شي عند الزوار إلا لما تضغط «نشر».', ok: 'رجّع الأصلي' }))) return
     touched.current = true
-    setDraft(structuredClone(DEFAULT_SETTINGS))
+    setDraft(mergeSettings({ ...structuredClone(DEFAULT_SETTINGS), home: defaultHome() }))
   }
 
   return (
     <>
-      <AdminHead title="مصمم المتجر" lead="غيّر شعارك وألوانك وواجهة متجرك، وشوف النتيجة مباشرة قبل النشر." />
+      <AdminHead title="مصمم المتجر" lead="رتّب صفحتك الرئيسية، وغيّر شعارك وألوانك وهيدر وفوتر متجرك، وشوف النتيجة مباشرة قبل النشر." />
 
-      <div className="grid gap-6 pb-28 xl:grid-cols-[minmax(380px,460px)_1fr] xl:items-start">
+      <div className="grid gap-6 pb-28 xl:grid-cols-[minmax(400px,500px)_1fr] xl:items-start">
         <div className="grid gap-5">
-          <Panel title="الشعار">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <ImageSlot label="على الخلفية الفاتحة" value={draft.logo} fallback={DEFAULT_SETTINGS.logo} onChange={(v) => set('logo', v || DEFAULT_SETTINGS.logo)} hint="يظهر في الهيدر بعد التمرير والقوائم." />
-              <ImageSlot dark label="على الخلفية الغامقة" value={draft.logoLight} fallback={DEFAULT_SETTINGS.logoLight} onChange={(v) => set('logoLight', v || DEFAULT_SETTINGS.logoLight)} hint="فوق صورة الواجهة وفي الفوتر. الأفضل نسخة بيضاء." />
-            </div>
-            <label className="mt-5 grid gap-2">
-              <span className="flex items-center justify-between text-sm font-semibold text-primary">حجم الشعار <span className="tabular text-muted-foreground">{draft.logoScale}%</span></span>
-              <input type="range" min="60" max="160" step="5" value={draft.logoScale} onChange={(e) => set('logoScale', Number(e.target.value))} className="w-full accent-[var(--primary)]" />
-            </label>
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">الأفضل صورة PNG بخلفية شفافة، بعرض 600 بكسل أو أكثر.</p>
-          </Panel>
+          <div className="flex gap-1 overflow-x-auto rounded-full bg-sunken p-1 ring-1 ring-border">
+            {TABS.map(([id, t]) => (
+              <button key={id} type="button" onClick={() => { setTab(id); if (id === 'chrome') post({ type: 'raed:scroll', top: 0 }) }}
+                className={cn('h-10 flex-1 whitespace-nowrap rounded-full px-3 text-sm font-semibold transition-colors', tab === id ? 'bg-primary text-on-inverse shadow-hairline' : 'text-muted-foreground hover:text-primary')}>{t}</button>
+            ))}
+          </div>
 
-          <Panel title="الألوان">
-            <p className="mb-2 text-sm font-semibold text-primary">ثيمات جاهزة</p>
-            <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {PRESETS.map((p) => {
-                const on = p.primary === c.primary && p.accent === c.accent && p.background === c.background
-                return (
-                  <button key={p.name} type="button" onClick={() => { set('colors', { primary: p.primary, accent: p.accent, background: p.background }) }}
-                    className={cn('flex items-center gap-2 rounded-md p-2 text-start text-xs font-semibold ring-1 transition-shadow', on ? 'ring-2 ring-primary' : 'ring-border hover:ring-border-strong')}>
-                    <span className="flex shrink-0 overflow-hidden rounded-full ring-1 ring-black/10">
-                      {[p.primary, p.accent, p.background].map((x) => <span key={x} className="h-6 w-3" style={{ background: x }} />)}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">{p.name}</span>
-                    {on && <Check className="size-3.5 shrink-0 text-primary" />}
-                  </button>
-                )
-              })}
-            </div>
-            <div className="grid gap-3">
-              <ColorField label="اللون الأساسي" value={c.primary} onChange={(v) => set('colors.primary', v)} />
-              <ColorField label="اللون المميّز" value={c.accent} onChange={(v) => set('colors.accent', v)} />
-              <ColorField label="لون الخلفية" value={c.background} onChange={(v) => set('colors.background', v)} />
-            </div>
-            <p className="mt-3 text-xs leading-5 text-muted-foreground">الأساسي للأزرار والعناوين والواجهة الغامقة، والمميّز للمسات الصغيرة. درجات الألوان الباقية تتولّد منها تلقائيًا وبقراءة واضحة.</p>
-          </Panel>
+          {tab === 'home' && (
+            <Panel title="عناصر الصفحة الرئيسية">
+              <p className="-mt-2 mb-4 text-sm leading-6 text-muted-foreground">رتّبها بالأسهم، وأخفِ اللي ما تبيه بالعين، واضغط على أي عنصر تعدّله.</p>
+              <HomeBlocks blocks={draft.home} onChange={(home) => patch((d) => { d.home = home })} focus={(id) => setTimeout(() => post({ type: 'raed:focus', id }), 120)} />
+            </Panel>
+          )}
 
-          <Panel title="شريط الإعلان" action={<Switch checked={a.on} onChange={(v) => set('announcement.on', v)} label={a.on ? 'ظاهر' : 'مخفي'} />}>
-            <div className="grid gap-3">
-              <Field label="نص الإعلان"><Input value={a.text} maxLength={140} onChange={(e) => set('announcement.text', e.target.value)} placeholder="مثال: خصم 20% على تصميم المتاجر لفترة محدودة" /></Field>
-              <Field label="رابط (اختياري)" hint="صفحة داخل المتجر مثل /salla-store-design أو رابط يبدأ بـ https://"><Input value={a.link} dir="ltr" onChange={(e) => set('announcement.link', e.target.value.trim())} placeholder="/shop" /></Field>
-            </div>
-          </Panel>
+          {tab === 'brand' && <>
+            <Panel title="الشعار">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <ImageSlot label="على الخلفية الفاتحة" value={draft.logo} fallback={DEFAULT_SETTINGS.logo} onChange={(v) => patch((d) => { d.logo = v || DEFAULT_SETTINGS.logo })} hint="يظهر في الهيدر بعد التمرير والقوائم." />
+                <ImageSlot dark label="على الخلفية الغامقة" value={draft.logoLight} fallback={DEFAULT_SETTINGS.logoLight} onChange={(v) => patch((d) => { d.logoLight = v || DEFAULT_SETTINGS.logoLight })} hint="فوق صورة الواجهة وفي الفوتر. الأفضل نسخة بيضاء." />
+              </div>
+              <label className="mt-5 grid gap-2">
+                <span className="flex items-center justify-between text-sm font-semibold text-primary">حجم الشعار <span className="tabular text-muted-foreground">{draft.logoScale}%</span></span>
+                <input type="range" min="60" max="160" step="5" value={draft.logoScale} onChange={(e) => patch((d) => { d.logoScale = Number(e.target.value) })} className="w-full accent-[var(--primary)]" />
+              </label>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">الأفضل صورة PNG بخلفية شفافة، بعرض 600 بكسل أو أكثر.</p>
+            </Panel>
 
-          <Panel title="الواجهة الرئيسية">
-            <div className="grid gap-3">
-              <Field label="سطر صغير فوق العنوان"><Input value={h.eyebrow} maxLength={60} onChange={(e) => set('hero.eyebrow', e.target.value)} /></Field>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="العنوان (السطر الأول)"><Input value={h.title1} maxLength={60} onChange={(e) => set('hero.title1', e.target.value)} /></Field>
-                <Field label="العنوان (السطر الثاني)"><Input value={h.title2} maxLength={60} onChange={(e) => set('hero.title2', e.target.value)} /></Field>
+            <Panel title="الألوان">
+              <p className="mb-2 text-sm font-semibold text-primary">ثيمات جاهزة</p>
+              <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {PRESETS.map((p) => {
+                  const on = p.primary === c.primary && p.accent === c.accent && p.background === c.background
+                  return (
+                    <button key={p.name} type="button" onClick={() => patch((d) => { d.colors = { primary: p.primary, accent: p.accent, background: p.background } })}
+                      className={cn('flex items-center gap-2 rounded-md p-2 text-start text-xs font-semibold ring-1 transition-shadow', on ? 'ring-2 ring-primary' : 'ring-border hover:ring-border-strong')}>
+                      <span className="flex shrink-0 overflow-hidden rounded-full ring-1 ring-black/10">{[p.primary, p.accent, p.background].map((x) => <span key={x} className="h-6 w-3" style={{ background: x }} />)}</span>
+                      <span className="min-w-0 flex-1 truncate">{p.name}</span>
+                      {on && <Check className="size-3.5 shrink-0 text-primary" />}
+                    </button>
+                  )
+                })}
               </div>
-              <Field label="الوصف"><Textarea value={h.text} maxLength={220} onChange={(e) => set('hero.text', e.target.value)} /></Field>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Field label="نص الزر"><Input value={h.cta} maxLength={30} onChange={(e) => set('hero.cta', e.target.value)} /></Field>
-                <Field label="رابط الزر"><Input value={h.ctaLink} dir="ltr" onChange={(e) => set('hero.ctaLink', e.target.value.trim())} /></Field>
+              <div className="grid gap-3">
+                <ColorField label="اللون الأساسي" value={c.primary} onChange={(v) => patch((d) => { d.colors.primary = v })} />
+                <ColorField label="اللون المميّز" value={c.accent} onChange={(v) => patch((d) => { d.colors.accent = v })} />
+                <ColorField label="لون خلفية المتجر" value={c.background} onChange={(v) => patch((d) => { d.colors.background = v })} />
               </div>
-              <div className="mt-2 grid gap-4 sm:grid-cols-2">
-                <ImageSlot tall label="صورة الخلفية (كمبيوتر)" value={h.image} fallback="/brand/ai/raed-hero-v3.webp" onChange={(v) => set('hero.image', v)} hint="عرضية، 2400×1000 تقريبًا. النص يكون على اليمين." />
-                <ImageSlot tall label="صورة الخلفية (جوال)" value={h.imageMobile} fallback="/brand/ai/raed-hero-mobile-v3.webp" onChange={(v) => set('hero.imageMobile', v)} hint="طولية، 1080×1600 تقريبًا. النص يكون فوق." />
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">الأساسي للأزرار والعناوين والواجهة الغامقة، والمميّز للمسات الصغيرة. باقي الدرجات تتولّد تلقائيًا وبقراءة واضحة.</p>
+            </Panel>
+
+            <Panel title="خلفية المتجر">
+              <ImageSlot tall label="صورة خلفية لكل صفحات المتجر (اختياري)" value={draft.background.image} onChange={(v) => patch((d) => { d.background.image = v })} hint="تكون فاتحة وهادئة عشان النصوص تبان. بدون صورة تكون الخلفية باللون اللي اخترته." />
+              <div className="mt-4"><Switch checked={draft.background.decor} onChange={(v) => patch((d) => { d.background.decor = v })} label="الزخارف الخفيفة (الخط المنحني والظلال)" /></div>
+            </Panel>
+          </>}
+
+          {tab === 'chrome' && <>
+            <Panel title="شريط الإعلان" action={<Switch checked={a.on} onChange={(v) => patch((d) => { d.announcement.on = v })} label={a.on ? 'ظاهر' : 'مخفي'} />}>
+              <div className="grid gap-3">
+                <Field label="نص الإعلان"><Input value={a.text} maxLength={140} onChange={(e) => patch((d) => { d.announcement.text = e.target.value })} placeholder="مثال: خصم 20% على تصميم المتاجر لفترة محدودة" /></Field>
+                <Field label="رابط (اختياري)" hint={LinkHint}><Input value={a.link} dir="ltr" onChange={(e) => patch((d) => { d.announcement.link = e.target.value.trim() })} placeholder="/shop" /></Field>
               </div>
-            </div>
-          </Panel>
+            </Panel>
+            <Panel title="الهيدر">
+              <p className="mb-2 text-sm font-semibold text-primary">روابط القائمة</p>
+              <HeaderLinks value={draft.header.links} onChange={(links) => patch((d) => { d.header.links = links })} />
+              <div className="mt-4 grid gap-3 border-t border-border pt-4">
+                <Switch checked={draft.header.search} onChange={(v) => patch((d) => { d.header.search = v })} label="أيقونة البحث" />
+                <Switch checked={draft.header.wishlist} onChange={(v) => patch((d) => { d.header.wishlist = v })} label="أيقونة الأمنيات" />
+              </div>
+              {JSON.stringify(draft.header.links) !== JSON.stringify(DEFAULT_HEADER_LINKS) && <button type="button" onClick={() => patch((d) => { d.header.links = structuredClone(DEFAULT_HEADER_LINKS) })} className="mt-3 text-xs font-semibold text-muted-foreground hover:text-primary">رجّع الروابط الأصلية</button>}
+            </Panel>
+            <Panel title="الفوتر">
+              <Field label="نبذة تحت الشعار"><Textarea value={draft.footer.about} maxLength={200} onChange={(e) => patch((d) => { d.footer.about = e.target.value })} placeholder={DEFAULT_ABOUT} /></Field>
+              <div className="mt-4"><Switch checked={draft.footer.payments} onChange={(v) => patch((d) => { d.footer.payments = v; setTimeout(() => post({ type: 'raed:scroll', top: 'end' }), 50) })} label="شعارات طرق الدفع" /></div>
+              <button type="button" onClick={() => post({ type: 'raed:scroll', top: 'end' })} className="mt-3 text-xs font-semibold text-primary underline underline-offset-4">شوف الفوتر في المعاينة</button>
+            </Panel>
+          </>}
         </div>
 
-        <div className="xl:sticky xl:top-6"><Preview draft={draft} /></div>
+        <div className="xl:sticky xl:top-6"><Preview draft={draft} frame={frame} /></div>
       </div>
 
       {/* publish bar */}

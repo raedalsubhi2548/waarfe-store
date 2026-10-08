@@ -6,7 +6,13 @@ import Layout from '@/components/Layout.jsx'
 export default function DesignPreview() {
   const { setPreview } = useApp()
   useEffect(() => {
-    const on = (e) => { if (e.origin === location.origin && e.data?.type === 'raed:design') setPreview(e.data.settings || null) }
+    const on = (e) => {
+      if (e.origin !== location.origin) return
+      if (e.data?.type === 'raed:design') setPreview(e.data.settings || null)
+      // the designer opened a block: bring it into view
+      if (e.data?.type === 'raed:focus') document.querySelector(`[data-block="${CSS.escape(String(e.data.id))}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (e.data?.type === 'raed:scroll') scrollTo({ top: e.data.top === 'end' ? document.body.scrollHeight : 0, behavior: 'smooth' })
+    }
     addEventListener('message', on)
     parent.postMessage({ type: 'raed:preview-ready' }, location.origin)
     return () => { removeEventListener('message', on); setPreview(null) }

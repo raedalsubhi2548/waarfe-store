@@ -35,7 +35,7 @@ export default function SiteFooter() {
               <Link to="/" className="block" aria-label="منصة رائد — الرئيسية">
                 <img src={settings.logoLight} alt="منصة رائد Raed" width="458" height="248" loading="lazy" className="h-[calc(76px*var(--logo-scale,1))] w-auto sm:h-[calc(84px*var(--logo-scale,1))]" />
               </Link>
-              <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
+              <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">{settings.footer.about}</p>
               <Social className="foot-social" />
             </div>
 
@@ -75,7 +75,7 @@ export default function SiteFooter() {
 
           {/* bottom bar: payments + rights, on one clean line on desktop */}
           <div className="mt-12 flex flex-col items-center gap-5 border-t border-white/10 pt-7 lg:flex-row-reverse lg:justify-between">
-            <PayIcons size="sm" className="w-full max-w-[320px]" />
+            {settings.footer.payments && <PayIcons size="sm" className="w-full max-w-[320px]" />}
             <p className="text-center text-[13px] text-on-inverse/55 lg:text-start">
               جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">منصة رائد</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
             </p>
