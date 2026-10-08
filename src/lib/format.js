@@ -4,7 +4,8 @@ export const num = (n) => nf.format(Number(n) || 0)
 export const date = (d) => new Intl.DateTimeFormat('ar-SA-u-nu-latn-ca-gregory', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(d))
 export const dateTime = (d) => new Intl.DateTimeFormat('ar-SA-u-nu-latn-ca-gregory', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(d))
 export const effectivePrice = (p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)
-export const WHATSAPP = import.meta.env.VITE_WHATSAPP || '966536090915'
+// The store's WhatsApp and phone (0536090915). Fixed here so an old setting can't override it.
+export const WHATSAPP = '966536090915'
 export const EMAIL = 'info@rraed.com'
 export const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`
 

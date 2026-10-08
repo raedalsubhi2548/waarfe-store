@@ -20,7 +20,7 @@ rraed.com sells Raed's fixed-price services for Saudi online stores: Salla store
 - **Daily Salla expertise:** Raed works on Salla every day and knows its fields, settings and limits.
 
 ## Operating Context
-Visitors arrive mainly from social ads and WhatsApp on phones. Many services need follow-up after purchase (Raed contacts the customer to collect data/documents). WhatsApp 0545607555 is the primary support channel.
+Visitors arrive mainly from social ads and WhatsApp on phones. Many services need follow-up after purchase (Raed contacts the customer to collect data/documents). WhatsApp 0536090915 is the primary support channel.
 
 ## Capabilities and Constraints
 - Stack: React + Vite on Vercel, Supabase (auth, Postgres, storage), Tap Payments (live). Must not break checkout, accounts, admin, or payment flows.

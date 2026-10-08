@@ -7,7 +7,7 @@ import { invoicePdf, money } from './_invoice.js'
 export const SELLER = () => ({
   name: 'رائد',
   email: process.env.STORE_EMAIL || 'info@rraed.com',
-  phone: process.env.STORE_PHONE || (process.env.VITE_WHATSAPP ? '0' + String(process.env.VITE_WHATSAPP).replace(/^966/, '') : ''),
+  phone: '0536090915',
   site: (process.env.SITE_URL || 'rraed.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
 })
 

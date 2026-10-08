@@ -3,8 +3,8 @@ import { fromSlug, toSlug, productPath } from './slug.js'
 // data. Used at runtime (useSeo) and at build time (scripts/prerender.mjs) so crawlers that do
 // not run JavaScript still get the full head for every public page.
 
-// WhatsApp number from the same setting the storefront uses (VITE_WHATSAPP), in the browser and at build time
-const WA = String((typeof import.meta !== 'undefined' && import.meta.env?.VITE_WHATSAPP) || (typeof process !== 'undefined' && process.env?.VITE_WHATSAPP) || '966536090915')
+// The store's WhatsApp and phone (0536090915), same as src/lib/format.js
+const WA = '966536090915'
 export const WA_LOCAL = '0' + WA.replace(/^966/, '')
 
 export const SITE = {
