@@ -165,7 +165,7 @@ function PaymentsStrip() {
 function Promises() {
   const items = [
     { art: 'clock', t: 'تسليم المتجر', d: 'من يومين إلى 6 أيام' },
-    { art: 'shield', t: 'دفع آمن', d: 'بطاقة، Apple Pay، أو تحويل' },
+    { art: 'shield', t: 'دفع آمن', d: 'مدى، فيزا، ماستركارد وApple Pay' },
     { art: 'chat', t: 'تواصل مباشر', d: 'على واتساب طول التنفيذ' },
   ]
   return (
