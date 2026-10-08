@@ -20,10 +20,6 @@ export const seedCategories = [
     id: 'government-services', name: 'الخدمات الحكومية', icon: 'seal', sort: 4,
     blurb: 'سجل تجاري، وثيقة عمل حر، توثيق المتجر، والتسجيل في تابي وتمارا.',
   },
-  {
-    id: 'digital-products', name: 'منتجات رقمية', icon: 'book', sort: 5,
-    blurb: 'أدلة عملية تحمّلها فوراً بعد الشراء.',
-  },
 ]
 
 const IMG = 'https://cdn.salla.sa/zvxNvp/'
@@ -381,31 +377,9 @@ const RAW_PRODUCTS = [
 - يطابق نشاط المتجر نشاط السجل أو الوثيقة
 - صور المنتجات واضحة ووصفها مكتمل`,
   },
-  {
-    id: 'waarfe-ai-ad-campaigns-guide', name: 'دليل رائد لإطلاق حملاتك الإعلانية بالذكاء الاصطناعي', price: 150, salePrice: 129, categoryId: 'digital-products',
-    image: 'https://cdn.salla.sa/zvxNvp/883ce4d7-4671-4a64-ba9b-ffa7b4822beb-357.03125x500-mMnLhMKIvGwbdwu0unQtSOsz7m4KGk18iWcoigTW.jpg',
-    featured: true, sort: 1, digital: true,
-    summary: 'أطلق وأدر حملاتك على تيك توك وسناب وميتا بمحادثة بالعربي مع الذكاء الاصطناعي — خطوة بخطوة بالصور.',
-    description: `دليل رائد الرسمي يمشّيك من الصفر لين ما تربط حسابك الإعلاني بالذكاء الاصطناعي (Claude)، وبعدها تطلق وتدير حملاتك بمجرد إنك تكلّمه بالعربي. مكتوب بأبسط طريقة، وكل خطوة معها صورة.
-## وش راح تتعلم
-- ربط حسابك الإعلاني بالذكاء الاصطناعي بالصور خطوة بخطوة
-- إطلاق حملة كاملة (الهدف، الاستهداف، الميزانية، الكريتيف) بمحادثة بالعربي
-- كتابة البرومبت الصح لحملة أدق، مع مثال طلب متكامل جاهز
-- طلب تقارير فورية بالعربي: الصرف، المشاهدات، النقرات، والنتائج
-- نفس الطريقة لتيك توك وسناب وميتا (فيسبوك وإنستقرام)
-## آمن ومطمئن
-- كل حملة تتجهّز متوقفة (Paused)، وأنت اللي تراجعها وتفعّلها بنفسك
-## الدليل لك إذا كنت
-- صاحب متجر تبي تدير إعلاناتك بنفسك بدون وكالة
-- مبتدئ بدون خبرة تقنية أو إعلانية
-- مسوّق تبي تسرّع شغلك وتدير حملاتك بالمحادثة
-## صيغة المنتج
-- ملف PDF عملي بالصور، تحمّله فوراً بعد الشراء`,
-  },
 ]
 
 // The original laptop mockups, lifted off the old green background by /api/art and placed on navy.
-// The guide's cover carries the old logo, so it keeps its drawn cover.
 const ART = {
   "salla-store-design": "445a5540-372a-49e7-a850-a20c1188e655-500x500-2iDddQUZOFOchpjOctqwg85nRjBF0sWQZKdTeSRS.jpg",
   "landing-page-design": "3f17aace-af9c-4009-a569-106e3c331ea1-500x500-8jLI2QhaiNa8vi2E1dwVwVpfQEvn826CX7S6a8BN.jpg",

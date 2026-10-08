@@ -2,6 +2,10 @@
 -- Adds the options column, fills it with the same options as the Salla store, and teaches place_order
 -- to price them. Prices are still computed here in the database, never in the browser.
 
+-- The AI ads guide and its section are taken off the store (old orders keep their own copy of the item).
+delete from public.products where id = 'waarfe-ai-ad-campaigns-guide';
+delete from public.categories where id = 'digital-products' and not exists (select 1 from public.products where category_id = 'digital-products');
+
 alter table public.products add column if not exists options jsonb not null default '[]'::jsonb;
 
 update public.products set options = '[{"id":"theme","name":"اختار نوع الثيم ( مدفوع أو مجاني )","type":"radio","required":true,"values":[{"id":"free","name":"الثيم المجاني بسلة","price":0},{"id":"paid","name":"التصميم على ثيم مدفوع","price":50}]},{"id":"banners","name":"تصميم بانرات اضافية","type":"radio","required":false,"values":[{"id":"b1","name":"بانر واحد","price":30},{"id":"b3","name":"عدد 3 بانرات","price":90}]},{"id":"product-images","name":"تصميم صور المنتجات","type":"radio","required":false,"values":[{"id":"p1","name":"منتج واحد","price":15},{"id":"p3","name":"3 منتجات","price":45},{"id":"p6","name":"6 منتجات","price":90}]},{"id":"category-images","name":"تصميم صور أقسام اضافية","type":"radio","required":false,"values":[{"id":"c1","name":"صورة وحدة","price":15},{"id":"c3","name":"عدد 3 صور","price":45},{"id":"c6","name":"عدد 6 صور اقسام","price":90}]}]'::jsonb where id = 'salla-store-design';

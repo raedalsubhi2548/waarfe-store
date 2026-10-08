@@ -49,8 +49,6 @@ const ICONS = {
   'tabby-registration': line('M116 150 H284 V250 H116 Z') + line('M116 176 H284', S, 8) + dot(150, 222, 11, S) + dot(186, 222, 11, W) + dot(222, 222, 11, W) + dot(258, 222, 11, W),
   // pie split into quarters (pay in parts)
   'tmara-registration': `<circle cx="200" cy="200" r="68" fill="none" stroke="${W}" stroke-width="9"/>` + line('M200 132 V268 M132 200 H268') + `<path d="M200 200 L200 132 A68 68 0 0 1 268 200 Z" fill="${S}"/>`,
-  // open book with a spark
-  'waarfe-ai-ad-campaigns-guide': line('M200 164 Q160 144 120 154 V262 Q160 252 200 272 Q240 252 280 262 V154 Q240 144 200 164 Z') + line('M200 164 V272', S, 7) + line('M238 120 L244 136 L260 142 L244 148 L238 164 L232 148 L216 142 L232 136 Z', S, 5),
 }
 
 // Fallback glyphs by category (for services added later from the dashboard).
@@ -59,7 +57,6 @@ const BY_CATEGORY = {
   'marketing-services': line('M140 190 H172 L246 150 V266 L172 226 H140 Z') + line('M270 180 Q290 208 270 236', S),
   subscriptions: ICONS['salla-subscription'],
   'government-services': ICONS['business-verification'],
-  'digital-products': ICONS['waarfe-ai-ad-campaigns-guide'],
 }
 
 /** Just the line drawing for a service (shared with /api/art, which puts it on the laptop screen). */

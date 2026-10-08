@@ -27,7 +27,6 @@ const CAT_ART = {
   'marketing-services': '/brand/ai/raed-cat-marketing.webp',
   subscriptions: '/brand/ai/raed-cat-subscriptions.webp',
   'government-services': '/brand/ai/raed-cat-government.webp',
-  'digital-products': '/brand/ai/raed-cat-digital.webp',
 }
 
 // Search titles/descriptions per service and section: the words people actually search in Saudi.
@@ -36,7 +35,6 @@ const SEO_CAT = {
   'marketing-services': ['إعلانات سناب وتيك توك وربط البكسل', 'إنشاء حملات إعلانية على سناب شات وتيك توك وإنستغرام، ربط البكسل وأدوات قوقل، وربط متجرك بالذكاء الاصطناعي. خدمات تسويق المتاجر من رائد.'],
   subscriptions: ['اشتراك سلة وثيمات سلة وحجز دومين', 'تفعيل اشتراك سلة، شراء ثيمات سلة الأصلية وتركيبها، وحجز دومين باسم متجرك وربطه بسلة. كل اللي يحتاجه متجرك من رائد.'],
   'government-services': ['سجل تجاري ووثيقة عمل حر وتوثيق المتجر', 'إصدار سجل تجاري إلكتروني، وثيقة العمل الحر، توثيق المتجر في منصة الأعمال، والتسجيل في تابي وتمارا. نجهّز طلبك ونتابعه لك من رائد.'],
-  'digital-products': ['أدلة رقمية للتجارة الإلكترونية', 'أدلة عملية تحمّلها فوراً بعد الشراء، منها دليل إطلاق الحملات الإعلانية بالذكاء الاصطناعي من رائد.'],
 }
 const SEO_PRODUCT = {
   'salla-store-design': ['تصميم متجر سلة احترافي جاهز للبيع', 'تصميم متجر سلة متكامل جاهز للبيع من أول يوم: بنرات، أقسام، منتجات، شحن ودفع. مصمم متاجر سلة بتسليم من يومين إلى ستة أيام.'],

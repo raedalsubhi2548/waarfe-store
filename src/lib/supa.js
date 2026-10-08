@@ -10,7 +10,7 @@ export const sb = url && key ? createClient(url, key) : null
 // --- row <-> object mapping (DB is snake_case, UI is camelCase) ---
 // Rows imported from the old store carry its name and its green images; show the Raed brand instead.
 const LEGACY_IMG = /cdn\.salla\.(sa|network)|^data:/
-const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=6` : coverFor({ id: r.id, categoryId: r.category_id }))
+const artFor = (r) => (r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=6` : coverFor({ id: r.id, categoryId: r.category_id }))
 const rebrand = (t) => (typeof t === 'string' ? t.replace(/\u0648\u0627\u0631\u0641(?![\u0621-\u064A])/g, 'رائد') : t)
 const product = (r) => r && ({
   id: r.id, name: rebrand(r.name), price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
@@ -31,6 +31,9 @@ const order = (r) => r && ({
   status: r.status, notes: r.notes, paymentMethod: r.payment_method, paymentRef: r.payment_ref || null, history: r.history || [], createdAt: r.created_at,
 })
 const coupon = (r) => ({ code: r.code, type: r.type, value: Number(r.value), active: r.active, expiresAt: r.expires_at })
+
+// Taken off the store (Oct 2026). Kept hidden here until supabase/options.sql deletes the rows.
+const REMOVED = { products: ['waarfe-ai-ad-campaigns-guide'], categories: ['digital-products'] }
 
 function check({ data, error }) { if (error) throw new Error(error.message); return data }
 
@@ -123,11 +126,11 @@ export const supa = {
     return loadProfile((await sb.auth.getUser()).data.user)
   },
 
-  async getCategories() { return check(await sb.from('categories').select('*').order('sort')) },
+  async getCategories() { return check(await sb.from('categories').select('*').order('sort')).filter((c) => !REMOVED.categories.includes(c.id)) },
   async getProducts({ includeHidden = false } = {}) {
     let q = sb.from('products').select('*')
     if (!includeHidden) q = q.eq('active', true)
-    return check(await q).map(product)
+    return check(await q).filter((r) => !REMOVED.products.includes(r.id)).map(product)
   },
   async getProduct(id) {
     const p = product(check(await sb.from('products').select('*').eq('id', id).maybeSingle()))

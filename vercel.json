@@ -62,8 +62,13 @@
   },
   "redirects": [
     {
-      "source": "/p/waarfe-ai-ad-campaigns-guide",
-      "destination": "/p/ai-ad-campaigns-guide",
+      "source": "/p/(waarfe-ai-ad-campaigns-guide|ai-ad-campaigns-guide)",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/c/digital-products",
+      "destination": "/shop",
       "permanent": true
     },
     {

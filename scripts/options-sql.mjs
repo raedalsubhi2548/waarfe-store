@@ -10,6 +10,10 @@ writeFileSync(new URL('../supabase/options.sql', import.meta.url), `-- Raed stor
 -- Adds the options column, fills it with the same options as the Salla store, and teaches place_order
 -- to price them. Prices are still computed here in the database, never in the browser.
 
+-- The AI ads guide and its section are taken off the store (old orders keep their own copy of the item).
+delete from public.products where id = 'waarfe-ai-ad-campaigns-guide';
+delete from public.categories where id = 'digital-products' and not exists (select 1 from public.products where category_id = 'digital-products');
+
 alter table public.products add column if not exists options jsonb not null default '[]'::jsonb;
 
 ${updates}

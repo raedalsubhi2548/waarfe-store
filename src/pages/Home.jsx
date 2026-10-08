@@ -188,7 +188,6 @@ const CAT_ART = {
   'design-services': 'raed-cat-design.webp',
   'marketing-services': 'raed-cat-marketing.webp',
   subscriptions: 'raed-cat-subscriptions.webp',
-  'digital-products': 'raed-cat-digital.webp',
   'government-services': 'raed-cat-government.webp',
 }
 /** All categories as one still bento: a large tile locked together with four smaller ones, nothing scrolls. */
@@ -200,8 +199,10 @@ function Categories() {
         {categories.map((c, i) => {
           const n = products.filter((p) => p.categoryId === c.id).length
           const big = i === 0
+          // with an even count the last tile spans two columns, so the grid closes with no gap
+          const wide = !big && categories.length % 2 === 0 && i === categories.length - 1
           return (
-            <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
+            <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : wide ? 'col-span-2 aspect-[2/1] lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
               <Link to={`/c/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
                 {CAT_ART[c.id]
                   ? <img src={`${ART}/${CAT_ART[c.id]}`} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
