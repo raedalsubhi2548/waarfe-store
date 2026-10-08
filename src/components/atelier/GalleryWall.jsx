@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { WORK } from '@/data/work.js'
 
-const lh3 = (id, w) => `https://lh3.googleusercontent.com/d/${id}=w${w}`
+const lh3 = (id, h) => `https://lh3.googleusercontent.com/d/${id}=h${h}`
 const ROW_A = [8, 15, 2, 25, 32, 10, 21, 37, 4, 30, 12, 18]
 const ROW_B = [1, 9, 23, 40, 16, 34, 22, 6, 28, 36, 13, 41]
 
@@ -14,7 +14,7 @@ function Row({ ids, reverse }) {
         {list.map((i, k) => (
           <li key={k} aria-hidden={k >= ids.length || undefined} className="shrink-0">
             <Link to="/work#banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#ffffff] p-1.5 shadow-[0_1px_2px_rgb(27_43_68/0.06),0_24px_40px_-26px_rgb(27_43_68/0.55)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_32px_50px_-26px_rgb(27_43_68/0.6)]">
-              <img src={lh3(WORK[i], 600)} alt={k < ids.length ? `من أعمال منصة رائد ${k + 1}` : ''} loading="lazy" decoding="async"
+              <img src={lh3(WORK[i], 420)} alt={k < ids.length ? `من أعمال منصة رائد ${k + 1}` : ''} loading="lazy" decoding="async"
                 className="block h-[150px] w-auto min-w-[150px] rounded-[13px] bg-sunken object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:h-[210px] sm:min-w-[210px]" />
             </Link>
           </li>

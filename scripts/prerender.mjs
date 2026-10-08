@@ -32,6 +32,9 @@ function body(path) {
   return ''
 }
 
+// the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
+const HERO_PRELOAD = '    <link rel="preload" as="image" href="/brand/ai/raed-hero-mobile-v3.webp" type="image/webp" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="/brand/ai/raed-hero-v3.webp" type="image/webp" media="(min-width: 768px)" fetchpriority="high" />\n'
+
 const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
   ...seedCategories.map((c) => `/c/${c.id}`), ...seedProducts.map((p) => productPath(p.id))]
 
@@ -40,7 +43,7 @@ for (const path of routes) {
   let html = template
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description"[^>]*>\s*/, '')
-    .replace('</head>', `    ${headHtml(s)}\n  </head>`)
+    .replace('</head>', `    ${headHtml(s)}\n${path === '/' ? HERO_PRELOAD : ''}  </head>`)
     .replace('<div id="root"></div>', `<div id="root"><div class="prerender">${nav}${body(path)}<p><a href="https://wa.me/${SITE.phone.slice(1)}">واتساب ${WA_LOCAL}</a> · <a href="mailto:${SITE.email}">${SITE.email}</a></p></div></div>`)
   const file = path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1) + '.html')
   mkdirSync(dirname(file), { recursive: true })

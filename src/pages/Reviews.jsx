@@ -7,7 +7,7 @@ import { waLink } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
 import PageIntro from '@/components/site/PageIntro.jsx'
 
-const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-4" fill="currentColor" strokeWidth={0} />)}</span>
+const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} role="img" aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-4" fill="currentColor" strokeWidth={0} />)}</span>
 const FILTERS = [['all', 'الكل'], ['long', 'تجارب مفصّلة']]
 
 export default function Reviews() {

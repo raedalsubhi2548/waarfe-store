@@ -27,7 +27,9 @@ const isBg = (r, g, b) => {
 const MAX_BYTES = 8e6
 export default async function handler(req, res) {
   // only the known parameters, so random query strings can't bypass the edge cache and burn compute
-  if (Object.keys(req.query).some((k) => !['f', 'id', 'v'].includes(k))) return res.status(400).end('bad query')
+  if (Object.keys(req.query).some((k) => !['f', 'id', 'v', 'w'].includes(k))) return res.status(400).end('bad query')
+  const w = req.query.w === undefined ? SIZE : Number(req.query.w)
+  if (![300, SIZE].includes(w)) return res.status(400).end('bad width')
   const f = String(req.query.f || '')
   if (!/^[\w.-]{1,120}\.(jpe?g|png|webp)$/i.test(f) || f.includes('..')) return res.status(400).end('bad file')
   try {
@@ -38,13 +40,13 @@ export default async function handler(req, res) {
     if (raw.length > MAX_BYTES) return res.status(413).end('too large')
     // cap the working size so a huge image can't exhaust memory
     const src = await sharp(raw, { limitInputPixels: 2.5e7 }).resize(1600, 1600, { fit: 'inside', withoutEnlargement: true }).png().toBuffer()
-    return await render(src, res)
+    return await render(src, res, w)
   } catch {
     return res.status(422).end('could not process')
   }
 }
 
-async function render(src, res) {
+async function render(src, res, w = SIZE) {
   const { data, info } = await sharp(src).removeAlpha().raw().toBuffer({ resolveWithObject: true })
   const { width: W, height: H, channels: C } = info
 
@@ -97,9 +99,10 @@ async function render(src, res) {
 </svg>`
   const out = await sharp(Buffer.from(backdrop))
     .composite([{ input: rounded, left: ax, top: ay }])
-    .webp({ quality: 88 }).toBuffer()
+    .png().toBuffer()
+  const out2 = await sharp(out).resize(w, w).webp({ quality: w < SIZE ? 82 : 88 }).toBuffer()
 
   res.setHeader('Content-Type', 'image/webp')
   res.setHeader('Cache-Control', 'public, max-age=31536000, s-maxage=31536000, immutable')
-  res.end(out)
+  res.end(out2)
 }

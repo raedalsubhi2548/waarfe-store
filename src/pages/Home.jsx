@@ -16,7 +16,7 @@ import { SectionTitle } from '@/components/brand/Ornaments.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import Vine from '@/components/brand/Vine.jsx'
 
-const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5" fill="currentColor" strokeWidth={0} />)}</span>
+const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} role="img" aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5" fill="currentColor" strokeWidth={0} />)}</span>
 
 /** Fades/rises its children in once, when scrolled into view. */
 function Reveal({ as: T = 'div', className, delay = 0, children, ...p }) {
@@ -87,7 +87,7 @@ function Hero() {
           <p className="inline-flex items-center gap-3 text-[14px] font-medium text-on-inverse/70 motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(251_252_254/0.6))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(251_252_254/0.6))] md:hidden" />
           </p>
-          <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in_850ms_var(--p-ease-emphasized)_both]">
+          <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in-solid_850ms_var(--p-ease-emphasized)_both]">
             <span className="sr-only">تصميم متاجر سلة في السعودية: </span>
             <span className="block">متجرك يستاهل</span>
             <span className="block font-light text-[#dfe6f1]">تصميم يليق فيه</span>
