@@ -11,6 +11,18 @@ export default async function handler(req, res) {
   const { data: order } = await admin.from('orders').select('*').eq('id', orderId).single()
   if (!order || order.user_id !== user.id) return res.status(404).json({ error: 'الطلب غير موجود' })
   if (order.status !== 'pending') return res.status(409).json({ error: 'هذا الطلب مدفوع مسبقاً' })
+  // fully covered by a coupon (the total is computed in the database by place_order): nothing to charge, the order is paid
+  if (Number(order.total) === 0 && Number(order.subtotal) > 0 && order.coupon) {
+    const { data: updated } = await admin.from('orders').update({
+      status: 'paid', payment_ref: 'coupon:' + order.coupon,
+      history: [...(order.history || []), { status: 'paid', at: new Date().toISOString(), note: `مدفوع بالكامل بكوبون ${order.coupon}` }],
+    }).eq('id', order.id).eq('status', 'pending').select('*')
+    if (updated?.[0]) {
+      const { sendOrderEmail } = await import('./_mail.js')
+      await sendOrderEmail(updated[0], 'paid').catch(() => {})
+    }
+    return res.status(200).json({ free: true })
+  }
   if (!(Number(order.total) > 0)) return res.status(400).json({ error: 'مبلغ الطلب غير صالح' })
 
   // a retry (second tab, back button) reuses the open charge instead of creating a second one for the same order

@@ -60,7 +60,7 @@ export default function Order() {
   const paid = order.status !== 'pending' && order.status !== 'cancelled'
   const payNow = async () => {
     setPaying(true)
-    try { const { redirect } = await api.startPayment(order); window.location.href = redirect } catch (e) { notify(e.message, 'err'); setPaying(false) }
+    try { const { redirect, free } = await api.startPayment(order); if (free) { setOrder(await api.getOrder(order.id)); setPaying(false); return } window.location.href = redirect } catch (e) { notify(e.message, 'err'); setPaying(false) }
   }
   return (
     <div className="container-w py-10 sm:py-14">

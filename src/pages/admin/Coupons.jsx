@@ -37,7 +37,7 @@ export default function Coupons() {
           <Field label="الكود"><Input required value={f.code} onChange={(e) => setF({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, '') })} dir="ltr" placeholder="RAMADAN" className="font-mono" /></Field>
           <Field label="النوع"><Select value={f.type} onChange={(e) => setF({ ...f, type: e.target.value })}><option value="percent">نسبة %</option><option value="fixed">مبلغ ثابت (ر.س)</option></Select></Field>
           <Field label="القيمة"><Input required type="number" min="1" max={f.type === 'percent' ? 100 : undefined} value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} dir="ltr" className="tabular" /></Field>
-          <Field label="ينتهي (اختياري)"><Input type="date" value={f.expiresAt} onChange={(e) => setF({ ...f, expiresAt: e.target.value })} /></Field>
+          <Field label="ينتهي (اختياري)"><Input type="date" value={f.expiresAt} onChange={(e) => setF({ ...f, expiresAt: e.target.value })} className="w-full min-w-0 max-w-full appearance-none text-start [&::-webkit-date-and-time-value]:text-start" /></Field>
           <Button className="sm:col-span-2 lg:col-span-1"><Plus className="size-4" />أضف</Button>
         </form>
       </Panel>

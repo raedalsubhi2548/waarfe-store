@@ -116,7 +116,7 @@ export default function AdminLayout() {
           </SheetContent>
         </Sheet>
 
-        <main id="main" className="min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        <main id="main" className="min-w-0 overflow-x-clip px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
           <div className="mx-auto max-w-[1180px]">
             {isDemo && <p className="mb-6 rounded-md border-2 border-dashed border-accent bg-accent/10 px-4 py-3 text-sm leading-7"><strong>وضع العرض:</strong> التعديلات محفوظة في هذا المتصفح فقط.</p>}
             <ErrorBoundary resetKey={pathname}><Suspense fallback={<Skeleton className="h-96" />}><Outlet /></Suspense></ErrorBoundary>

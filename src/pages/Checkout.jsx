@@ -69,7 +69,11 @@ export default function Checkout() {
       if (method === 'card' && !isDemo) {
         pending.current = { key, order }
         try { sessionStorage.setItem('raed:pending-order', JSON.stringify({ key, order: { id: order.id, number: order.number } })) } catch { /* private mode */ }
-        const { redirect } = await api.startPayment(order)
+        const { redirect, free } = await api.startPayment(order)
+        if (free) { // a 100% coupon: the order is already paid, no payment page
+          pending.current = undefined; try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ }
+          clearCart(); nav(`/order/${order.id}?new=1`, { replace: true }); return
+        }
         // the cart is emptied only after Tap confirms the payment (on the order page), so a cancelled payment keeps it
         setLeaving(true)
         window.location.href = redirect
@@ -144,7 +148,7 @@ export default function Checkout() {
               <ol className="mt-2 grid list-decimal gap-1.5 ps-5">{DECLARATION.items.map((x) => <li key={x}>{x}</li>)}</ol>
             </div>
           </details>
-          <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
+          <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : total === 0 ? 'أكمل الطلب' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
 
         </Panel>
       </form>

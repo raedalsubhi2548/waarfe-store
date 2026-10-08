@@ -5,7 +5,20 @@ import { coverFor } from './cover.js'
 // accept the URL with or without a trailing /rest/v1/ (common copy-paste from the dashboard)
 const url = (import.meta.env.VITE_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY
-export const sb = url && key ? createClient(url, key) : null
+// A dropped connection (Safari: "TypeError: Load failed") is retried once when repeating the request is harmless:
+// reads, updates, deletes and upserts. Order creation (an RPC) is never repeated.
+const NET = 'تعذّر الاتصال بالإنترنت، تأكد من الشبكة وحاول مرة ثانية'
+async function steadyFetch(input, init = {}) {
+  const method = (init.method || 'GET').toUpperCase()
+  const prefer = new Headers(init.headers || {}).get('prefer') || ''
+  const safe = ['GET', 'HEAD', 'PATCH', 'DELETE'].includes(method) || /merge-duplicates/.test(prefer)
+  try { return await fetch(input, init) } catch (e) {
+    if (!(e instanceof TypeError) || !safe) throw new Error(NET)
+    await new Promise((r) => setTimeout(r, 700))
+    try { return await fetch(input, init) } catch { throw new Error(NET) }
+  }
+}
+export const sb = url && key ? createClient(url, key, { global: { fetch: steadyFetch } }) : null
 
 // --- row <-> object mapping (DB is snake_case, UI is camelCase) ---
 // Rows imported from the old store carry its name and its green images; show the Raed brand instead.
@@ -232,7 +245,7 @@ export const supa = {
     })
     const body = await res.json().catch(() => ({}))
     if (!res.ok) throw new Error(body.error || 'تعذّر بدء الدفع، حاول مرة ثانية')
-    return { redirect: body.url, order: o }
+    return { redirect: body.url, free: !!body.free, order: o }
   },
   async downloadUrl(orderId, productId) {
     const { data } = await sb.auth.getSession()
