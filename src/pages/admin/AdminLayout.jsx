@@ -30,7 +30,7 @@ function Nav({ pending, onNavigate, dark }) {
           {({ isActive }) => (<>
             <I className={cn('size-[18px]', dark ? (isActive ? 'text-primary' : 'text-white/50 group-hover:text-white') : (isActive ? 'text-accent' : 'text-muted-foreground group-hover:text-primary'))} />
             <span className="flex-1">{label}</span>
-            {badge && pending > 0 && <span className={cn('tabular min-w-6 rounded-full px-1.5 text-center text-xs font-bold leading-6', isActive ? 'bg-accent text-accent-foreground' : 'bg-accent/30 text-accent-text')}>{pending}</span>}
+            {badge && pending > 0 && <span className={cn('tabular min-w-6 rounded-full px-1.5 text-center text-xs font-bold leading-6', isActive ? 'bg-primary text-primary-foreground' : dark ? 'bg-white/15 text-white' : 'bg-accent/30 text-accent-text')}>{pending}</span>}
           </>)}
         </NavLink>
       ))}
