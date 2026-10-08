@@ -16,8 +16,9 @@ const SORTS = [
   { id: 'name', label: 'الاسم' },
 ]
 
-export default function Shop() {
-  const { categoryId } = useParams()
+export default function Shop({ categoryId: fromProps }) {
+  const { categoryId: fromUrl } = useParams()
+  const categoryId = fromProps ?? fromUrl
   const [params, setParams] = useSearchParams()
   const { categories, products, catalogReady } = useApp()
   const q = params.get('q') || ''
@@ -50,7 +51,7 @@ export default function Shop() {
       <nav className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]" aria-label="الأقسام">
         <Link to={'/shop' + (q ? `?q=${encodeURIComponent(q)}` : '')} className={chip(!categoryId)}>الكل <span className="tabular opacity-70">{products.length}</span></Link>
         {categories.map((c) => (
-          <Link key={c.id} to={`/c/${c.id}`} className={chip(categoryId === c.id)}>
+          <Link key={c.id} to={`/${c.id}`} className={chip(categoryId === c.id)}>
             <Icon name={c.icon} size={16} />{c.name}<span className="tabular opacity-70">{products.filter((p) => p.categoryId === c.id).length}</span>
           </Link>
         ))}

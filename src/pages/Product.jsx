@@ -14,8 +14,9 @@ import { fromSlug, toSlug, productPath } from '@/lib/slug.js'
 import { trackAddToCart } from '@/lib/analytics.js'
 import NotFound from './NotFound.jsx'
 
-export default function Product() {
-  const { id: slug } = useParams()
+export default function Product({ slug: fromProps }) {
+  const { id: fromUrl } = useParams()
+  const slug = fromProps ?? fromUrl
   const id = fromSlug(slug)
   const { byId, categories, products, addToCart, toggleWish, wishlist, catalogReady } = useApp()
   const [qty, setQty] = useState(1)
@@ -53,7 +54,7 @@ export default function Product() {
     <div className="container-w py-8 sm:py-12 [--notch:var(--background)]">
       <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground" aria-label="المسار">
         <Link to="/" className="hover:underline">الرئيسية</Link><span>/</span>
-        {cat && <><Link to={`/c/${cat.id}`} className="hover:underline">{cat.name}</Link><span>/</span></>}
+        {cat && <><Link to={`/${cat.id}`} className="hover:underline">{cat.name}</Link><span>/</span></>}
         <span className="text-foreground">{p.name}</span>
       </nav>
 

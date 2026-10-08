@@ -63,7 +63,7 @@ export default function Work() {
       <div className="py-12 text-center sm:py-16">
         <h2 className="font-display text-[1.9rem] font-bold text-primary">عجبك شغلنا؟</h2>
         <div className="mt-5 flex justify-center gap-3">
-          <Button asChild size="lg"><Link to="/p/salla-store-design">ابدأ متجرك</Link></Button>
+          <Button asChild size="lg"><Link to="/salla-store-design">ابدأ متجرك</Link></Button>
           <Button asChild size="lg" variant="outline"><a href={waLink('السلام عليكم، شفت أعمالكم وأبي تصميم لمتجري')} target="_blank" rel="noreferrer">واتساب</a></Button>
         </div>
       </div>

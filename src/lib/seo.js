@@ -123,22 +123,22 @@ export function seoFor(path, data = {}) {
       jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop']]), itemList(products)],
     }
   }
-  const cm = path.match(/^\/c\/([^/]+)$/)
+  const slug = path.match(/^\/([^/]+)$/)?.[1]
+  const cm = slug && (data.category || categories.find((x) => x.id === slug))
   if (cm) {
-    const c = data.category || categories.find((x) => x.id === cm[1])
-    if (!c) return { ...base, title: t('القسم غير موجود'), description: SITE.description, robots: 'noindex' }
+    const c = cm
     const list = products.filter((p) => p.categoryId === c.id)
     return {
       ...base,
       title: t(SEO_CAT[c.id]?.[0] || c.name),
       description: clip(SEO_CAT[c.id]?.[1] || `${c.name} من ${SITE.name}: ${c.blurb || ''} ${list.slice(0, 4).map((p) => p.name).join('، ')}.`),
       image: abs(CAT_ART[c.id] || SITE.ogImage),
-      jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop'], [c.name, `/c/${c.id}`]]), itemList(list)],
+      jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop'], [c.name, `/${c.id}`]]), itemList(list)],
     }
   }
-  const pm = path.match(/^\/p\/([^/]+)$/)
+  const pm = slug && (data.product || products.find((x) => x.id === fromSlug(slug)))
   if (pm) {
-    const p = data.product || products.find((x) => x.id === fromSlug(pm[1]))
+    const p = pm
     if (!p) return { ...base, title: t('الخدمة غير موجودة'), description: SITE.description, robots: 'noindex' }
     const c = categories.find((x) => x.id === p.categoryId)
     const img = abs(CAT_ART[p.categoryId] || SITE.ogImage)
@@ -150,7 +150,7 @@ export function seoFor(path, data = {}) {
       image: img,
       price: price(p),
       jsonLd: [
-        crumbs([['الرئيسية', '/'], ...(c ? [[c.name, `/c/${c.id}`]] : []), [p.name, productPath(p.id)]]),
+        crumbs([['الرئيسية', '/'], ...(c ? [[c.name, `/${c.id}`]] : []), [p.name, productPath(p.id)]]),
         {
           '@context': 'https://schema.org',
           '@type': 'Product',

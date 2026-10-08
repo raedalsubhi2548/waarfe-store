@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
 import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
-import { productPath } from '../src/lib/slug.js'
+import { productPath, categoryPath, toSlug, RESERVED } from '../src/lib/slug.js'
 import { render, loadCatalog } from '../dist-ssr/entry-server.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
@@ -20,8 +20,16 @@ const catalogJson = `<script type="application/json" id="__catalog">${JSON.strin
 // the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
 const HERO_PRELOAD = '    <link rel="preload" as="image" href="/brand/ai/raed-hero-mobile-v3.webp" type="image/webp" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="/brand/ai/raed-hero-v3.webp" type="image/webp" media="(min-width: 768px)" fetchpriority="high" />\n'
 
+// categories and services share the top level with the fixed pages: a clash would hide one of them
+const taken = new Set(RESERVED)
+for (const slug of [...categories.map((c) => c.id), ...products.map((p) => toSlug(p.id))]) {
+  if (taken.has(slug)) throw new Error(`address clash: /${slug}`)
+  taken.add(slug)
+}
+const productSet = new Set(products.filter((p) => p.active !== false).map((p) => productPath(p.id)))
+
 const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
-  ...categories.map((c) => `/c/${c.id}`), ...products.filter((p) => p.active !== false).map((p) => productPath(p.id))]
+  ...categories.map((c) => categoryPath(c.id)), ...products.filter((p) => p.active !== false).map((p) => productPath(p.id))]
 
 for (const path of routes) {
   const s = seoFor(path, data)
@@ -45,7 +53,7 @@ const today = new Date().toISOString().slice(0, 10)
 const url = (p) => SITE.url.replace(/\/$/, '') + p
 writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map((r) => `  <url><loc>${url(r === '/' ? '/' : r)}</loc><lastmod>${today}</lastmod><changefreq>${r === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${r === '/' ? '1.0' : r.startsWith('/p/') ? '0.8' : '0.6'}</priority></url>`).join('\n')}
+${routes.map((r) => `  <url><loc>${url(r === '/' ? '/' : r)}</loc><lastmod>${today}</lastmod><changefreq>${r === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${r === '/' ? '1.0' : productSet.has(r) ? '0.8' : '0.6'}</priority></url>`).join('\n')}
 </urlset>
 `)
 writeFileSync(join(DIST, 'robots.txt'), `User-agent: *

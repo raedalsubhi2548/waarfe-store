@@ -13,7 +13,9 @@ const lazy = (load) => reactLazy(() => load().catch((err) => {
   }
   throw err
 }))
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { useApp } from './state.jsx'
+import { fromSlug, toSlug } from './lib/slug.js'
 import { ADMIN_HOST, ADMIN_ORIGIN, LIVE_STORE } from './lib/host.js'
 import { usePageViews } from './lib/analytics.js'
 import { DirectionProvider } from '@radix-ui/react-direction'
@@ -57,6 +59,21 @@ function AdminHostGate() {
   return <Navigate to="/admin" replace />
 }
 
+// rraed.com/<slug>: a category or a service (fixed pages above win). Unknown → 404 once the catalog has loaded.
+function SlugPage() {
+  const { slug } = useParams()
+  const { categories, byId, catalogReady } = useApp()
+  if (categories.some((c) => c.id === slug)) return <Shop categoryId={slug} />
+  const id = fromSlug(slug)
+  if (byId[id] || !catalogReady) return <Product slug={slug} />
+  return <NotFound />
+}
+// the old /c/… and /p/… addresses (the server redirects them too)
+function OldPath() {
+  const { slug } = useParams()
+  return <Navigate to={`/${toSlug(fromSlug(slug))}`} replace />
+}
+
 // The router is passed in: BrowserRouter in the browser (main.jsx), StaticRouter when pages are pre-rendered (entry-server.jsx).
 export default function App({ Router, routerProps = {}, initialCatalog }) {
   return (
@@ -70,8 +87,9 @@ export default function App({ Router, routerProps = {}, initialCatalog }) {
           <Route element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="shop" element={<Shop />} />
-            <Route path="c/:categoryId" element={<Shop />} />
-            <Route path="p/:id" element={<Product />} />
+            <Route path="c/:slug" element={<OldPath />} />
+            <Route path="p/:slug" element={<OldPath />} />
+            <Route path=":slug" element={<SlugPage />} />
             <Route path="cart" element={<Cart />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="order/:id" element={<Order />} />

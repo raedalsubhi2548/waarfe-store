@@ -46,7 +46,7 @@ export default function Reviews() {
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-3 rounded-lg bg-sunken p-6 text-center">
         <p className="font-semibold text-primary">ودك تكون التجربة الجاية؟</p>
-        <Button asChild><Link to="/p/salla-store-design">صمّم متجري</Link></Button>
+        <Button asChild><Link to="/salla-store-design">صمّم متجري</Link></Button>
         <Button asChild variant="outline"><a href={waLink('السلام عليكم، شفت آراء عملائكم وأبي أبدأ')} target="_blank" rel="noreferrer"><MessageCircle className="size-4" />واتساب</a></Button>
       </div>
     </div>

@@ -43,7 +43,7 @@ export default function SiteFooter() {
             <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
               <nav aria-label="الأقسام">
                 <h2 className={col}>الأقسام</h2>
-                <ul>{categories.map((c) => <li key={c.id}><Link to={`/c/${c.id}`} className={item}>{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
+                <ul>{categories.map((c) => <li key={c.id}><Link to={`/${c.id}`} className={item}>{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
               </nav>
               <nav aria-label="منصة رائد">
                 <h2 className={col}>منصة رائد</h2>

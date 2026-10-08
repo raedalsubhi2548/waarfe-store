@@ -96,7 +96,7 @@ function Hero() {
           </h1>
           <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_rgb(15_26_44/0.9)] md:mx-0 motion-safe:animate-[rise-in-solid_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in-solid_1.15s_var(--p-ease-emphasized)_both]">
-            <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
+            <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white"><Link to="/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
           <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in-solid_1.3s_var(--p-ease-emphasized)_both]">
@@ -149,7 +149,7 @@ function LandingPromo() {
   const { byId } = useApp()
   const p = byId['landing-page-design']
   return (
-    <SceneBanner img={`${ART}/raed-landing.webp`} to="/p/landing-page-design" kicker="طفشت من الاشتراكات الشهرية؟"
+    <SceneBanner img={`${ART}/raed-landing.webp`} to="/landing-page-design" kicker="طفشت من الاشتراكات الشهرية؟"
       title="صفحة هبوط مبرمجة لك" accent="بدون اشتراك شهري" body="مبرمجة بـ HTML وCSS وJavaScript، مع دومين واستضافة سنة هدية."
       cta="اطلبها الحين" extra={p && <span className="tabular text-xl font-semibold text-primary">{money(effectivePrice(p))}</span>} />
   )
@@ -205,7 +205,7 @@ function Categories() {
           const wide = !big && categories.length % 2 === 0 && i === categories.length - 1
           return (
             <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : wide ? 'col-span-2 aspect-[2/1] lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
-              <Link to={`/c/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
+              <Link to={`/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
                 {CAT_ART[c.id]
                   ? <img src={`${ART}/${CAT_ART[c.id]}`} srcSet={`${ART}/${CAT_ART[c.id].replace('.webp', '-480.webp')} 480w, ${ART}/${CAT_ART[c.id]} 900w`} sizes={big ? '(max-width: 1024px) 92vw, 520px' : '(max-width: 1024px) 46vw, 260px'} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
                   : <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#2c4470,#1b2b44_60%,#0f1a2c)] text-on-inverse"><Icon name={c.icon} size={big ? 44 : 30} /></span>}
@@ -235,7 +235,7 @@ function CategoryShelf({ id }) {
       <Title id={id} className="mb-10 sm:mb-14" />
       <div className="container-w">
         <Shelf items={items} />
-        <ViewAll to={`/c/${id}`} />
+        <ViewAll to={`/${id}`} />
       </div>
     </section>
   )
