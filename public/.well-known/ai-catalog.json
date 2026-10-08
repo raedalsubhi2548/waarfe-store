@@ -1,0 +1,16 @@
+{
+  "specVersion": "1.0",
+  "entries": [
+    {
+      "identifier": "urn:air:rraed.com:docs:store-guide",
+      "displayName": "منصة رائد — دليل المتجر والخدمات",
+      "type": "text/markdown",
+      "url": "https://rraed.com/llms.txt",
+      "representativeQueries": [
+        "تصميم متجر سلة",
+        "خدمات منصة رائد وأسعارها",
+        "تصميم صفحة هبوط بدون اشتراك شهري"
+      ]
+    }
+  ]
+}
