@@ -22,7 +22,7 @@ export default function Login() {
   // only same-site paths (blocks //evil.com and /\\evil.com open redirects)
   const rawNext = params.get('next') || ''
   const next = /^\/(?![\/\\])/.test(rawNext) ? rawNext : ''
-  const [mode, setMode] = useState(params.get('mode') === 'up' ? 'up' : 'in') // in · up · code (confirm sign-up) · forgot · reset
+  const [mode, setMode] = useState(['up', 'forgot'].includes(params.get('mode')) ? params.get('mode') : 'in') // in · up · code (confirm sign-up) · forgot · reset
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', code: '' })
   const [info, setInfo] = useState('')
   const [err, setErr] = useState('')

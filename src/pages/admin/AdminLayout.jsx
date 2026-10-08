@@ -72,7 +72,7 @@ export default function AdminLayout() {
   }, [isAdmin, pathname])
 
   if (!authReady) return <div className="p-8"><Skeleton className="h-96" /></div>
-  if (!user) return <Navigate to="/login?next=/admin" replace />
+  if (!user) return <Navigate to={ADMIN_HOST ? '/admin/login' : '/login?next=/admin'} replace />
   if (!isAdmin) {
     if (!ADMIN_HOST) return <Navigate to="/account" replace />
     return (

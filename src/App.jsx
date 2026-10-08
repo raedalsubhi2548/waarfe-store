@@ -44,13 +44,14 @@ const ProductForm = lazy(() => import('./pages/admin/ProductForm.jsx'))
 const Categories = lazy(() => import('./pages/admin/Categories.jsx'))
 const Customers = lazy(() => import('./pages/admin/Customers.jsx'))
 const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
+const AdminLogin = lazy(() => import('./pages/admin/AdminLogin.jsx'))
 
 function PageViews() { usePageViews(); return null }
 
 // on admin.rraed.com everything except sign-in leads to the dashboard
 function AdminHostGate() {
   const { pathname } = useLocation()
-  if (!ADMIN_HOST || pathname.startsWith('/admin') || pathname === '/login') return null
+  if (!ADMIN_HOST || pathname.startsWith('/admin')) return null
   return <Navigate to="/admin" replace />
 }
 
@@ -83,6 +84,7 @@ export default function App() {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="admin/login" element={<Suspense fallback={<div className="min-h-dvh bg-[#0b1322]" />}><AdminLogin /></Suspense>} />
           <Route path="admin" element={<Suspense fallback={<PageFallback />}><AdminLayout /></Suspense>}>
             <Route index element={<Overview />} />
             <Route path="orders" element={<AdminOrders />} />
