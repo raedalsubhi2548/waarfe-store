@@ -4,7 +4,7 @@ import { PRODUCT_OPTIONS } from '../src/data/options.js'
 
 const q = (s) => `'${String(s).replace(/'/g, "''")}'`
 const updates = Object.entries(PRODUCT_OPTIONS)
-  .map(([id, opts]) => `update public.products set options = ${q(JSON.stringify(opts))}::jsonb where id = ${q(id)};`).join('\n')
+  .map(([id, opts]) => `update public.products set options = ${q(JSON.stringify(opts))}::jsonb where id = ${q(id)} and options = '[]'::jsonb;`).join('\n')
 
 writeFileSync(new URL('../supabase/options.sql', import.meta.url), `-- منصة رائد — product options + security hardening (run in Supabase → SQL Editor). Safe to run again.
 -- Adds the options column with the same options as the Salla store, teaches place_order to price them,
