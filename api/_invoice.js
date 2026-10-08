@@ -7,6 +7,8 @@ const A = (f) => new URL(`./_assets/${f}`, import.meta.url)
 const FONT = { r: readFileSync(A('IBMPlexSansArabic-Regular.woff')), sb: readFileSync(A('IBMPlexSansArabic-SemiBold.woff')), b: readFileSync(A('IBMPlexSansArabic-Bold.woff')) }
 const LOGO = readFileSync(A('logo-white.png'))
 
+// keep in step with src/data/terms.js
+const TERMS_VERSION = '2026-10'
 const NAVY = '#1b2b44', INK = '#1f2733', MUTED = '#6b7686', LINE = '#e3e8f0', SOFT = '#f4f6fa'
 const AR = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/
 
@@ -140,6 +142,20 @@ export function invoicePdf(order, seller) {
     say(doc, `${money(order.total)} ر.س`, bx, y + 9, { font: 'b', size: 13, color: '#ffffff', align: 'left' })
 
     if (order.payment_ref) say(doc, `مرجع الدفع ${order.payment_ref}`, R, y + 10, { size: 9, color: MUTED })
+
+    // the customer's acceptance of the terms and declaration, made at checkout
+    let dy = y + 62
+    const fyTop = doc.page.height - 78
+    const accepted = date(order.terms_accepted_at || order.created_at)
+    const [vy, vm] = String(order.terms_version || TERMS_VERSION).split('-')
+    const version = `${['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'][Number(vm) - 1] || ''} ${vy}`.trim()
+    const lines1 = `وافق العميل إلكترونياً عند إتمام الطلب بتاريخ ${accepted} على السياسات والشروط والإقرار والتعهد إصدار ${version}، بما فيها: طلب التعديل خلال يوم واحد من تسليم الخدمة ويُعد العمل بعدها مقبولاً نهائياً، وخصم رسوم معالجة 7% عند إلغاء الطلبات المدفوعة عبر تمارا أو تابي قبل بدء التنفيذ دون سبب يعود إلى المنصة، وعدم استرداد قيمة ما تم تنفيذه والرسوم المدفوعة لأطراف أخرى.`
+    doc.font('r').fontSize(9)
+    const boxH = lines(doc, lines1, R - L - 32).length * 9 * 1.6 + 40
+    if (dy + boxH > fyTop - 10) { doc.addPage({ size: 'A4', margin: 0 }); dy = 50 }
+    doc.roundedRect(L, dy, R - L, boxH, 8).lineWidth(1).strokeColor(LINE).stroke()
+    say(doc, 'إقرار العميل', R - 16, dy + 12, { font: 'sb', size: 10.5, color: NAVY })
+    para(doc, lines1, R - 16, dy + 30, R - L - 32, { size: 9, color: INK })
 
     // footer
     const fy = doc.page.height - 78

@@ -22,6 +22,7 @@ export default function Checkout() {
   const [couponErr, setCouponErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
+  const [agreed, setAgreed] = useState(false) // the declaration must be accepted for every order
   const [leaving, setLeaving] = useState(false) // on the way to Tap: keep this screen, don't bounce to the empty cart
   // a card order whose payment didn't finish (failed to start, or the customer came back from Tap) is reused, not duplicated
   const pending = useRef(null)
@@ -55,6 +56,7 @@ export default function Checkout() {
     e.preventDefault()
     setErr('')
     if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); return }
+    if (!agreed) { setErr('لازم توافق على السياسات والشروط والإقرار والتعهد قبل إتمام الطلب'); return }
     setBusy(true)
     try {
       const items = lines.map(({ product: p, qty, note, options, chosen, unit }) => ({ productId: p.id, name: p.name, price: unit, qty, note: note || '', image: p.image, digital: !!p.digital, optionKeys: options, options: chosen }))
@@ -137,8 +139,12 @@ export default function Checkout() {
             <div className="flex items-baseline justify-between border-t border-border pt-3"><dt className="font-bold">الإجمالي</dt><dd className="tabular font-display text-2xl font-semibold text-primary">{money(total)}</dd></div>
           </dl>
           {err && <p className="mt-3 text-sm text-danger" role="alert">{err}</p>}
-          <Button size="lg" className="mt-4 w-full" disabled={busy}><Lock />{busy ? 'جاري تأكيد الطلب…' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
-          <p className="mt-3 text-center text-xs text-muted-foreground">بتأكيد الطلب أنت موافق على <Link to="/policies" className="font-semibold text-primary underline">السياسات والشروط</Link>.</p>
+          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg bg-sunken p-3.5 text-sm leading-6">
+            <input type="checkbox" checked={agreed} onChange={(e) => { setAgreed(e.target.checked); setErr('') }} className="mt-1 size-4 shrink-0 accent-[var(--primary)]" required />
+            <span>أقر بأنني قرأت <Link to="/policies" target="_blank" className="font-semibold text-primary underline">السياسات والشروط</Link> و<Link to="/policies#declaration" target="_blank" className="font-semibold text-primary underline">الإقرار والتعهد</Link> وأوافق عليها، ومنها: طلب التعديل خلال يوم واحد من التسليم، وخصم 7% رسوم معالجة عند إلغاء طلبات تمارا وتابي قبل التنفيذ.</span>
+          </label>
+          <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
+
         </Panel>
       </form>
     </div>

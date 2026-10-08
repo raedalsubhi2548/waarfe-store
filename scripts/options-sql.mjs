@@ -18,6 +18,10 @@ alter table public.products add column if not exists options jsonb not null defa
 
 ${updates}
 
+-- Each order records when the customer accepted the terms & declaration, and which version (shown on the invoice)
+alter table public.orders add column if not exists terms_accepted_at timestamptz;
+alter table public.orders add column if not exists terms_version text;
+
 -- Coupons: optional usage cap
 alter table public.coupons add column if not exists max_uses int;
 alter table public.coupons add column if not exists used int not null default 0;
@@ -99,10 +103,11 @@ begin
     if not found then raise exception 'كود الخصم انتهى عدد استخداماته'; end if;
   end if;
 
-  insert into public.orders (user_id, customer, items, subtotal, discount, coupon, total, notes, payment_method, history)
+  insert into public.orders (user_id, customer, items, subtotal, discount, coupon, total, notes, payment_method, history, terms_accepted_at, terms_version)
   values (auth.uid(), p_customer, v_items, v_sub, v_disc, nullif(upper(p_coupon), ''), v_sub - v_disc,
           left(coalesce(p_notes, ''), 2000), case when p_payment_method = 'bank' then 'bank' else 'card' end,
-          jsonb_build_array(jsonb_build_object('status', 'pending', 'at', now())))
+          jsonb_build_array(jsonb_build_object('status', 'pending', 'at', now())),
+          now(), '2026-10')  -- checkout can't submit without accepting the terms (src/data/terms.js TERMS_VERSION)
   returning id into v_id;
   return v_id;
 end $$;

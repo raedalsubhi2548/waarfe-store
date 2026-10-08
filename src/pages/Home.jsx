@@ -16,7 +16,7 @@ import { SectionTitle } from '@/components/brand/Ornaments.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import Vine from '@/components/brand/Vine.jsx'
 
-const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} role="img" aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5" fill="currentColor" strokeWidth={0} />)}</span>
+const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} role="img" aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5 text-[#f5b301]" fill="currentColor" strokeWidth={0} />)}</span>
 
 /** Fades/rises its children in once, when scrolled into view. */
 function Reveal({ as: T = 'div', className, delay = 0, children, ...p }) {
