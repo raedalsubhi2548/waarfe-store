@@ -16,17 +16,17 @@ export const SITE = {
   phone: '+' + WA,
   email: 'info@rraed.com',
   logo: '/logo.png',
-  ogImage: '/og.jpg',
+  ogImage: '/og-v2.jpg', // new file name: WhatsApp and others cache link previews by image URL
   tagline: 'تصميم متاجر سلة وصفحات الهبوط والتسويق والخدمات التجارية',
   keywords: 'منصة رائد، تصميم متجر سلة، تصميم متاجر سلة، مصمم متاجر سلة، تصميم متجر إلكتروني، تصميم صفحة هبوط، تصميم شعار، تصميم بنرات، إعلانات سناب شات، إعلانات تيك توك، ربط بكسل سناب، ربط قوقل أناليتكس بسلة، سجل تجاري إلكتروني، وثيقة العمل الحر، توثيق المتجر، التسجيل في تابي، التسجيل في تمارا، ثيمات سلة، اشتراك سلة',
   description: 'منصة رائد: تصميم متاجر سلة احترافية، صفحات هبوط مبرمجة بدون اشتراك شهري، حملات إعلانية على سناب وتيك توك وإنستغرام، ربط أدوات قوقل والبكسل، والخدمات الحكومية للمتاجر في السعودية.',
 }
 
 const CAT_ART = {
-  'design-services': '/brand/ai/raed-cat-design.webp',
-  'marketing-services': '/brand/ai/raed-cat-marketing.webp',
-  subscriptions: '/brand/ai/raed-cat-subscriptions.webp',
-  'government-services': '/brand/ai/raed-cat-government.webp',
+  'design-services': '/brand/og/raed-design.jpg',
+  'marketing-services': '/brand/og/raed-marketing.jpg',
+  subscriptions: '/brand/og/raed-subscriptions.jpg',
+  'government-services': '/brand/og/raed-government.jpg',
 }
 
 // Search titles/descriptions per service and section: the words people actually search in Saudi.
@@ -197,6 +197,8 @@ export function headHtml(s) {
     `<meta property="og:description" content="${e(s.description)}" />`,
     `<meta property="og:url" content="${e(s.canonical)}" />`,
     `<meta property="og:image" content="${e(s.image)}" />`,
+    `<meta property="og:image:secure_url" content="${e(s.image)}" />`,
+    ...(/\/og-v2\.jpg$|\/brand\/og\//.test(s.image) ? [`<meta property="og:image:type" content="image/jpeg" />`, `<meta property="og:image:width" content="1200" />`, `<meta property="og:image:height" content="630" />`] : []),
     `<meta property="og:image:alt" content="${e(s.title)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${e(s.title)}" />`,

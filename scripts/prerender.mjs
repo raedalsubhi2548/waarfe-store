@@ -28,7 +28,10 @@ for (const path of routes) {
   let html = template
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description"[^>]*>\s*/, '')
-    .replace('</head>', `    ${headHtml(s)}\n${path === '/' ? HERO_PRELOAD : ''}  </head>`)
+    // title, description and Open Graph come first in <head>: link previews (WhatsApp, X…) read only the start of the
+    // page, and the inlined stylesheet would otherwise push them past that point
+    .replace(/(<meta name="viewport"[^>]*>\n)/, `$1    ${headHtml(s)}\n`)
+    .replace('</head>', `${path === '/' ? HERO_PRELOAD : ''}  </head>`)
     .replace('<div id="root"></div>', `<div id="root">${await render(path, catalog)}</div>${catalogJson}`)
   const file = path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1) + '.html')
   mkdirSync(dirname(file), { recursive: true })
