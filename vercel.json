@@ -99,6 +99,26 @@
   },
   "redirects": [
     {
+      "source": "/p/tmara-registration",
+      "destination": "/p/tamara-registration",
+      "permanent": true
+    },
+    {
+      "source": "/p/issue-commercial-registration-saudi",
+      "destination": "/p/commercial-registration",
+      "permanent": true
+    },
+    {
+      "source": "/p/freelance-certificate-family-platform",
+      "destination": "/p/freelance-document",
+      "permanent": true
+    },
+    {
+      "source": "/p/ai-integration-chatgpt-claude-salla",
+      "destination": "/p/salla-ai-integration",
+      "permanent": true
+    },
+    {
       "source": "/p/(waarfe-ai-ad-campaigns-guide|ai-ad-campaigns-guide)",
       "destination": "/shop",
       "permanent": true
