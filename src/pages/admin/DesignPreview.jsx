@@ -13,5 +13,5 @@ export default function DesignPreview() {
   }, [setPreview])
   // a picture of the store, not a way out of the dashboard: links and buttons do nothing here
   const stop = (e) => { if (e.target.closest('a,button')) { e.preventDefault(); e.stopPropagation() } }
-  return <div onClickCapture={stop}><Layout /></div>
+  return <div onClickCapture={stop}><style>{'html{scrollbar-width:none}html::-webkit-scrollbar{display:none}'}</style><Layout /></div>
 }
