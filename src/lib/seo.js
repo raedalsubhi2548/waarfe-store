@@ -1,3 +1,4 @@
+import { fromSlug, toSlug, productPath } from './slug.js'
 // One source of truth for titles, descriptions, canonical links, social cards and structured
 // data. Used at runtime (useSeo) and at build time (scripts/prerender.mjs) so crawlers that do
 // not run JavaScript still get the full head for every public page.
@@ -139,7 +140,7 @@ export function seoFor(path, data = {}) {
   }
   const pm = path.match(/^\/p\/([^/]+)$/)
   if (pm) {
-    const p = data.product || products.find((x) => x.id === pm[1])
+    const p = data.product || products.find((x) => x.id === fromSlug(pm[1]))
     if (!p) return { ...base, title: t('الخدمة غير موجودة'), description: SITE.description, robots: 'noindex' }
     const c = categories.find((x) => x.id === p.categoryId)
     const img = abs(CAT_ART[p.categoryId] || SITE.ogImage)
@@ -151,17 +152,17 @@ export function seoFor(path, data = {}) {
       image: img,
       price: price(p),
       jsonLd: [
-        crumbs([['الرئيسية', '/'], ...(c ? [[c.name, `/c/${c.id}`]] : []), [p.name, `/p/${p.id}`]]),
+        crumbs([['الرئيسية', '/'], ...(c ? [[c.name, `/c/${c.id}`]] : []), [p.name, productPath(p.id)]]),
         {
           '@context': 'https://schema.org',
           '@type': 'Product',
           name: p.name,
           description: clip(p.summary || p.description || p.name, 500),
           image: [img],
-          sku: p.id,
+          sku: toSlug(p.id),
           brand: { '@type': 'Brand', name: SITE.name },
           category: c?.name,
-          offers: { '@type': 'Offer', url: abs(`/p/${p.id}`), priceCurrency: 'SAR', price: String(price(p)), availability: 'https://schema.org/InStock', seller: { '@id': abs('/#org') } },
+          offers: { '@type': 'Offer', url: abs(productPath(p.id)), priceCurrency: 'SAR', price: String(price(p)), availability: 'https://schema.org/InStock', seller: { '@id': abs('/#org') } },
         },
       ],
     }
@@ -178,7 +179,7 @@ function itemList(list) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(`/p/${p.id}`), name: p.name })),
+    itemListElement: list.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: abs(productPath(p.id)), name: p.name })),
   }
 }
 

@@ -7,6 +7,7 @@ import { seedProducts, seedCategories } from '../src/data/seed.js'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
 import { SITE, WA_LOCAL, seoFor, headHtml } from '../src/lib/seo.js'
+import { productPath, fromSlug } from '../src/lib/slug.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
 const template = readFileSync(join(DIST, 'index.html'), 'utf8')
@@ -15,7 +16,7 @@ const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').r
 const money = (n) => `${n} ر.س`
 const price = (p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)
 const nav = `<nav><a href="/">الرئيسية</a> · <a href="/shop">كل الخدمات</a> · ${seedCategories.map((c) => `<a href="/c/${c.id}">${esc(c.name)}</a>`).join(' · ')} · <a href="/work">أعمالنا</a> · <a href="/reviews">آراء العملاء</a> · <a href="/contact">تواصل معنا</a></nav>`
-const list = (ps) => `<ul>${ps.map((p) => `<li><a href="/p/${p.id}">${esc(p.name)}</a> — ${money(price(p))}</li>`).join('')}</ul>`
+const list = (ps) => `<ul>${ps.map((p) => `<li><a href="${productPath(p.id)}">${esc(p.name)}</a> — ${money(price(p))}</li>`).join('')}</ul>`
 
 function body(path) {
   if (path === '/') return `<h1>${esc(SITE.name)}: تصميم متاجر سلة وصفحات هبوط وتسويق</h1><p>${esc(SITE.description)}</p>${seedCategories.map((c) => `<h2><a href="/c/${c.id}">${esc(c.name)}</a></h2><p>${esc(c.blurb || '')}</p>${list(seedProducts.filter((p) => p.categoryId === c.id))}`).join('')}<h2>أسئلة تتكرر</h2>${FAQ.map((q) => `<h3>${esc(q.q)}</h3><p>${esc(q.a)}</p>`).join('')}`
@@ -23,7 +24,7 @@ function body(path) {
   const c = path.match(/^\/c\/(.+)$/)?.[1]
   if (c) { const cat = seedCategories.find((x) => x.id === c); return `<h1>${esc(cat.name)}</h1><p>${esc(cat.blurb || '')}</p>${list(seedProducts.filter((p) => p.categoryId === c))}` }
   const id = path.match(/^\/p\/(.+)$/)?.[1]
-  if (id) { const p = seedProducts.find((x) => x.id === id); return `<h1>${esc(p.name)}</h1><p><strong>${money(price(p))}</strong></p><p>${esc(p.summary || '')}</p><div>${esc(p.description || '').replace(/\n/g, '<br>')}</div>` }
+  if (id) { const p = seedProducts.find((x) => x.id === fromSlug(id)); return `<h1>${esc(p.name)}</h1><p><strong>${money(price(p))}</strong></p><p>${esc(p.summary || '')}</p><div>${esc(p.description || '').replace(/\n/g, '<br>')}</div>` }
   if (path === '/reviews') return `<h1>آراء العملاء</h1>${ALL_REVIEWS.map((r) => `<blockquote><p>${esc(r.text)}</p><cite>${esc(r.name)}${r.city ? '، ' + esc(r.city) : ''}</cite></blockquote>`).join('')}`
   if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/${SITE.phone.slice(1)}">${WA_LOCAL}</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
   if (path === '/work') return `<h1>أعمالنا: متاجر سلة صممناها</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
@@ -32,7 +33,7 @@ function body(path) {
 }
 
 const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
-  ...seedCategories.map((c) => `/c/${c.id}`), ...seedProducts.map((p) => `/p/${p.id}`)]
+  ...seedCategories.map((c) => `/c/${c.id}`), ...seedProducts.map((p) => productPath(p.id))]
 
 for (const path of routes) {
   const s = seoFor(path, data)

@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import { money, effectivePrice } from '@/lib/format.js'
 import { coverFor } from '@/lib/cover.js'
+import { productPath } from '@/lib/slug.js'
 
 /** A white card pinned with a navy pin: straight, equal height, everything on the same lines across a row. */
 export default function ServiceTicket({ p, className }) {
@@ -19,7 +20,7 @@ export default function ServiceTicket({ p, className }) {
         <span className="absolute top-[3px] left-[5px] size-[5px] rounded-full bg-white/70 blur-[0.5px]" />
       </span>
       <article className="relative flex h-full flex-col rounded-[14px] bg-white p-2.5 pt-3.5 shadow-[0_1px_2px_rgb(27_43_68/0.08),0_18px_32px_-22px_rgb(27_43_68/0.5)] ring-1 ring-[#1b2b44]/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_28px_44px_-24px_rgb(27_43_68/0.6)]">
-        <Link to={`/p/${p.id}`} className="relative block overflow-hidden rounded-[10px] bg-sunken">
+        <Link to={productPath(p.id)} className="relative block overflow-hidden rounded-[10px] bg-sunken">
           <img src={p.image} alt={p.name} loading="lazy" decoding="async" width="500" height="500" onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = 1; e.currentTarget.src = coverFor(p) } }}
             className="aspect-square w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
         </Link>
@@ -33,7 +34,7 @@ export default function ServiceTicket({ p, className }) {
         <div className="flex flex-1 flex-col px-1 pt-3">
           {cat && <span className="mb-1 block truncate text-[11.5px] text-muted-foreground">{cat.name}</span>}
           <h3 className="line-clamp-2 h-[2.9rem] text-[14px] font-semibold leading-[1.45rem] text-primary">
-            <Link to={`/p/${p.id}`} className="after:absolute after:inset-0">{p.name}</Link>
+            <Link to={productPath(p.id)} className="after:absolute after:inset-0">{p.name}</Link>
           </h3>
           <div className="mt-auto flex min-h-[3.4rem] items-center justify-between gap-2 border-t border-primary/10 pt-2.5">
             <p className="tabular leading-tight">

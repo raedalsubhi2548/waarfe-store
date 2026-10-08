@@ -116,7 +116,8 @@ export function invoicePdf(order, seller) {
     y += 40
     for (const it of order.items || []) {
       if (y > 690) { doc.addPage({ size: 'A4', margin: 0 }); y = 50 }
-      const h = para(doc, it.name, col.name, y, 250, { font: 'sb', size: 10.5 })
+      let h = para(doc, it.name, col.name, y, 250, { font: 'sb', size: 10.5 })
+      for (const o of it.options || []) h += para(doc, `${o.option}: ${o.value}`, col.name, y + h, 250, { size: 8.5, color: MUTED })
       say(doc, String(it.qty), col.qty, y, { size: 10.5, align: 'center' })
       say(doc, `${money(it.price)} ر.س`, col.price, y, { size: 10.5 })
       say(doc, `${money(it.price * it.qty)} ر.س`, col.total, y, { font: 'sb', size: 10.5, align: 'left' })

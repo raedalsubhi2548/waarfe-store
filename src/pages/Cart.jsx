@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
 import { ShoppingBag, Trash2 } from 'lucide-react'
 import { useApp } from '@/state.jsx'
-import { money, effectivePrice } from '@/lib/format.js'
+import { money } from '@/lib/format.js'
+import { productPath } from '@/lib/slug.js'
+import OptionList from '@/components/OptionList.jsx'
 import { Button } from '@/components/ui/button'
 import { PageHead, Empty, Qty, Input, Panel } from '@/components/ui/kit.jsx'
 
@@ -15,19 +17,20 @@ export default function Cart() {
       ) : (
         <div className="grid items-start gap-6 lg:grid-cols-[1fr_380px]">
           <ul className="grid gap-3">
-            {lines.map(({ product: p, qty, note }) => (
-              <li key={p.id} className="grid grid-cols-[72px_1fr] gap-4 rounded-lg bg-surface p-4 shadow-hairline ring-1 ring-border sm:grid-cols-[88px_1fr_auto]">
+            {lines.map(({ key, product: p, qty, note, chosen, unit }) => (
+              <li key={key} className="grid grid-cols-[72px_1fr] gap-4 rounded-lg bg-surface p-4 shadow-hairline ring-1 ring-border sm:grid-cols-[88px_1fr_auto]">
                 <img src={p.image} alt="" className="size-[72px] rounded-md object-cover sm:size-[88px]" />
                 <div className="grid min-w-0 gap-1.5">
-                  <Link to={`/p/${p.id}`} className="font-semibold leading-6 hover:underline">{p.name}</Link>
-                  <span className="tabular text-sm text-muted-foreground">{money(effectivePrice(p))} {p.perUnit || ''}</span>
-                  <Input value={note || ''} onChange={(e) => setNote(p.id, e.target.value)} placeholder="ملاحظة على هذه الخدمة (اختياري)" aria-label={`ملاحظة على ${p.name}`} className="h-10 text-sm" />
+                  <Link to={productPath(p.id)} className="font-semibold leading-6 hover:underline">{p.name}</Link>
+                  <OptionList items={chosen} />
+                  <span className="tabular text-sm text-muted-foreground">{money(unit)} {p.perUnit || ''}</span>
+                  <Input value={note || ''} onChange={(e) => setNote(key, e.target.value)} placeholder="ملاحظة على هذه الخدمة (اختياري)" aria-label={`ملاحظة على ${p.name}`} className="h-10 text-sm" />
                 </div>
                 <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-1 sm:grid sm:justify-items-end">
-                  <strong className="tabular font-display text-lg text-primary">{money(effectivePrice(p) * qty)}</strong>
+                  <strong className="tabular font-display text-lg text-primary">{money(unit * qty)}</strong>
                   <div className="flex items-center gap-2">
-                    <Qty size="sm" value={qty} onChange={(q) => setQty(p.id, q)} />
-                    <button onClick={() => setQty(p.id, 0)} className="grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label={`حذف ${p.name}`}><Trash2 className="size-4" /></button>
+                    <Qty size="sm" value={qty} onChange={(q) => setQty(key, q)} />
+                    <button onClick={() => setQty(key, 0)} className="grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label={`حذف ${p.name}`}><Trash2 className="size-4" /></button>
                   </div>
                 </div>
               </li>

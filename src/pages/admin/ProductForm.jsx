@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Field, Input, Textarea, Select, Panel, Skeleton, Switch } from '@/components/ui/kit.jsx'
 import { AdminHead, useConfirm } from '@/components/admin/ui.jsx'
 import ServiceTicket from '@/components/home/ServiceTicket.jsx'
+import { productPath } from '@/lib/slug.js'
+import OptionsEditor, { tidyOptions } from '@/components/admin/OptionsEditor.jsx'
 
 const EMPTY = { name: '', price: '', salePrice: '', categoryId: '', image: '', badge: '', summary: '', description: '', featured: false, active: true, digital: false, perUnit: '', fileUrl: '', sort: 0 }
 const slugify = (s) => s.trim().toLowerCase().replace(/[^\w؀-ۿ]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'product'
@@ -18,7 +20,9 @@ export default function ProductForm() {
   const isNew = id === 'new'
   const nav = useNavigate()
   const confirm = useConfirm()
-  const { categories, refreshCatalog, notify } = useApp()
+  const { categories, products, refreshCatalog, notify } = useApp()
+  // options are editable once the database has the options column (supabase/options.sql)
+  const canOptions = products.some((x) => Array.isArray(x.options))
   const [p, setP] = useState(isNew ? EMPTY : null)
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -42,7 +46,7 @@ export default function ProductForm() {
   const save = async (e) => {
     e.preventDefault(); setBusy(true)
     try {
-      const out = { ...p, price: Number(p.price), salePrice: p.salePrice === '' ? null : Number(p.salePrice), sort: Number(p.sort) || 0 }
+      const out = { ...p, ...(Array.isArray(p.options) ? { options: tidyOptions(p.options) } : canOptions ? { options: [] } : {}), price: Number(p.price), salePrice: p.salePrice === '' ? null : Number(p.salePrice), sort: Number(p.sort) || 0 }
       if (out.salePrice && out.salePrice >= out.price) throw new Error('سعر التخفيض لازم يكون أقل من السعر الأصلي')
       if (isNew) out.id = slugify(p.name) + '-' + Date.now().toString(36).slice(-4)
       await api.saveProduct(out); await refreshCatalog()
@@ -62,7 +66,7 @@ export default function ProductForm() {
         back={<Link to="/admin/products" className="mb-1 inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-primary"><ChevronRight className="size-4" />المنتجات</Link>}
         title={isNew ? 'منتج جديد' : p.name || 'بدون اسم'}
         action={<>
-          {!isNew && <Button asChild variant="ghost"><a href={`/p/${p.id}`} target="_blank" rel="noreferrer"><Eye className="size-4" />معاينة</a></Button>}
+          {!isNew && <Button asChild variant="ghost"><a href={productPath(p.id)} target="_blank" rel="noreferrer"><Eye className="size-4" />معاينة</a></Button>}
           <Button disabled={busy} className="hidden lg:inline-flex">{busy ? 'جاري الحفظ…' : isNew ? 'أضف المنتج' : 'حفظ التغييرات'}</Button>
         </>}
       />
@@ -91,6 +95,11 @@ export default function ProductForm() {
               </div>
             )}
           </Panel>
+          {canOptions && (
+            <Panel title="خيارات المنتج">
+              <OptionsEditor value={p.options || []} onChange={(options) => setP((x) => ({ ...x, options }))} />
+            </Panel>
+          )}
           {!isNew && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg p-5 ring-1 ring-danger/30">
               <div><p className="font-bold text-danger">حذف المنتج</p><p className="text-sm text-muted-foreground">لا يمكن التراجع. الأفضل إخفاؤه إذا تبيه يرجع لاحقاً.</p></div>

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from './lib/api.js'
-import { effectivePrice } from './lib/format.js'
+import { unitPrice, chosenOptions, cleanSelection } from './lib/format.js'
 
 const Ctx = createContext(null)
 export const useApp = () => useContext(Ctx)
@@ -51,21 +51,30 @@ export function AppProvider({ children }) {
 
   const byId = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p])), [products])
 
-  // cart lines store only id + qty + note; prices always come from the live catalog
-  const lines = useMemo(() => cart.map((l) => ({ ...l, product: byId[l.productId] })).filter((l) => l.product), [cart, byId])
-  const subtotal = lines.reduce((s, l) => s + effectivePrice(l.product) * l.qty, 0)
+  // cart lines store only id + chosen options + qty + note; prices always come from the live catalog.
+  // The same service with different options is its own line (key = id + options).
+  const lineKey = (productId, options = []) => [productId, ...[...options].sort()].join('|')
+  const lines = useMemo(() => cart.map((l) => {
+    const product = byId[l.productId]
+    if (!product) return null
+    const options = cleanSelection(product, l.options)
+    return { ...l, key: l.key || lineKey(l.productId, l.options), options, product, chosen: chosenOptions(product, options), unit: unitPrice(product, options) }
+  }).filter(Boolean), [cart, byId])
+  const subtotal = lines.reduce((s, l) => s + l.unit * l.qty, 0)
   const count = lines.reduce((s, l) => s + l.qty, 0)
 
-  const addToCart = (productId, qty = 1, note = '') => {
+  const keyOf = (l) => l.key || lineKey(l.productId, l.options)
+  const addToCart = (productId, qty = 1, note = '', options = []) => {
+    const key = lineKey(productId, options)
     setCart((c) => {
-      const i = c.findIndex((l) => l.productId === productId)
-      if (i >= 0) { const n = [...c]; n[i] = { ...n[i], qty: n[i].qty + qty, note: note || n[i].note }; return n }
-      return [...c, { productId, qty, note }]
+      const i = c.findIndex((l) => keyOf(l) === key)
+      if (i >= 0) { const n = [...c]; n[i] = { ...n[i], key, qty: n[i].qty + qty, note: note || n[i].note }; return n }
+      return [...c, { key, productId, options: [...options].sort(), qty, note }]
     })
     setCartOpen(true)
   }
-  const setQty = (productId, qty) => setCart((c) => (qty <= 0 ? c.filter((l) => l.productId !== productId) : c.map((l) => (l.productId === productId ? { ...l, qty } : l))))
-  const setNote = (productId, note) => setCart((c) => c.map((l) => (l.productId === productId ? { ...l, note } : l)))
+  const setQty = (key, qty) => setCart((c) => (qty <= 0 ? c.filter((l) => keyOf(l) !== key) : c.map((l) => (keyOf(l) === key ? { ...l, qty } : l))))
+  const setNote = (key, note) => setCart((c) => c.map((l) => (keyOf(l) === key ? { ...l, note } : l)))
   const clearCart = () => setCart([])
 
   const toggleWish = async (productId) => {

@@ -4,7 +4,8 @@ import { CreditCard, Landmark, Lock } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
-import { money, effectivePrice } from '@/lib/format.js'
+import { money } from '@/lib/format.js'
+import OptionList from '@/components/OptionList.jsx'
 import { Button } from '@/components/ui/button'
 import { PageHead, Panel, Field, Input, Textarea, Skeleton } from '@/components/ui/kit.jsx'
 
@@ -53,9 +54,9 @@ export default function Checkout() {
     if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); return }
     setBusy(true)
     try {
-      const items = lines.map(({ product: p, qty, note }) => ({ productId: p.id, name: p.name, price: effectivePrice(p), qty, note: note || '', image: p.image, digital: !!p.digital }))
+      const items = lines.map(({ product: p, qty, note, options, chosen, unit }) => ({ productId: p.id, name: p.name, price: unit, qty, note: note || '', image: p.image, digital: !!p.digital, optionKeys: options, options: chosen }))
       // if paying failed a moment ago, retry the same order instead of creating a duplicate
-      const key = `${method}|${total}|${coupon?.code || ''}|${lines.map((l) => l.product.id + 'x' + l.qty).join(',')}`
+      const key = `${method}|${total}|${coupon?.code || ''}|${lines.map((l) => l.key + 'x' + l.qty).join(',')}`
       const order = (pending.current?.key === key && pending.current.order) || await api.createOrder({
         items, customer: { name: form.name, phone: form.phone, email: form.email },
         notes: form.notes, coupon: coupon?.code || null, subtotal, discount, total, paymentMethod: method,
@@ -114,11 +115,11 @@ export default function Checkout() {
 
         <Panel title="طلبك" className="lg:sticky lg:top-[calc(var(--header-height)+24px)]">
           <ul className="grid gap-3">
-            {lines.map(({ product: p, qty }) => (
-              <li key={p.id} className="flex items-center gap-3 text-sm">
+            {lines.map(({ key, product: p, qty, chosen, unit }) => (
+              <li key={key} className="flex items-center gap-3 text-sm">
                 <img src={p.image} alt="" className="size-12 rounded-sm object-cover" />
-                <span className="flex-1 leading-6">{p.name}{qty > 1 && <span className="text-muted-foreground"> × {qty}</span>}</span>
-                <strong className="tabular">{money(effectivePrice(p) * qty)}</strong>
+                <span className="grid flex-1 gap-0.5 leading-6"><span>{p.name}{qty > 1 && <span className="text-muted-foreground"> × {qty}</span>}</span><OptionList items={chosen} /></span>
+                <strong className="tabular">{money(unit * qty)}</strong>
               </li>
             ))}
           </ul>

@@ -1,6 +1,6 @@
 import { coverFor } from '@/lib/cover.js'
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { Heart, ShieldCheck, Clock, Download, MessageCircle, Check } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
@@ -9,15 +9,21 @@ import { Ticket } from '@/components/home/Waybill.jsx'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Qty, Textarea, Skeleton } from '@/components/ui/kit.jsx'
-import { money, effectivePrice, parseDescription, waLink } from '@/lib/format.js'
+import { money, effectivePrice, parseDescription, waLink, optKey, unitPrice, missingOptions } from '@/lib/format.js'
+import { fromSlug, toSlug, productPath } from '@/lib/slug.js'
 import NotFound from './NotFound.jsx'
 
 export default function Product() {
-  const { id } = useParams()
+  const { id: slug } = useParams()
+  const id = fromSlug(slug)
   const { byId, categories, products, addToCart, toggleWish, wishlist, catalogReady } = useApp()
   const [qty, setQty] = useState(1)
   const [note, setNote] = useState('')
+  const [sel, setSel] = useState([]) // chosen options as "optionId:valueId"
+  const [optErr, setOptErr] = useState('')
+  useEffect(() => { setSel([]); setOptErr(''); setQty(1); setNote('') }, [id])
   const p = byId[id]
+  if (toSlug(id) !== slug) return <Navigate to={productPath(id)} replace />
   if (!p) return catalogReady ? <NotFound /> : <div className="container-w py-14"><Skeleton className="h-[480px]" /></div>
 
   const cat = categories.find((c) => c.id === p.categoryId)
@@ -25,7 +31,21 @@ export default function Product() {
   const related = products.filter((x) => x.categoryId === p.categoryId && x.id !== p.id).slice(0, 4)
   const wished = wishlist.includes(p.id)
   const onSale = p.salePrice && p.salePrice < p.price
-  const total = effectivePrice(p) * qty
+  const total = unitPrice(p, sel) * qty
+  const pick = (o, v) => {
+    const k = optKey(o, v)
+    setOptErr('')
+    setSel((cur) => {
+      if (cur.includes(k)) return cur.filter((x) => x !== k) // a second tap clears it
+      const rest = o.type === 'radio' ? cur.filter((x) => !x.startsWith(o.id + ':')) : cur
+      return [...rest, k]
+    })
+  }
+  const add = () => {
+    const miss = missingOptions(p, sel)
+    if (miss.length) { setOptErr(`اختر: ${miss.join('، ')}`); return }
+    addToCart(p.id, qty, note, sel)
+  }
 
   return (
     <div className="container-w py-8 sm:py-12 [--notch:var(--background)]">
@@ -56,6 +76,25 @@ export default function Product() {
             </div>
           }>
             <div className="grid gap-4 p-5">
+              {p.options?.map((o) => (
+                <fieldset key={o.id} className="grid gap-2">
+                  <legend className="mb-2 text-sm font-bold">{o.name} <span className="font-normal text-muted-foreground">{o.required ? '(مطلوب)' : o.type === 'checkbox' ? '(اختر اللي تبي)' : '(اختياري)'}</span></legend>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {o.values.map((v) => {
+                      const on = sel.includes(optKey(o, v))
+                      return (
+                        <button key={v.id} type="button" role={o.type === 'radio' ? 'radio' : 'checkbox'} aria-checked={on} onClick={() => pick(o, v)}
+                          className={cn('flex min-h-12 items-center gap-3 rounded-lg border-[1.5px] px-3.5 py-2.5 text-start text-sm transition-colors', on ? 'border-primary bg-sunken' : 'border-border hover:border-border-strong')}>
+                          <span className={cn('grid size-5 shrink-0 place-items-center border-[1.5px]', o.type === 'radio' ? 'rounded-full' : 'rounded-[6px]', on ? 'border-primary bg-primary text-primary-foreground' : 'border-border-strong')}>{on && <Check className="size-3" strokeWidth={3.5} />}</span>
+                          <span className="flex-1 leading-6">{v.name}</span>
+                          {Number(v.price) > 0 && <span className="tabular shrink-0 font-semibold text-primary">+{money(v.price)}</span>}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </fieldset>
+              ))}
+              {optErr && <p className="rounded-md bg-danger-soft px-4 py-3 text-sm text-danger" role="alert">{optErr}</p>}
               {!p.digital && (
                 <label className="grid gap-1.5">
                   <span className="text-sm font-bold">وش تحتاج بالضبط؟ <span className="font-normal text-muted-foreground">(اختياري)</span></span>
@@ -64,7 +103,7 @@ export default function Product() {
               )}
               <div className="flex flex-wrap items-center gap-3">
                 {!p.digital && <Qty value={qty} onChange={(v) => setQty(Math.max(1, v))} />}
-                <Button size="lg" className="min-w-0 flex-1" onClick={() => addToCart(p.id, qty, note)}>
+                <Button size="lg" className="min-w-0 flex-1" onClick={add}>
                   أضف للسلة <span className="tabular text-accent">{money(total)}</span>
                 </Button>
                 <button

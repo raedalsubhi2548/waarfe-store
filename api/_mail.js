@@ -35,7 +35,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 function html(order, ev) {
   const e = EVENTS[ev], base = siteUrl(), s = SELLER()
   const bank = ev === 'created' && order.payment_method === 'bank' && process.env.VITE_BANK_INFO
-  const rows = (order.items || []).map((it) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733">${esc(it.name)}${it.qty > 1 ? ` <span style="color:#6b7686">× ${it.qty}</span>` : ''}</td><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733;text-align:left;white-space:nowrap" dir="ltr">${money(it.price * it.qty)} ر.س</td></tr>`).join('')
+  const rows = (order.items || []).map((it) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733">${esc(it.name)}${it.qty > 1 ? ` <span style="color:#6b7686">× ${it.qty}</span>` : ''}${(it.options || []).map((o) => `<div style="font-size:12px;line-height:1.7;color:#6b7686">${esc(o.option)}: ${esc(o.value)}</div>`).join('')}</td><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733;text-align:left;white-space:nowrap" dir="ltr">${money(it.price * it.qty)} ر.س</td></tr>`).join('')
   return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;background:#f3f6fa;font-family:Tahoma,'Segoe UI',Arial,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6fa;padding:24px 12px"><tr><td align="center">

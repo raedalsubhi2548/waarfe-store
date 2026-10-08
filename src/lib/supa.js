@@ -11,18 +11,19 @@ export const sb = url && key ? createClient(url, key) : null
 // Rows imported from the old store carry its name and its green images; show the Raed brand instead.
 const LEGACY_IMG = /cdn\.salla\.(sa|network)|^data:/
 const artFor = (r) => (r.id !== 'waarfe-ai-ad-campaigns-guide' && r.image && /cdn\.salla\.sa\/zvxNvp\//.test(r.image) ? `/api/art?f=${encodeURIComponent(r.image.split('/').pop())}&id=${encodeURIComponent(r.id)}&v=6` : coverFor({ id: r.id, categoryId: r.category_id }))
-const rebrand = (t) => (typeof t === 'string' ? t.replace(/وارف(?![\u0621-\u064A])/g, 'رائد') : t)
+const rebrand = (t) => (typeof t === 'string' ? t.replace(/\u0648\u0627\u0631\u0641(?![\u0621-\u064A])/g, 'رائد') : t)
 const product = (r) => r && ({
   id: r.id, name: rebrand(r.name), price: Number(r.price), salePrice: r.sale_price == null ? null : Number(r.sale_price),
   categoryId: r.category_id, badge: r.badge, featured: r.featured, sort: r.sort,
   summary: rebrand(r.summary), description: rebrand(r.description), active: r.active, digital: r.digital, perUnit: r.per_unit,
-  createdAt: r.created_at,
+  createdAt: r.created_at, options: Array.isArray(r.options) ? r.options : undefined,
   image: !r.image || LEGACY_IMG.test(r.image) ? artFor(r) : r.image,
 })
 const productRow = (p) => ({
   id: p.id, name: p.name, price: p.price, sale_price: p.salePrice || null, category_id: p.categoryId,
   image: !p.image || p.image.startsWith('data:') ? null : p.image.startsWith('/api/art?f=') ? 'https://cdn.salla.sa/zvxNvp/' + decodeURIComponent(p.image.slice(11).split('&')[0]) : p.image, badge: p.badge || null, featured: !!p.featured, sort: p.sort ?? 0, summary: p.summary,
   description: p.description, active: p.active !== false, digital: !!p.digital, per_unit: p.perUnit || null,
+  ...(Array.isArray(p.options) ? { options: p.options } : {}), // only once the options column exists (supabase/options.sql)
 })
 const order = (r) => r && ({
   id: r.id, number: r.number, userId: r.user_id, customer: r.customer, items: r.items,
@@ -160,7 +161,7 @@ export const supa = {
   // Prices are recomputed in the database (place_order) — the browser never sets the total.
   async createOrder({ items, customer, notes, coupon: code, paymentMethod }) {
     const id = check(await sb.rpc('place_order', {
-      p_items: items.map((i) => ({ product_id: i.productId, qty: i.qty, note: String(i.note || '').slice(0, 1000) })),
+      p_items: items.map((i) => ({ product_id: i.productId, qty: i.qty, note: String(i.note || '').slice(0, 1000), options: i.optionKeys || [] })),
       p_customer: customer, p_notes: notes || '', p_coupon: code || null, p_payment_method: paymentMethod,
     }))
     return order(check(await sb.from('orders').select('*').eq('id', id).single()))

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Field, Select, Textarea, Skeleton, StatusPill, OrderTracker, statusLabel } from '@/components/ui/kit.jsx'
 import { AdminHead, SearchBox, Segments, TableCard, Table, Th, Td } from '@/components/admin/ui.jsx'
+import OptionList from '@/components/OptionList.jsx'
 
 const waPhone = (p) => (p || '').replace(/\D/g, '').replace(/^0/, '966')
 
@@ -45,10 +46,10 @@ function OrderDetail({ order, onSaved }) {
       <section className="rounded-lg bg-surface p-4 ring-1 ring-border">
         <h3 className="mb-3 text-xs font-bold text-muted-foreground">الخدمات</h3>
         <ul className="grid gap-3">
-          {order.items.map((it) => (
-            <li key={it.productId} className="grid grid-cols-[48px_1fr_auto] items-start gap-3">
+          {order.items.map((it, idx) => (
+            <li key={idx} className="grid grid-cols-[48px_1fr_auto] items-start gap-3">
               <img src={it.image} alt="" className="size-12 rounded-md object-cover" />
-              <div className="min-w-0 text-sm"><p className="font-semibold leading-6">{it.name}{it.qty > 1 && <span className="tabular text-muted-foreground"> × {it.qty}</span>}</p>{it.note && <p className="mt-1 rounded bg-sunken px-2 py-1 text-xs leading-6 text-muted-foreground">{it.note}</p>}</div>
+              <div className="min-w-0 text-sm"><p className="font-semibold leading-6">{it.name}{it.qty > 1 && <span className="tabular text-muted-foreground"> × {it.qty}</span>}</p><OptionList items={it.options} className="mt-1" />{it.note && <p className="mt-1 rounded bg-sunken px-2 py-1 text-xs leading-6 text-muted-foreground">{it.note}</p>}</div>
               <strong className="tabular text-sm text-primary">{money(it.price * it.qty)}</strong>
             </li>
           ))}

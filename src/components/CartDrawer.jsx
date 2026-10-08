@@ -1,7 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { ShoppingBag, Trash2 } from 'lucide-react'
 import { useApp } from '@/state.jsx'
-import { money, effectivePrice } from '@/lib/format.js'
+import { money } from '@/lib/format.js'
+import { productPath } from '@/lib/slug.js'
+import OptionList from '@/components/OptionList.jsx'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Qty } from '@/components/ui/kit.jsx'
@@ -28,15 +30,16 @@ export default function CartDrawer() {
         ) : (
           <>
             <ul className="flex-1 divide-y divide-border overflow-y-auto px-5">
-              {lines.map(({ product: p, qty }) => (
-                <li key={p.id} className="flex gap-3 py-4">
+              {lines.map(({ key, product: p, qty, chosen, unit }) => (
+                <li key={key} className="flex gap-3 py-4">
                   <img src={p.image} alt="" className="size-20 shrink-0 rounded-md object-cover" />
                   <div className="grid min-w-0 flex-1 content-start gap-1.5">
-                    <Link to={`/p/${p.id}`} onClick={close} className="font-semibold leading-6 hover:underline">{p.name}</Link>
-                    <span className="tabular font-display font-semibold text-primary">{money(effectivePrice(p) * qty)}</span>
+                    <Link to={productPath(p.id)} onClick={close} className="font-semibold leading-6 hover:underline">{p.name}</Link>
+                    <OptionList items={chosen} />
+                    <span className="tabular font-display font-semibold text-primary">{money(unit * qty)}</span>
                     <div className="flex items-center justify-between">
-                      <Qty size="sm" value={qty} onChange={(q) => setQty(p.id, q)} />
-                      <button onClick={() => setQty(p.id, 0)} className="grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label={`حذف ${p.name}`}><Trash2 className="size-4" /></button>
+                      <Qty size="sm" value={qty} onChange={(q) => setQty(key, q)} />
+                      <button onClick={() => setQty(key, 0)} className="grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-danger-soft hover:text-danger" aria-label={`حذف ${p.name}`}><Trash2 className="size-4" /></button>
                     </div>
                   </div>
                 </li>

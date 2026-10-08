@@ -4,6 +4,7 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { Search, X } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { money, effectivePrice } from '@/lib/format.js'
+import { productPath } from '@/lib/slug.js'
 
 export function SearchDialog({ open, onOpenChange }) {
   const { products } = useApp()
@@ -31,7 +32,7 @@ export function SearchDialog({ open, onOpenChange }) {
               {results.length === 0 && <li className="p-4 text-muted-foreground">ما لقينا نتيجة لـ «{q}». جرّب كلمة أعم مثل «حملة» أو «تصميم».</li>}
               {results.map((p) => (
                 <li key={p.id}>
-                  <Link to={`/p/${p.id}`} onClick={close} className="flex items-center gap-3 rounded-md p-2 hover:bg-sunken">
+                  <Link to={productPath(p.id)} onClick={close} className="flex items-center gap-3 rounded-md p-2 hover:bg-sunken">
                     <img src={p.image} alt="" className="size-12 rounded-sm object-cover" />
                     <span className="flex-1 font-semibold">{p.name}</span>
                     <span className="tabular font-bold text-primary">{money(effectivePrice(p))}</span>

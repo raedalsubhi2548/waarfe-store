@@ -6,6 +6,7 @@ import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
 import { money, dateTime, waLink } from '@/lib/format.js'
 import { Button } from '@/components/ui/button'
+import OptionList from '@/components/OptionList.jsx'
 import { Panel, OrderTracker, StatusPill, statusLabel, Skeleton, Empty } from '@/components/ui/kit.jsx'
 
 export { statusLabel }
@@ -104,11 +105,12 @@ export default function Order() {
 
         <Panel title="تفاصيل الطلب">
           <ul className="grid gap-4">
-            {order.items.map((it) => (
-              <li key={it.productId} className="flex gap-3 text-sm">
+            {order.items.map((it, i) => (
+              <li key={i} className="flex gap-3 text-sm">
                 <img src={it.image} alt="" className="size-12 rounded-sm object-cover" />
                 <div className="flex-1">
                   <p className="leading-6">{it.name}{it.qty > 1 && <span className="text-muted-foreground"> × {it.qty}</span>}</p>
+                  <OptionList items={it.options} />
                   {it.note && <p className="text-xs text-muted-foreground">{it.note}</p>}
                   {it.digital && paid && <DownloadButton orderId={order.id} productId={it.productId} />}
                 </div>
