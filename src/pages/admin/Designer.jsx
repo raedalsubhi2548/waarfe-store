@@ -173,7 +173,7 @@ export default function Designer() {
                 )
               })}
             </div>
-            <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
+            <div className="grid gap-3">
               <ColorField label="اللون الأساسي" value={c.primary} onChange={(v) => set('colors.primary', v)} />
               <ColorField label="اللون المميّز" value={c.accent} onChange={(v) => set('colors.accent', v)} />
               <ColorField label="لون الخلفية" value={c.background} onChange={(v) => set('colors.background', v)} />
