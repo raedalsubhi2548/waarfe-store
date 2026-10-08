@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, PackageSearch, Images, Star } from 'lucide-react'
+import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, Images, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import Icon from '@/components/Icon.jsx'
 import Social from '@/components/Social.jsx'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { SearchDialog } from '@/components/site/SearchDialog.jsx'
+import AccountSheet from '@/components/site/AccountSheet.jsx'
 
 const iconBtn = 'relative grid size-11 place-items-center rounded-full transition-colors'
 
@@ -25,10 +26,11 @@ function ScrollLine() {
 export default function SiteHeader() {
   const { count, setCartOpen, user, categories, products, wishlist } = useApp()
   const [menu, setMenu] = useState(false)
+  const [acct, setAcct] = useState(false)
   const [search, setSearch] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const loc = useLocation()
-  useEffect(() => { setMenu(false) }, [loc.pathname, loc.search])
+  useEffect(() => { setMenu(false); setAcct(false) }, [loc.pathname, loc.search])
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 8)
     on(); window.addEventListener('scroll', on, { passive: true })
@@ -47,6 +49,10 @@ export default function SiteHeader() {
         <div className="flex items-center gap-1">
           <button className={cn(iconBtn, ink, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
             <Menu className="size-6" />
+          </button>
+          <button className={cn(iconBtn, ink, 'lg:hidden')} onClick={() => setAcct(true)} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}>
+            <User className="size-[22px]" />
+            {user && <span className="absolute top-2 end-2 size-2 rounded-full bg-success ring-2 ring-background" aria-hidden="true" />}
           </button>
           <nav className="hidden items-center gap-1 lg:flex" aria-label="الرئيسية">
             <NavLink to="/shop" className={link}>كل الخدمات</NavLink>
@@ -68,7 +74,7 @@ export default function SiteHeader() {
             <Heart className="size-[21px]" />
             {wishlist.length > 0 && <span className="absolute top-1.5 end-1.5 size-2 rounded-full bg-danger" />}
           </Link>
-          <Link className={cn(iconBtn, ink, 'hidden sm:grid')} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
+          <Link className={cn(iconBtn, ink, 'hidden lg:grid')} to={accountTo} aria-label={user ? 'حسابي' : 'تسجيل الدخول'}><User className="size-[21px]" /></Link>
           <button
             onClick={() => setCartOpen(true)}
             aria-label={`السلة، ${count} عناصر`}
@@ -102,15 +108,13 @@ export default function SiteHeader() {
             <li><Link to="/shop" className="flex min-h-12 items-center gap-3 text-foreground"><Search className="size-5 text-primary" />كل الخدمات</Link></li>
             <li><Link to="/work" className="flex min-h-12 items-center gap-3 text-foreground"><Images className="size-5 text-primary" />أعمالنا</Link></li>
             <li><Link to="/reviews" className="flex min-h-12 items-center gap-3 text-foreground"><Star className="size-5 text-primary" />آراء العملاء</Link></li>
-            <li><Link to="/account" className="flex min-h-12 items-center gap-3 text-foreground"><PackageSearch className="size-5 text-primary" />تتبّع طلبك</Link></li>
-            <li><Link to="/account/wishlist" className="flex min-h-12 items-center gap-3 text-foreground"><Heart className="size-5 text-primary" />أمنياتي</Link></li>
-            <li><Link to={accountTo} className="flex min-h-12 items-center gap-3 text-foreground"><User className="size-5 text-primary" />{user ? 'حسابي' : 'تسجيل الدخول'}</Link></li>
             <li><Link to="/contact" className="flex min-h-12 items-center gap-3 text-foreground"><MessageCircle className="size-5 text-primary" />تواصل معنا</Link></li>
           </ul>
           <Social className="mt-auto pt-6" />
         </SheetContent>
       </Sheet>
 
+      <AccountSheet open={acct} onOpenChange={setAcct} />
       <SearchDialog open={search} onOpenChange={setSearch} />
     </header>
   )
