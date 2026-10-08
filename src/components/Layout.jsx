@@ -18,7 +18,7 @@ export function PageFallback() {
 export default function Layout() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
-  const { products, categories, catalogReady } = useApp()
+  const { products, categories, catalogReady, settings } = useApp()
   const seoData = useMemo(() => ({ products, categories, faq: FAQ, reviews: ALL_REVIEWS }), [products, categories])
   const home = pathname === '/' || pathname === '/admin/preview' // the store designer previews the home page there
   // single-segment paths may be a category or a service: wait for the catalog before naming the page
@@ -30,7 +30,7 @@ export default function Layout() {
       <AnnouncementBar />
       <SiteHeader />
       <main id="main" className="site-main relative isolate overflow-x-clip">
-        {!home && (
+        {!home && settings.background.decor && (
           <>
             {/* inner pages share the homepage's picture: one soft backdrop and one continuous line from header to footer */}
             <Vine />

@@ -65,6 +65,17 @@ function ColorField({ label, value, onChange }) {
 }
 
 const LinkHint = 'صفحة داخل المتجر مثل /shop أو /salla-store-design، أو رابط يبدأ بـ https://'
+const linkOk = (v) => !v || /^\/(?!\/)/.test(v) || /^https:\/\/[^\s]+\.[^\s]+/i.test(v)
+/** A link field that says so right away when the address won't be accepted (it would be dropped on publish). */
+function LinkInput({ value, onChange, className, placeholder = '/shop' }) {
+  const bad = !linkOk(value)
+  return (
+    <span className={cn('grid gap-1', className)}>
+      <Input value={value} dir="ltr" onChange={(e) => onChange(e.target.value.trim())} placeholder={placeholder} aria-invalid={bad || undefined} className={cn(className && 'h-10', bad && 'ring-2 ring-danger')} />
+      {bad && <span className="text-xs font-semibold text-danger">الرابط لازم يبدأ بـ / أو https://</span>}
+    </span>
+  )
+}
 
 /** Choose services for a products block: tick them in the order they should appear. */
 function ProductPicker({ value, onChange }) {
@@ -126,7 +137,7 @@ function BlockForm({ block, onChange }) {
         let control
         if (kind === 'text') control = <Input value={v} maxLength={opt} onChange={(e) => set(key, e.target.value)} />
         else if (kind === 'textarea') control = <Textarea value={v} maxLength={opt} onChange={(e) => set(key, e.target.value)} />
-        else if (kind === 'link') control = <Input value={v} dir="ltr" onChange={(e) => set(key, e.target.value.trim())} placeholder="/shop" />
+        else if (kind === 'link') control = <LinkInput value={v} onChange={(x) => set(key, x)} />
         else if (kind === 'image') return <div key={key} className="sm:col-span-2"><ImageSlot tall label={label} value={v} fallback={block.type === 'hero' ? (key === 'image' ? '/brand/ai/raed-hero-v3.webp' : '/brand/ai/raed-hero-mobile-v3.webp') : ''} onChange={(x) => set(key, x)} /></div>
         else if (kind === 'switch') return <div key={key} className="sm:col-span-2"><Switch checked={!!v} onChange={(x) => set(key, x)} label={label} /></div>
         else if (kind === 'select') control = <Select value={v} onChange={(e) => set(key, e.target.value)}>{opt.map(([x, t]) => <option key={x} value={x}>{t}</option>)}</Select>
@@ -226,7 +237,7 @@ function HeaderLinks({ value, onChange }) {
       {value.map((l, i) => (
         <div key={i} className="flex items-center gap-2">
           <Input value={l.label} maxLength={24} onChange={(e) => set(i, 'label', e.target.value)} placeholder="الاسم" className="h-10 flex-1" />
-          <Input value={l.to} dir="ltr" onChange={(e) => set(i, 'to', e.target.value.trim())} placeholder="/shop" className="h-10 flex-1" />
+          <LinkInput value={l.to} onChange={(x) => set(i, 'to', x)} className="flex-1" />
           <IconB onClick={() => move(i, -1)} disabled={i === 0} label="لفوق"><ChevronUp className="size-4" /></IconB>
           <IconB onClick={() => onChange(value.filter((_, j) => j !== i))} label="حذف"><X className="size-4" /></IconB>
         </div>
@@ -280,7 +291,7 @@ function Preview({ draft, frame }) {
   )
 }
 
-const TABS = [['home', 'الصفحة الرئيسية'], ['brand', 'الشعار والألوان والخلفية'], ['chrome', 'الهيدر والفوتر']]
+const TABS = [['home', 'الصفحة الرئيسية', 'الرئيسية'], ['brand', 'الشعار والألوان والخلفية', 'الهوية'], ['chrome', 'الهيدر والفوتر', 'الهيدر والفوتر']]
 
 export default function Designer() {
   const { savedSettings, refreshSettings, notify } = useApp()
@@ -321,9 +332,9 @@ export default function Designer() {
       <div className="grid gap-6 pb-28 xl:grid-cols-[minmax(400px,500px)_1fr] xl:items-start">
         <div className="grid gap-5">
           <div className="flex gap-1 overflow-x-auto rounded-full bg-sunken p-1 ring-1 ring-border">
-            {TABS.map(([id, t]) => (
+            {TABS.map(([id, t, short]) => (
               <button key={id} type="button" onClick={() => { setTab(id); if (id === 'chrome') post({ type: 'raed:scroll', top: 0 }) }}
-                className={cn('h-10 flex-1 whitespace-nowrap rounded-full px-3 text-sm font-semibold transition-colors', tab === id ? 'bg-primary text-on-inverse shadow-hairline' : 'text-muted-foreground hover:text-primary')}>{t}</button>
+                className={cn('h-10 flex-1 whitespace-nowrap rounded-full px-3 text-sm font-semibold transition-colors', tab === id ? 'bg-primary text-on-inverse shadow-hairline' : 'text-muted-foreground hover:text-primary')}><span className="sm:hidden">{short}</span><span className="hidden sm:inline">{t}</span></button>
             ))}
           </div>
 
@@ -380,7 +391,7 @@ export default function Designer() {
             <Panel title="شريط الإعلان" action={<Switch checked={a.on} onChange={(v) => patch((d) => { d.announcement.on = v })} label={a.on ? 'ظاهر' : 'مخفي'} />}>
               <div className="grid gap-3">
                 <Field label="نص الإعلان"><Input value={a.text} maxLength={140} onChange={(e) => patch((d) => { d.announcement.text = e.target.value })} placeholder="مثال: خصم 20% على تصميم المتاجر لفترة محدودة" /></Field>
-                <Field label="رابط (اختياري)" hint={LinkHint}><Input value={a.link} dir="ltr" onChange={(e) => patch((d) => { d.announcement.link = e.target.value.trim() })} placeholder="/shop" /></Field>
+                <Field label="رابط (اختياري)" hint={LinkHint}><LinkInput value={a.link} onChange={(x) => patch((d) => { d.announcement.link = x })} /></Field>
               </div>
             </Panel>
             <Panel title="الهيدر">
@@ -392,6 +403,13 @@ export default function Designer() {
               </div>
               {JSON.stringify(draft.header.links) !== JSON.stringify(DEFAULT_HEADER_LINKS) && <button type="button" onClick={() => patch((d) => { d.header.links = structuredClone(DEFAULT_HEADER_LINKS) })} className="mt-3 text-xs font-semibold text-muted-foreground hover:text-primary">رجّع الروابط الأصلية</button>}
             </Panel>
+            <Panel title="دعوة التواصل أعلى الفوتر" action={<Switch checked={draft.footer.cta} onChange={(v) => patch((d) => { d.footer.cta = v; setTimeout(() => post({ type: 'raed:scroll', top: 'end' }), 50) })} label={draft.footer.cta ? 'ظاهرة' : 'مخفية'} />}>
+              <div className="grid gap-3">
+                <Field label="العنوان"><Input value={draft.footer.ctaTitle} maxLength={60} onChange={(e) => patch((d) => { d.footer.ctaTitle = e.target.value })} /></Field>
+                <Field label="السطر تحته"><Input value={draft.footer.ctaText} maxLength={140} onChange={(e) => patch((d) => { d.footer.ctaText = e.target.value })} /></Field>
+                <p className="text-xs leading-5 text-muted-foreground">تحتها زر واتساب المتجر.</p>
+              </div>
+            </Panel>
             <Panel title="الفوتر">
               <Field label="نبذة تحت الشعار"><Textarea value={draft.footer.about} maxLength={200} onChange={(e) => patch((d) => { d.footer.about = e.target.value })} placeholder={DEFAULT_ABOUT} /></Field>
               <div className="mt-4"><Switch checked={draft.footer.payments} onChange={(v) => patch((d) => { d.footer.payments = v; setTimeout(() => post({ type: 'raed:scroll', top: 'end' }), 50) })} label="شعارات طرق الدفع" /></div>
@@ -400,16 +418,17 @@ export default function Designer() {
           </>}
         </div>
 
-        <div className="xl:sticky xl:top-6"><Preview draft={draft} frame={frame} /></div>
+        <div id="design-preview" className="scroll-mt-4 xl:sticky xl:top-6"><Preview draft={draft} frame={frame} /></div>
       </div>
 
       {/* publish bar */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface/95 backdrop-blur lg:start-[264px]">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 px-4 py-3 sm:px-8">
-          <p className={cn('flex-1 text-sm font-semibold', dirty ? 'text-warning' : 'text-muted-foreground')}>{dirty ? 'عندك تعديلات ما نُشرت' : 'كل التعديلات منشورة'}</p>
-          <Button type="button" variant="ghost" onClick={resetAll} className="font-semibold"><RotateCcw className="size-4" />التصميم الأصلي</Button>
-          <Button type="button" variant="outline" disabled={!dirty || busy} onClick={() => { touched.current = false; setDraft(saved) }}><Undo2 className="size-4" />تراجع</Button>
-          <Button type="button" disabled={!dirty || busy} onClick={publish} className="min-w-32">{busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}نشر التغييرات</Button>
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-2 px-3 py-2.5 sm:gap-3 sm:px-8 sm:py-3">
+          <p className={cn('basis-full text-xs font-semibold sm:basis-auto sm:flex-1 sm:text-sm', dirty ? 'text-warning' : 'text-muted-foreground')}>{dirty ? 'عندك تعديلات ما نُشرت' : 'كل التعديلات منشورة'}</p>
+          <Button type="button" variant="ghost" size="sm" onClick={resetAll} aria-label="التصميم الأصلي" className="px-2 font-semibold sm:px-4"><RotateCcw className="size-4" /><span className="hidden sm:inline">التصميم الأصلي</span></Button>
+          <Button type="button" variant="outline" size="sm" className="xl:hidden" onClick={() => document.getElementById('design-preview')?.scrollIntoView({ behavior: 'smooth' })}><Eye className="size-4" />معاينة</Button>
+          <Button type="button" variant="outline" size="sm" disabled={!dirty || busy} onClick={() => { touched.current = false; setDraft(saved) }} aria-label="تراجع"><Undo2 className="size-4" /><span className="hidden sm:inline">تراجع</span></Button>
+          <Button type="button" size="sm" disabled={!dirty || busy} onClick={publish} className="ms-auto min-w-24 sm:h-11 sm:min-w-32">{busy ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}نشر</Button>
         </div>
       </div>
     </>

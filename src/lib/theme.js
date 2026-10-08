@@ -103,6 +103,7 @@ function cleanBlock(b) {
 }
 
 export const DEFAULT_HEADER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'تواصل', to: '/contact' }]
+export const DEFAULT_CTA = ['محتار من وين تبدأ؟', 'قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.']
 export const DEFAULT_ABOUT = 'نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.'
 
 /** Ready-made palettes the owner can start from. */
@@ -140,7 +141,10 @@ export function mergeSettings(raw) {
       links: Array.isArray(s.header?.links) ? s.header.links.slice(0, 6).map((l) => ({ label: text(l?.label, '', 24), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : DEFAULT_HEADER_LINKS,
       search: s.header?.search !== false, wishlist: s.header?.wishlist !== false,
     },
-    footer: { about: text(s.footer?.about, DEFAULT_ABOUT, 200), payments: s.footer?.payments !== false },
+    footer: {
+      about: text(s.footer?.about, DEFAULT_ABOUT, 200), payments: s.footer?.payments !== false,
+      cta: s.footer?.cta !== false, ctaTitle: text(s.footer?.ctaTitle, DEFAULT_CTA[0], 60) || DEFAULT_CTA[0], ctaText: text(s.footer?.ctaText, DEFAULT_CTA[1], 140),
+    },
   }
 }
 

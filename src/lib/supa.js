@@ -160,7 +160,8 @@ export const supa = {
   // ---------- store designer ----------
   async getSettings() {
     const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main').maybeSingle()
-    if (error) return null // table not created yet (supabase/designer.sql): the defaults apply
+    // a failed read keeps what the page already shows (the snapshot it was built with) instead of the defaults
+    if (error) throw new Error(error.message)
     return data?.data || null
   },
   async saveSettings(settings) {

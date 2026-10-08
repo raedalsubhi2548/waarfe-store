@@ -3,6 +3,7 @@ import { MessageCircle, Mail } from 'lucide-react'
 import Social from '@/components/Social.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
+import { cn } from '@/lib/utils'
 import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
 
 /** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
@@ -19,17 +20,17 @@ export default function SiteFooter() {
 
         <div className="container-w relative pb-10">
           {/* closing invitation */}
-          <div className="mx-auto max-w-xl text-center">
-            <h2 className="font-script text-[2rem] font-bold leading-[1.5] sm:text-[2.6rem]">محتار من وين تبدأ؟</h2>
-            <p className="mt-2 text-[15.5px] leading-8 text-on-inverse/75">قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.</p>
+          {settings.footer.cta && <div className="mx-auto max-w-xl text-center">
+            <h2 className="font-script text-[2rem] font-bold leading-[1.5] sm:text-[2.6rem]">{settings.footer.ctaTitle}</h2>
+            {settings.footer.ctaText && <p className="mt-2 text-[15.5px] leading-8 text-on-inverse/75">{settings.footer.ctaText}</p>}
             <a href={waLink('السلام عليكم، أبي استشارة: من وين أبدأ متجري؟')} target="_blank" rel="noreferrer"
               className="mt-6 inline-flex items-center gap-3 rounded-full bg-background py-2 ps-2 pe-6 text-primary shadow-[0_18px_36px_-16px_rgb(0_0_0/0.6)] transition-transform hover:-translate-y-0.5">
               <span className="grid size-10 place-items-center rounded-full bg-primary text-on-inverse"><MessageCircle className="size-5" /></span>
               <span className="text-start leading-tight"><span className="block text-[11.5px] text-primary/70">استشرنا على واتساب</span><b dir="ltr" className="tabular text-[17px]">0{WHATSAPP.slice(3)}</b></span>
             </a>
-          </div>
+          </div>}
 
-          <div className="mt-16 grid gap-12 border-t border-white/10 pt-12 lg:grid-cols-[1fr_2.2fr] lg:gap-16">
+          <div className={cn('grid gap-12 lg:grid-cols-[1fr_2.2fr] lg:gap-16', settings.footer.cta ? 'mt-16 border-t border-white/10 pt-12' : 'pt-4')}>
             {/* brand */}
             <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-start">
               <Link to="/" className="block" aria-label="منصة رائد — الرئيسية">
