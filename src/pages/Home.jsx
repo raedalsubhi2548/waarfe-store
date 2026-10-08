@@ -4,7 +4,7 @@ import { ArrowLeft, Quote } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { FAQ } from '@/data/content.js'
 import { ALL_REVIEWS } from '@/data/reviews.js'
-import { money, effectivePrice } from '@/lib/format.js'
+import { money, effectivePrice, liveWa } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
 import StarsSvg from '@/components/brand/Stars.jsx'
 const Stars = (p) => <StarsSvg size={14} {...p} />
@@ -60,6 +60,7 @@ const DUST = Array.from({ length: 16 }, (_, i) => ({ l: (i * 61) % 100, t: 20 + 
 const ART = '/brand/ai'
 
 function Hero({ b: h, first }) {
+  const { settings } = useApp()
   const H = first ? 'h1' : 'h2'
   return (
     <section className={cn('relative isolate overflow-hidden bg-[var(--p-green-950)] text-on-inverse', first && '-mt-[var(--header-height)]')}>
@@ -83,13 +84,13 @@ function Hero({ b: h, first }) {
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(251_252_254/0.6))]" />{h.eyebrow}<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(251_252_254/0.6))] md:hidden" />
           </p>
           <H className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in-solid_850ms_var(--p-ease-emphasized)_both]">
-            {first && <span className="sr-only">تصميم متاجر سلة في السعودية: </span>}
+            {first && settings.store.name === 'منصة رائد' && <span className="sr-only">تصميم متاجر سلة في السعودية: </span>}
             <span className="block">{h.title1}</span>
             {h.title2 && <span className="block font-light text-[var(--p-cream-200)]">{h.title2}</span>}
           </H>
           <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_color-mix(in_srgb,var(--p-green-950)_90%,transparent)] md:mx-0 motion-safe:animate-[rise-in-solid_1s_var(--p-ease-emphasized)_both]">{h.text}</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in-solid_1.15s_var(--p-ease-emphasized)_both]">
-            <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white">{/^https:/i.test(h.ctaLink) ? <a href={h.ctaLink} target="_blank" rel="noopener noreferrer">{h.cta}<ArrowLeft className="size-4" /></a> : <Link to={h.ctaLink}>{h.cta}<ArrowLeft className="size-4" /></Link>}</Button>
+            <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white">{/^https:/i.test(h.ctaLink) ? <a href={liveWa(h.ctaLink)} target="_blank" rel="noopener noreferrer">{h.cta}<ArrowLeft className="size-4" /></a> : <Link to={h.ctaLink}>{h.cta}<ArrowLeft className="size-4" /></Link>}</Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
           {h.showStats && <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in-solid_1.3s_var(--p-ease-emphasized)_both]">
@@ -140,7 +141,7 @@ function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra })
 }
 
 /** linkProps: an internal path opens in the store, an https address in a new tab. */
-const linkTo = (link) => (!link ? {} : /^https:/i.test(link) ? { href: link } : { to: link })
+const linkTo = (link) => (!link ? {} : /^https:/i.test(link) ? { href: liveWa(link) } : { to: link })
 
 function ImageTextBlock({ b }) {
   const { byId } = useApp()
@@ -208,7 +209,7 @@ const CAT_ART = {
 }
 /** All categories as one still bento: a large tile locked together with four smaller ones, nothing scrolls. */
 function Categories() {
-  const { categories, products } = useApp()
+  const { categories, products, settings } = useApp()
   return (
     <section className="cv-auto container-w">
       <ul className="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 sm:gap-4 lg:aspect-[2/1] lg:grid-cols-4 lg:grid-rows-2">
@@ -220,7 +221,9 @@ function Categories() {
           return (
             <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : wide ? 'col-span-2 aspect-[2/1] lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
               <Link to={`/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[var(--p-green-950)] shadow-[0_1px_2px_color-mix(in_srgb,var(--p-green-900)_8%,transparent),0_24px_40px_-24px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] ring-1 ring-primary/10">
-                {CAT_ART[c.id]
+                {settings.categoryImages[c.id]
+                  ? <img src={settings.categoryImages[c.id]} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
+                  : CAT_ART[c.id]
                   ? <img src={`${ART}/${CAT_ART[c.id]}`} srcSet={`${ART}/${CAT_ART[c.id].replace('.webp', '-480.webp')} 480w, ${ART}/${CAT_ART[c.id]} 900w`} sizes={big ? '(max-width: 1024px) 92vw, 520px' : '(max-width: 1024px) 46vw, 260px'} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
                   : <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,var(--p-green-700),var(--p-green-900)_60%,var(--p-green-950))] text-on-inverse"><Icon name={c.icon} size={big ? 44 : 30} /></span>}
                 <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,color-mix(in_srgb,var(--p-green-950)_85%,transparent))]" aria-hidden="true" />

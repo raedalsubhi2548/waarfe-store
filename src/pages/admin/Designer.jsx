@@ -6,7 +6,8 @@ import {
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
-import { DEFAULT_SETTINGS, PRESETS, BLOCKS, BLOCK_DEFAULTS, ICONS, DEFAULT_HEADER_LINKS, DEFAULT_ABOUT, defaultHome, mergeSettings } from '@/lib/theme.js'
+import { DEFAULT_SETTINGS, PRESETS, BLOCKS, BLOCK_DEFAULTS, ICONS, DEFAULT_HEADER_LINKS, DEFAULT_FOOTER_LINKS, DEFAULT_ABOUT, DEFAULT_STORE, FONTS, RADII, normPhone, defaultHome, mergeSettings } from '@/lib/theme.js'
+import { SITE } from '@/lib/seo.js'
 import { Button } from '@/components/ui/button'
 import { Field, Input, Textarea, Select, Panel, Switch } from '@/components/ui/kit.jsx'
 import { AdminHead, useConfirm } from '@/components/admin/ui.jsx'
@@ -14,6 +15,7 @@ import { AdminHead, useConfirm } from '@/components/admin/ui.jsx'
 const MAX_IMAGE = 4 * 1024 * 1024
 const BLOCK_ICON = { Sparkles, Image: ImageLucide, BadgeCheck, LayoutGrid, Shapes, PanelLeft, Type, GalleryHorizontal, MessageSquareQuote, CircleHelp }
 const ICON_NAMES = { store: 'متجر', landing: 'صفحة', analytics: 'إحصائيات', shield: 'حماية', chat: 'محادثة', clock: 'ساعة' }
+const BUILT_IN_CAT = { 'design-services': 'design', 'marketing-services': 'marketing', subscriptions: 'subscriptions', 'government-services': 'government' }
 const uid = () => 'b' + Math.random().toString(36).slice(2, 8)
 
 /** One image slot: upload, preview on the background it will sit on, back to the original. */
@@ -124,7 +126,7 @@ function ItemsEditor({ value, onChange }) {
 }
 
 /** The form for one block, built from its field list in theme.js. */
-function BlockForm({ block, onChange }) {
+function BlockForm({ block, onChange, catImages, setCatImage }) {
   const { categories, products } = useApp()
   const def = BLOCKS[block.type]
   const set = (k, v) => onChange({ ...block, [k]: v })
@@ -148,12 +150,21 @@ function BlockForm({ block, onChange }) {
         else if (kind === 'items') control = <ItemsEditor value={v} onChange={(x) => set(key, x)} />
         return <Field key={key} label={label} hint={kind === 'link' ? LinkHint : undefined} className={wide ? 'sm:col-span-2' : ''}>{control}</Field>
       })}
+      {block.type === 'categories' && catImages && (
+        <div className="grid gap-3 sm:col-span-2">
+          <p className="text-sm font-semibold text-primary">صور الأقسام <span className="font-normal text-muted-foreground">(اختياري، مربعة أو طولية)</span></p>
+          <div className="grid grid-cols-2 gap-3">
+            {categories.map((c) => <ImageSlot key={c.id} tall label={c.name} value={catImages[c.id] || ''} fallback={BUILT_IN_CAT[c.id] ? `/brand/ai/raed-cat-${BUILT_IN_CAT[c.id]}-480.webp` : ''} onChange={(url) => setCatImage(c.id, url)} />)}
+          </div>
+          <p className="text-xs leading-5 text-muted-foreground">إضافة الأقسام وتسميتها من صفحة «التصنيفات». القسم بدون صورة يظهر بأيقونته على لون المتجر.</p>
+        </div>
+      )}
     </div>
   )
 }
 
 /** The home page as a list of blocks: reorder, hide, edit, duplicate, delete, add. */
-function HomeBlocks({ blocks, onChange, focus }) {
+function HomeBlocks({ blocks, onChange, focus, catImages, setCatImage }) {
   const confirm = useConfirm()
   const [open, setOpen] = useState(null)
   const [adding, setAdding] = useState(false)
@@ -189,7 +200,7 @@ function HomeBlocks({ blocks, onChange, focus }) {
             </div>
             {isOpen && (
               <div className="grid gap-4 border-t border-border p-4">
-                <BlockForm block={b} onChange={(nb) => update(i, nb)} />
+                <BlockForm block={b} onChange={(nb) => update(i, nb)} catImages={catImages} setCatImage={setCatImage} />
                 <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-3">
                   <Button type="button" variant="ghost" size="sm" onClick={() => { const c = { ...structuredClone(b), id: uid() }; const n = [...blocks]; n.splice(i + 1, 0, c); onChange(n) }}><Copy className="size-4" />تكرار</Button>
                   <Button type="button" variant="ghost" size="sm" className="text-danger hover:bg-danger-soft" onClick={() => remove(i)}><Trash2 className="size-4" />حذف العنصر</Button>
@@ -229,7 +240,7 @@ const IconB = ({ onClick, disabled, label, active, children }) => (
     className={cn('grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-sunken hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent', active && 'bg-primary/10 text-primary')}>{children}</button>
 )
 
-function HeaderLinks({ value, onChange }) {
+function HeaderLinks({ value, onChange, max = 6, hint = 'تظهر في هيدر الكمبيوتر وفي القائمة الجانبية بالجوال.' }) {
   const set = (i, k, v) => onChange(value.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
   const move = (i, d) => { const n = [...value]; [n[i], n[i + d]] = [n[i + d], n[i]]; onChange(n) }
   return (
@@ -242,8 +253,8 @@ function HeaderLinks({ value, onChange }) {
           <IconB onClick={() => onChange(value.filter((_, j) => j !== i))} label="حذف"><X className="size-4" /></IconB>
         </div>
       ))}
-      {value.length < 6 && <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={() => onChange([...value, { label: '', to: '' }])}><Plus className="size-4" />أضف رابط</Button>}
-      <p className="text-xs leading-5 text-muted-foreground">تظهر في هيدر الكمبيوتر. {LinkHint}</p>
+      {value.length < max && <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={() => onChange([...value, { label: '', to: '' }])}><Plus className="size-4" />أضف رابط</Button>}
+      <p className="text-xs leading-5 text-muted-foreground">{hint} {LinkHint}</p>
     </div>
   )
 }
@@ -291,7 +302,7 @@ function Preview({ draft, frame }) {
   )
 }
 
-const TABS = [['home', 'الصفحة الرئيسية', 'الرئيسية'], ['brand', 'الشعار والألوان والخلفية', 'الهوية'], ['chrome', 'الهيدر والفوتر', 'الهيدر والفوتر']]
+const TABS = [['home', 'الصفحة الرئيسية', 'الرئيسية'], ['store', 'معلومات المتجر', 'المتجر'], ['brand', 'الشعار والألوان والخطوط', 'الهوية'], ['chrome', 'الهيدر والفوتر', 'الهيدر']]
 
 export default function Designer() {
   const { savedSettings, refreshSettings, notify } = useApp()
@@ -341,9 +352,38 @@ export default function Designer() {
           {tab === 'home' && (
             <Panel title="عناصر الصفحة الرئيسية">
               <p className="-mt-2 mb-4 text-sm leading-6 text-muted-foreground">رتّبها بالأسهم، وأخفِ اللي ما تبيه بالعين، واضغط على أي عنصر تعدّله.</p>
-              <HomeBlocks blocks={draft.home} onChange={(home) => patch((d) => { d.home = home })} focus={(id) => setTimeout(() => post({ type: 'raed:focus', id }), 120)} />
+              <HomeBlocks blocks={draft.home} catImages={draft.categoryImages} setCatImage={(id, url) => patch((d) => { if (url) d.categoryImages[id] = url; else delete d.categoryImages[id] })} onChange={(home) => patch((d) => { d.home = home })} focus={(id) => setTimeout(() => post({ type: 'raed:focus', id }), 120)} />
             </Panel>
           )}
+
+          {tab === 'store' && <>
+            <Panel title="اسم المتجر">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="الاسم بالعربي"><Input value={draft.store.name} maxLength={40} onChange={(e) => patch((d) => { d.store.name = e.target.value })} /></Field>
+                <Field label="الاسم بالإنجليزي (اختياري)"><Input value={draft.store.nameEn} maxLength={40} dir="ltr" onChange={(e) => patch((d) => { d.store.nameEn = e.target.value })} /></Field>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">يظهر في عناوين الصفحات وقوقل والفوتر والإيميلات والفواتير.</p>
+            </Panel>
+            <Panel title="وصف المتجر لقوقل">
+              <Textarea value={draft.store.description} maxLength={300} onChange={(e) => patch((d) => { d.store.description = e.target.value })} placeholder={SITE.description} />
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">جملتين عن متجرك وش يبيع ولمين، فيها الكلمات اللي يبحث عنها عملاؤك. فاضي = الوصف الحالي. <span className="tabular">{draft.store.description.length}/300</span></p>
+            </Panel>
+            <Panel title="التواصل">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="رقم الواتساب والجوال" hint={/^\d{9,15}$/.test(normPhone(draft.store.whatsapp)) ? undefined : 'اكتب رقم صحيح، مثل 05xxxxxxxx'}><Input value={draft.store.whatsapp.replace(/^966/, '0')} inputMode="tel" dir="ltr" onChange={(e) => patch((d) => { d.store.whatsapp = normPhone(e.target.value) || e.target.value })} placeholder="05xxxxxxxx" className="text-end" /></Field>
+                <Field label="البريد الإلكتروني" hint={/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(draft.store.email) ? undefined : 'اكتب بريد صحيح'}><Input value={draft.store.email} type="email" dir="ltr" onChange={(e) => patch((d) => { d.store.email = e.target.value.trim() })} className="text-end" /></Field>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">كل أزرار واتساب في المتجر، وصفحة تواصل معنا، والفوتر، والفاتورة تاخذ منها.</p>
+            </Panel>
+            <Panel title="حسابات التواصل الاجتماعي">
+              <div className="grid gap-3">
+                {[['instagram', 'إنستقرام'], ['x', 'إكس (تويتر)'], ['tiktok', 'تيك توك'], ['snapchat', 'سناب شات']].map(([k, label]) => (
+                  <Field key={k} label={label}><LinkInput value={draft.store.social[k]} onChange={(v) => patch((d) => { d.store.social[k] = v })} placeholder="https://" /></Field>
+                ))}
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">تظهر أيقوناتها في الفوتر والقائمة وصفحة تواصل معنا. الرابط كامل يبدأ بـ https://</p>
+            </Panel>
+          </>}
 
           {tab === 'brand' && <>
             <Panel title="الشعار">
@@ -381,6 +421,22 @@ export default function Designer() {
               <p className="mt-3 text-xs leading-5 text-muted-foreground">الأساسي للأزرار والعناوين والواجهة الغامقة، والمميّز للمسات الصغيرة. باقي الدرجات تتولّد تلقائيًا وبقراءة واضحة.</p>
             </Panel>
 
+            <Panel title="الخطوط">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Field label="خط العناوين"><Select value={draft.fonts.heading} onChange={(e) => patch((d) => { d.fonts.heading = e.target.value })}>{FONTS.heading.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Select></Field>
+                <Field label="خط النصوص"><Select value={draft.fonts.body} onChange={(e) => patch((d) => { d.fonts.body = e.target.value })}>{FONTS.body.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Select></Field>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">كل الخطوط عربية ومحمّلة من متجرك نفسه. شوف الفرق في المعاينة.</p>
+            </Panel>
+            <Panel title="شكل الأزرار والبطاقات">
+              <div className="grid grid-cols-3 gap-2">
+                {RADII.map(([k, t]) => (
+                  <button key={k} type="button" onClick={() => patch((d) => { d.radius = k })} className={cn('grid justify-items-center gap-2 p-3 text-xs font-semibold ring-1 transition-shadow', draft.radius === k ? 'ring-2 ring-primary' : 'ring-border hover:ring-border-strong', { round: 'rounded-xl', soft: 'rounded-lg', sharp: 'rounded-sm' }[k])}>
+                    <span className={cn('h-7 w-16 bg-primary', { round: 'rounded-full', soft: 'rounded-[8px]', sharp: 'rounded-[3px]' }[k])} />{t}
+                  </button>
+                ))}
+              </div>
+            </Panel>
             <Panel title="خلفية المتجر">
               <ImageSlot tall label="صورة خلفية لكل صفحات المتجر (اختياري)" value={draft.background.image} onChange={(v) => patch((d) => { d.background.image = v })} hint="تكون فاتحة وهادئة عشان النصوص تبان. بدون صورة تكون الخلفية باللون اللي اخترته." />
               <div className="mt-4"><Switch checked={draft.background.decor} onChange={(v) => patch((d) => { d.background.decor = v })} label="الزخارف الخفيفة (الخط المنحني والظلال)" /></div>
@@ -411,6 +467,9 @@ export default function Designer() {
               </div>
             </Panel>
             <Panel title="الفوتر">
+              <p className="mb-2 text-sm font-semibold text-primary">روابط عمود «{draft.store.name}»</p>
+              <HeaderLinks value={draft.footer.links || DEFAULT_FOOTER_LINKS} onChange={(links) => patch((d) => { d.footer.links = links })} max={8} hint="حتى 8 روابط. عمود الأقسام وعمود حسابك يتعبّون تلقائيًا." />
+              <div className="mt-4" />
               <Field label="نبذة تحت الشعار"><Textarea value={draft.footer.about} maxLength={200} onChange={(e) => patch((d) => { d.footer.about = e.target.value })} placeholder={DEFAULT_ABOUT} /></Field>
               <div className="mt-4"><Switch checked={draft.footer.payments} onChange={(v) => patch((d) => { d.footer.payments = v; setTimeout(() => post({ type: 'raed:scroll', top: 'end' }), 50) })} label="شعارات طرق الدفع" /></div>
               <button type="button" onClick={() => post({ type: 'raed:scroll', top: 'end' })} className="mt-3 text-xs font-semibold text-primary underline underline-offset-4">شوف الفوتر في المعاينة</button>

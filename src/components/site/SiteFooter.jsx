@@ -4,7 +4,8 @@ import Social from '@/components/Social.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
-import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
+import { DEFAULT_FOOTER_LINKS as FOOTER_LINKS } from '@/lib/theme.js'
+import { EMAIL, waLink, localPhone } from '@/lib/format.js'
 
 /** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
 export default function SiteFooter() {
@@ -26,15 +27,15 @@ export default function SiteFooter() {
             <a href={waLink('السلام عليكم، أبي استشارة: من وين أبدأ متجري؟')} target="_blank" rel="noreferrer"
               className="mt-6 inline-flex items-center gap-3 rounded-full bg-background py-2 ps-2 pe-6 text-primary shadow-[0_18px_36px_-16px_rgb(0_0_0/0.6)] transition-transform hover:-translate-y-0.5">
               <span className="grid size-10 place-items-center rounded-full bg-primary text-on-inverse"><MessageCircle className="size-5" /></span>
-              <span className="text-start leading-tight"><span className="block text-[11.5px] text-primary/70">استشرنا على واتساب</span><b dir="ltr" className="tabular text-[17px]">0{WHATSAPP.slice(3)}</b></span>
+              <span className="text-start leading-tight"><span className="block text-[11.5px] text-primary/70">استشرنا على واتساب</span><b dir="ltr" className="tabular text-[17px]">{localPhone()}</b></span>
             </a>
           </div>}
 
           <div className={cn('grid gap-12 lg:grid-cols-[1fr_2.2fr] lg:gap-16', settings.footer.cta ? 'mt-16 border-t border-white/10 pt-12' : 'pt-4')}>
             {/* brand */}
             <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-start">
-              <Link to="/" className="block" aria-label="منصة رائد — الرئيسية">
-                <img src={settings.logoLight} alt="منصة رائد Raed" width="458" height="248" loading="lazy" className="h-[calc(76px*var(--logo-scale,1))] w-auto sm:h-[calc(84px*var(--logo-scale,1))]" />
+              <Link to="/" className="block" aria-label={`${settings.store.name} — الرئيسية`}>
+                <img src={settings.logoLight} alt={settings.store.name} width="458" height="248" loading="lazy" className="h-[calc(76px*var(--logo-scale,1))] w-auto sm:h-[calc(84px*var(--logo-scale,1))]" />
               </Link>
               <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">{settings.footer.about}</p>
               <Social className="foot-social" />
@@ -46,13 +47,12 @@ export default function SiteFooter() {
                 <h2 className={col}>الأقسام</h2>
                 <ul>{categories.map((c) => <li key={c.id}><Link to={`/${c.id}`} className={item}>{c.name.replace(/^(ال)?خدمات\s/, '')}</Link></li>)}</ul>
               </nav>
-              <nav aria-label="منصة رائد">
-                <h2 className={col}>منصة رائد</h2>
+              <nav aria-label={settings.store.name}>
+                <h2 className={col}>{settings.store.name}</h2>
                 <ul>
-                  <li><Link to="/shop" className={item}>كل الخدمات</Link></li>
-                  <li><Link to="/work" className={item}>أعمالنا</Link></li>
-                  <li><Link to="/reviews" className={item}>آراء العملاء</Link></li>
-                  <li><Link to="/policies" className={item}>السياسات والشروط</Link></li>
+                  {(settings.footer.links || FOOTER_LINKS).map((l) => (
+                    <li key={l.label + l.to}>{/^https:/i.test(l.to) ? <a href={l.to} target="_blank" rel="noopener noreferrer" className={item}>{l.label}</a> : <Link to={l.to} className={item}>{l.label}</Link>}</li>
+                  ))}
                 </ul>
               </nav>
               <nav aria-label="حسابك">
@@ -66,7 +66,7 @@ export default function SiteFooter() {
               <div>
                 <h2 className={col}>تواصل معنا</h2>
                 <ul>
-                  <li><a href={waLink('السلام عليكم')} target="_blank" rel="noreferrer" className={item}><MessageCircle className="size-4 opacity-60" /><span dir="ltr" className="tabular">0{WHATSAPP.slice(3)}</span></a></li>
+                  <li><a href={waLink('السلام عليكم')} target="_blank" rel="noreferrer" className={item}><MessageCircle className="size-4 opacity-60" /><span dir="ltr" className="tabular">{localPhone()}</span></a></li>
                   <li><a href={`mailto:${EMAIL}`} className={item}><Mail className="size-4 opacity-60" /><span dir="ltr">{EMAIL}</span></a></li>
                   <li><Link to="/contact" className={item}>صفحة التواصل</Link></li>
                 </ul>
@@ -78,7 +78,7 @@ export default function SiteFooter() {
           <div className="mt-12 flex flex-col items-center gap-5 border-t border-white/10 pt-7 lg:flex-row-reverse lg:justify-between">
             {settings.footer.payments && <PayIcons size="sm" className="w-full max-w-[320px]" />}
             <p className="text-center text-[13px] text-on-inverse/55 lg:text-start">
-              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">منصة رائد</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
+              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">{settings.store.name}</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
             </p>
           </div>
         </div>

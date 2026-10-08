@@ -19,7 +19,8 @@ export default function Layout() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
   const { products, categories, catalogReady, settings } = useApp()
-  const seoData = useMemo(() => ({ products, categories, faq: FAQ, reviews: ALL_REVIEWS }), [products, categories])
+  // the store name/description (store designer) is part of every title, so a change re-applies the head
+  const seoData = useMemo(() => ({ products, categories, faq: FAQ, reviews: ALL_REVIEWS, store: settings.store }), [products, categories, settings.store])
   const home = pathname === '/' || pathname === '/admin/preview' // the store designer previews the home page there
   // single-segment paths may be a category or a service: wait for the catalog before naming the page
   useSeo(pathname === '/admin/preview' ? null : catalogReady || /^\/(shop|work|reviews|contact|policies|cart|checkout|login|account|order)(\/|$)/.test(pathname) || pathname === '/' ? pathname.replace(/\/$/, '') || '/' : null, seoData)

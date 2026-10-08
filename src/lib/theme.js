@@ -12,6 +12,19 @@ export const DEFAULT_SETTINGS = {
 }
 
 
+// ---------- store identity, fonts, corners ----------
+export const DEFAULT_STORE = {
+  name: 'منصة رائد', nameEn: 'Raed', description: '', whatsapp: '966536090915', email: 'info@rraed.com',
+  social: { instagram: '', x: '', tiktok: '', snapchat: '' },
+}
+export const FONTS = {
+  heading: [['marhey', 'مرحي (الأصلي)', "'Marhey'"], ['plex', 'آي بي إم بلكس', "'IBM Plex Sans Arabic'"], ['cairo', 'القاهرة', "'Cairo'"], ['tajawal', 'تجوال', "'Tajawal'"], ['almarai', 'المراعي', "'Almarai'"], ['elmessiri', 'المسيري', "'El Messiri'"], ['reemkufi', 'ريم كوفي', "'Reem Kufi'"]],
+  body: [['plex', 'آي بي إم بلكس (الأصلي)', "'IBM Plex Sans Arabic'"], ['cairo', 'القاهرة', "'Cairo'"], ['tajawal', 'تجوال', "'Tajawal'"], ['almarai', 'المراعي', "'Almarai'"]],
+}
+export const RADII = [['round', 'دائرية (الأصلي)'], ['soft', 'ناعمة'], ['sharp', 'حادة']]
+/** 05xxxxxxxx, 5xxxxxxxx, +9665xxxxxxxx → 9665xxxxxxxx (international, digits only). */
+export const normPhone = (v) => { const d = String(v || '').replace(/\D/g, ''); return d.startsWith('05') ? '966' + d.slice(1) : d.startsWith('5') && d.length === 9 ? '966' + d : d }
+
 // ---------- home page blocks ----------
 // Each block type: a name, an icon (lucide name, for the designer) and its fields. Field kinds:
 // text · textarea · link · image · switch · select · number · category · product · products · items
@@ -103,6 +116,7 @@ function cleanBlock(b) {
 }
 
 export const DEFAULT_HEADER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'تواصل', to: '/contact' }]
+export const DEFAULT_FOOTER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'السياسات والشروط', to: '/policies' }]
 export const DEFAULT_CTA = ['محتار من وين تبدأ؟', 'قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.']
 export const DEFAULT_ABOUT = 'نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.'
 
@@ -141,7 +155,22 @@ export function mergeSettings(raw) {
       links: Array.isArray(s.header?.links) ? s.header.links.slice(0, 6).map((l) => ({ label: text(l?.label, '', 24), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : DEFAULT_HEADER_LINKS,
       search: s.header?.search !== false, wishlist: s.header?.wishlist !== false,
     },
+    store: {
+      name: text(s.store?.name, DEFAULT_STORE.name, 40).trim() || DEFAULT_STORE.name,
+      nameEn: text(s.store?.nameEn, DEFAULT_STORE.nameEn, 40).trim(),
+      description: text(s.store?.description, '', 300).trim(), // empty: the built-in SEO description
+      whatsapp: /^\d{9,15}$/.test(normPhone(s.store?.whatsapp)) ? normPhone(s.store.whatsapp) : DEFAULT_STORE.whatsapp,
+      email: typeof s.store?.email === 'string' && /^[^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,}$/i.test(s.store.email.trim()) ? s.store.email.trim() : DEFAULT_STORE.email,
+      social: Object.fromEntries(Object.keys(DEFAULT_STORE.social).map((k) => [k, /^https:\/\//i.test(s.store?.social?.[k] || '') ? safeLink(s.store.social[k], '') : ''])),
+    },
+    fonts: {
+      heading: FONTS.heading.some(([k]) => k === s.fonts?.heading) ? s.fonts.heading : 'marhey',
+      body: FONTS.body.some(([k]) => k === s.fonts?.body) ? s.fonts.body : 'plex',
+    },
+    radius: RADII.some(([k]) => k === s.radius) ? s.radius : 'round',
+    categoryImages: Object.fromEntries(Object.entries(s.categoryImages && typeof s.categoryImages === 'object' ? s.categoryImages : {}).filter(([k, v]) => SLUG.test(k) && safeUrl(v, '')).slice(0, 40)),
     footer: {
+      links: Array.isArray(s.footer?.links) ? s.footer.links.slice(0, 8).map((l) => ({ label: text(l?.label, '', 30), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : null,
       about: text(s.footer?.about, DEFAULT_ABOUT, 200), payments: s.footer?.payments !== false,
       cta: s.footer?.cta !== false, ctaTitle: text(s.footer?.ctaTitle, DEFAULT_CTA[0], 60) || DEFAULT_CTA[0], ctaText: text(s.footer?.ctaText, DEFAULT_CTA[1], 140),
     },
@@ -176,7 +205,17 @@ export function themeCss(settings) {
     v.push(['--p-cream-50', B], ['--p-cream-100', mix(B, P, 0.035)], ['--p-cream-200', mix(B, P, 0.1)], ['--p-cream-300', mix(B, P, 0.16)])
   }
   if (s.logoScale !== 100) v.push(['--logo-scale', String(s.logoScale / 100)])
+  const fam = (list, k) => list.find(([x]) => x === k)[2]
+  if (s.fonts.heading !== 'marhey') v.push(['--p-font-script', `${fam(FONTS.heading, s.fonts.heading)}, 'IBM Plex Sans Arabic', sans-serif`])
+  if (s.fonts.body !== 'plex') { const f = `${fam(FONTS.body, s.fonts.body)}, 'IBM Plex Sans Arabic', system-ui, sans-serif`; v.push(['--p-font-text', f], ['--p-font-display', f]) }
+  if (s.radius === 'soft') v.push(['--p-radius-pill', '14px'], ['--p-radius-lg', '14px'], ['--p-radius-xl', '18px'])
+  if (s.radius === 'sharp') v.push(['--p-radius-pill', '6px'], ['--p-radius-lg', '6px'], ['--p-radius-xl', '8px'], ['--p-radius-md', '6px'], ['--p-radius-sm', '4px'])
   let css = v.length ? `:root{${v.map(([k, x]) => `${k}:${x}`).join(';')}}` : ''
+  // corners: buttons, fields and cards follow the owner's choice (dots and avatars stay round)
+  if (s.radius !== 'round') {
+    const [btn, card] = s.radius === 'soft' ? ['12px', '16px'] : ['4px', '6px']
+    css += `:is(a,button,input,select,textarea,label).rounded-full{border-radius:${btn}!important}:is(.rounded-xl,.rounded-lg,.rounded-2xl,[class*="rounded-[18px]"],[class*="rounded-[20px]"],[class*="rounded-[34px]"]){border-radius:${card}!important}`
+  }
   // a background picture behind the whole store (characters that could end the url() are escaped)
   if (s.background.image) css += `body{background-image:url("${s.background.image.replace(/["\\\n\r()]/g, encodeURIComponent)}");background-size:cover;background-position:center;background-attachment:fixed}`
   return css

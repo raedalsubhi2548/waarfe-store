@@ -20,7 +20,7 @@ export default function Shop({ categoryId: fromProps }) {
   const { categoryId: fromUrl } = useParams()
   const categoryId = fromProps ?? fromUrl
   const [params, setParams] = useSearchParams()
-  const { categories, products, catalogReady } = useApp()
+  const { categories, products, catalogReady, settings } = useApp()
   const q = params.get('q') || ''
   const sort = params.get('sort') || 'featured'
   const cat = categories.find((c) => c.id === categoryId)
@@ -45,7 +45,7 @@ export default function Shop({ categoryId: fromProps }) {
       <PageHead
         crumbs={<><Link to="/" className="hover:underline">الرئيسية</Link><span>/</span><span>{cat ? cat.name : 'كل الخدمات'}</span></>}
         title={cat ? cat.name : q ? `نتائج «${q}»` : 'كل الخدمات'}
-        lead={cat?.blurb || 'كل خدمات منصة رائد بأسعار ثابتة. اختر القسم أو ابحث باسم الخدمة.'}
+        lead={cat?.blurb || `كل خدمات ${settings.store.name} بأسعار ثابتة. اختر القسم أو ابحث باسم الخدمة.`}
       />
 
       <nav className="-mx-4 mb-6 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none]" aria-label="الأقسام">

@@ -4,10 +4,15 @@ export const num = (n) => nf.format(Number(n) || 0)
 export const date = (d) => new Intl.DateTimeFormat('ar-SA-u-nu-latn-ca-gregory', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(d))
 export const dateTime = (d) => new Intl.DateTimeFormat('ar-SA-u-nu-latn-ca-gregory', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(new Date(d))
 export const effectivePrice = (p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)
-// The store's WhatsApp and phone (0536090915). Fixed here so an old setting can't override it.
-export const WHATSAPP = '966536090915'
-export const EMAIL = 'info@rraed.com'
+// The store's WhatsApp/phone and email: 0536090915 unless the owner sets others in the store designer (src/lib/store.js).
+export let WHATSAPP = '966536090915'
+export let EMAIL = 'info@rraed.com'
+export function setContact(whatsapp, email) { WHATSAPP = whatsapp; EMAIL = email }
+/** 966536090915 → 0536090915 */
+export const localPhone = (w = WHATSAPP) => (w.startsWith('966') ? '0' + w.slice(3) : '+' + w)
 export const waLink = (text) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`
+/** A saved wa.me link made with the original number follows the store's current number. */
+export const liveWa = (href) => (typeof href === 'string' ? href.replace(/^https:\/\/wa\.me\/966536090915/, `https://wa.me/${WHATSAPP}`) : href)
 
 // Product descriptions use a light format: first paragraph, then "## heading" + "- item" lines.
 export function parseDescription(text = '') {

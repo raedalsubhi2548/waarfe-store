@@ -1,11 +1,23 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Megaphone } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { themeCss } from '@/lib/theme.js'
 
 /** The owner's colours and logo size (store designer) as CSS variables over the design tokens. */
+// fonts the owner can pick (the original two are always loaded by fonts.css); each loads only when chosen
+const FONT_CSS = {
+  cairo: () => [import('@fontsource/cairo/arabic-400.css'), import('@fontsource/cairo/arabic-500.css'), import('@fontsource/cairo/arabic-700.css')],
+  tajawal: () => [import('@fontsource/tajawal/arabic-400.css'), import('@fontsource/tajawal/arabic-500.css'), import('@fontsource/tajawal/arabic-700.css')],
+  almarai: () => [import('@fontsource/almarai/arabic-400.css'), import('@fontsource/almarai/arabic-700.css')],
+  elmessiri: () => [import('@fontsource/el-messiri/arabic-500.css'), import('@fontsource/el-messiri/arabic-700.css')],
+  reemkufi: () => [import('@fontsource/reem-kufi/arabic-500.css'), import('@fontsource/reem-kufi/arabic-700.css')],
+}
+
 export function ThemeStyle() {
   const { settings } = useApp()
+  const { heading, body } = settings.fonts
+  useEffect(() => { [heading, body].forEach((f) => FONT_CSS[f]?.()) }, [heading, body])
   const css = themeCss(settings)
   return css ? <style id="store-theme" dangerouslySetInnerHTML={{ __html: css }} /> : null
 }

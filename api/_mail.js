@@ -11,6 +11,26 @@ export const SELLER = () => ({
   site: (process.env.SITE_URL || 'rraed.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
 })
 
+// The owner's store name / phone / email from the store designer (site_settings), over the defaults above.
+let sellerCache = { at: 0, v: null }
+export async function loadSeller() {
+  if (sellerCache.v && Date.now() - sellerCache.at < 60_000) return sellerCache.v
+  const base = SELLER()
+  try {
+    const { data } = await admin.from('site_settings').select('data').eq('id', 'main').maybeSingle()
+    const st = data?.data?.store || {}
+    const phone = String(st.whatsapp || '').replace(/\D/g, '')
+    sellerCache = { at: Date.now(), v: {
+      ...base,
+      ...(typeof st.name === 'string' && st.name.trim() ? { name: st.name.trim().slice(0, 40) } : {}),
+      ...(/^[^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,}$/i.test(st.email || '') ? { email: st.email } : {}),
+      ...(/^\d{9,15}$/.test(phone) ? { phone: phone.startsWith('966') ? '0' + phone.slice(3) : '+' + phone } : {}),
+      ...(/^https:\/\/[^"'<>\s]+$/i.test(data?.data?.logoLight || '') ? { logo: data.data.logoLight } : {}),
+    } }
+  } catch { sellerCache = { at: Date.now(), v: base } }
+  return sellerCache.v
+}
+
 let transport
 const mailer = () => {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) return null
@@ -32,15 +52,15 @@ export const EVENT_IDS = Object.keys(EVENTS)
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
 
-function html(order, ev) {
-  const e = EVENTS[ev], base = siteUrl(), s = SELLER()
+function html(order, ev, s = SELLER()) {
+  const e = EVENTS[ev], base = siteUrl()
   const bank = ev === 'created' && order.payment_method === 'bank' && process.env.VITE_BANK_INFO
   const rows = (order.items || []).map((it) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733">${esc(it.name)}${it.qty > 1 ? ` <span style="color:#6b7686">× ${it.qty}</span>` : ''}${(it.options || []).map((o) => `<div style="font-size:12px;line-height:1.7;color:#6b7686">${esc(o.option)}: ${esc(o.value)}</div>`).join('')}</td><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733;text-align:left;white-space:nowrap" dir="ltr">${money(it.price * it.qty)} ر.س</td></tr>`).join('')
   return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;background:#f3f6fa;font-family:Tahoma,'Segoe UI',Arial,sans-serif">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6fa;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:18px;overflow:hidden;direction:rtl;text-align:right">
-<tr><td style="background:#1b2b44;padding:26px 28px" align="center"><img src="${base}/logo-white.png" width="150" alt="منصة رائد" style="display:block;border:0;height:auto"></td></tr>
+<tr><td style="background:#1b2b44;padding:26px 28px" align="center"><img src="${s.logo || base + '/logo-white.png'}" width="150" alt="${esc(s.name)}" style="display:block;border:0;height:auto"></td></tr>
 <tr><td style="padding:30px 28px 8px">
 <p style="margin:0;font-size:13px;color:#6b7686">طلب رقم ${order.number}</p>
 <h1 style="margin:6px 0 10px;font-size:24px;color:#1b2b44">${e.title}</h1>
@@ -59,7 +79,7 @@ ${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</
 /** A short plain alert to the store (ORDER_NOTIFY_TO, else the store email). */
 export async function sendAdminAlert(subject, text) {
   const t = mailer(); if (!t) return
-  const to = process.env.ORDER_NOTIFY_TO || SELLER().email
+  const to = process.env.ORDER_NOTIFY_TO || (await loadSeller()).email
   await t.sendMail({ from: process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`, to, subject: `[تنبيه] ${subject}`, text })
 }
 
@@ -83,15 +103,15 @@ export async function sendOrderEmail(orderOrId, ev) {
     if (!claimed?.length) return { sent: false, reason: 'already-sent' }
   }
 
-  const s = SELLER()
+  const s = await loadSeller()
   const attachments = ev === 'paid' ? [{ filename: `فاتورة-${order.number}.pdf`, content: await invoicePdf(order, s), contentType: 'application/pdf' }] : []
   const from = process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`
   try {
-    await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev), attachments })
+    await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev, s), attachments })
     // a copy to the store for new and paid orders
     const copy = process.env.ORDER_NOTIFY_TO
     if (copy && (ev === 'created' || ev === 'paid')) {
-      await t.sendMail({ from, to: copy, subject: `[نسخة المتجر] ${EVENTS[ev].subject(order)} · ${order.customer?.name || ''}`, html: html(order, ev), attachments }).catch(() => {})
+      await t.sendMail({ from, to: copy, subject: `[نسخة المتجر] ${EVENTS[ev].subject(order)} · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }).catch(() => {})
     }
     return { sent: true }
   } catch (err) {

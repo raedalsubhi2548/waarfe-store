@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, Images, Star } from 'lucide-react'
+import { Menu, Search, Heart, User, ShoppingBag, MessageCircle, Images, Star, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useApp } from '@/state.jsx'
 import Icon from '@/components/Icon.jsx'
@@ -62,10 +62,10 @@ export default function SiteHeader() {
           </nav>
         </div>
 
-        <Link to="/" className="relative grid h-full w-36 place-items-center sm:w-44" aria-label="منصة رائد — الرئيسية">
+        <Link to="/" className="relative grid h-full w-36 place-items-center sm:w-44" aria-label={`${settings.store.name} — الرئيسية`}>
           {/* white logo melts into the navy hero; the navy one takes over once the header turns white */}
           <img src={settings.logoLight} alt="" width="458" height="248" className={cn('absolute h-[calc(52px*var(--logo-scale,1))] max-w-full w-auto object-contain transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[calc(62px*var(--logo-scale,1))]', clear ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0')} />
-          <img src={settings.logo} alt="منصة رائد Raed" width="458" height="248" className={cn('relative h-[calc(44px*var(--logo-scale,1))] max-w-full w-auto object-contain transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[calc(48px*var(--logo-scale,1))]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
+          <img src={settings.logo} alt={settings.store.name} width="458" height="248" className={cn('relative h-[calc(44px*var(--logo-scale,1))] max-w-full w-auto object-contain transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[calc(48px*var(--logo-scale,1))]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
         </Link>
 
         <div className="flex items-center justify-end gap-0.5">
@@ -92,8 +92,8 @@ export default function SiteHeader() {
       <Sheet open={menu} onOpenChange={setMenu}>
         <SheetContent side="start" className="overflow-y-auto p-5">
           <SheetTitle className="sr-only">أقسام المتجر</SheetTitle>
-          <SheetDescription className="sr-only">تصفّح أقسام منصة رائد وروابط حسابك</SheetDescription>
-          <Link to="/" className="self-start pe-14"><img src={settings.logo} alt="منصة رائد Raed" width="458" height="248" className="h-[calc(48px*var(--logo-scale,1))] w-auto" /></Link>
+          <SheetDescription className="sr-only">تصفّح أقسام {settings.store.name} وروابط حسابك</SheetDescription>
+          <Link to="/" className="self-start pe-14"><img src={settings.logo} alt={settings.store.name} width="458" height="248" className="h-[calc(48px*var(--logo-scale,1))] w-auto" /></Link>
           <p className="mt-6 mb-2 text-xs font-bold text-muted-foreground">أقسام المتجر</p>
           <ul className="grid gap-2">
             {categories.map((c) => (
@@ -107,10 +107,11 @@ export default function SiteHeader() {
             ))}
           </ul>
           <ul className="mt-5 grid border-t border-border pt-3 text-[15px] font-semibold">
-            <li><Link to="/shop" className="flex min-h-12 items-center gap-3 text-foreground"><Search className="size-5 text-primary" />كل الخدمات</Link></li>
-            <li><Link to="/work" className="flex min-h-12 items-center gap-3 text-foreground"><Images className="size-5 text-primary" />أعمالنا</Link></li>
-            <li><Link to="/reviews" className="flex min-h-12 items-center gap-3 text-foreground"><Star className="size-5 text-primary" />آراء العملاء</Link></li>
-            <li><Link to="/contact" className="flex min-h-12 items-center gap-3 text-foreground"><MessageCircle className="size-5 text-primary" />تواصل معنا</Link></li>
+            {settings.header.links.map((l, i) => {
+              const I = [Search, Images, Star, MessageCircle][i] || ArrowLeft
+              const cls = 'flex min-h-12 items-center gap-3 text-foreground'
+              return <li key={l.label + l.to}>{/^https:/i.test(l.to) ? <a href={l.to} target="_blank" rel="noopener noreferrer" className={cls}><I className="size-5 text-primary" />{l.label}</a> : <Link to={l.to} className={cls}><I className="size-5 text-primary" />{l.label}</Link>}</li>
+            })}
           </ul>
           <Social className="mt-auto pt-6" />
         </SheetContent>

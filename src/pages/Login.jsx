@@ -17,7 +17,7 @@ const PERKS = [
 ]
 
 export default function Login() {
-  const { user, authReady, notify, applyUser } = useApp()
+  const { user, authReady, notify, applyUser, settings } = useApp()
   const [params] = useSearchParams()
   // only same-site paths (blocks //evil.com and /\\evil.com open redirects)
   const rawNext = params.get('next') || ''
@@ -64,7 +64,7 @@ export default function Login() {
   return (
     <div className="container-w grid items-stretch gap-8 py-10 sm:py-16 lg:grid-cols-[1fr_480px]">
       <aside className="relative hidden overflow-hidden rounded-xl bg-inverse p-10 text-on-inverse lg:flex lg:flex-col lg:justify-between">
-        <div className="grid w-44 place-items-center rounded-2xl bg-white px-5 py-4"><img src="/logo.png" alt="منصة رائد Raed" className="w-full" /></div>
+        <div className="grid w-44 place-items-center rounded-2xl bg-white px-5 py-4"><img src={settings.logo} alt={settings.store.name} className="w-full" /></div>
         <div>
           <h2 className="text-balance font-display text-display-md font-semibold leading-tight">حسابك هو لوحة متابعة متجرك.</h2>
           <ul className="mt-8 grid gap-4">

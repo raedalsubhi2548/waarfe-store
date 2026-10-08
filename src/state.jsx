@@ -1,7 +1,8 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, startTransition, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from './lib/api.js'
 import { unitPrice, chosenOptions, cleanSelection } from './lib/format.js'
 import { mergeSettings } from './lib/theme.js'
+import { applyStore } from './lib/store.js'
 
 const Ctx = createContext(null)
 export const useApp = () => useContext(Ctx)
@@ -20,7 +21,12 @@ export function AppProvider({ children, initialCatalog }) {
   const [savedSettings, setSavedSettings] = useState(initialCatalog?.settings || null)
   const [preview, setPreview] = useState(null)
   const settings = useMemo(() => mergeSettings(preview || savedSettings), [preview, savedSettings])
-  const refreshSettings = useCallback(() => api.getSettings().then((s) => setSavedSettings(s || null)).catch(() => {}), [])
+  applyStore(settings.store) // before anything renders a phone link or a store name (same on the server and in the browser)
+  // the page was built with a snapshot of these settings: only re-render when the live ones differ, and as a transition
+  // so it never lands in the middle of hydration
+  const refreshSettings = useCallback(() => api.getSettings().then((s) => {
+    startTransition(() => setSavedSettings((cur) => (JSON.stringify(cur || null) === JSON.stringify(s || null) ? cur : s || null)))
+  }).catch(() => {}), [])
   // a pre-rendered page was built with an empty cart: read the saved one right after hydration, not during it
   const [cart, setCart] = useState(() => (initialCatalog ? [] : loadCart()))
   const cartLoaded = useRef(!initialCatalog)

@@ -1,10 +1,14 @@
 import { ArrowUpLeft, Clock } from 'lucide-react'
-import { SOCIAL, BrandIcon } from '@/components/Social.jsx'
-import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
+import { socialLinks, BrandIcon } from '@/components/Social.jsx'
+import { EMAIL, waLink, localPhone } from '@/lib/format.js'
+import { useApp } from '@/state.jsx'
 import { PageHead } from '@/components/ui/kit.jsx'
 
 export default function Contact() {
-  const wa = SOCIAL.find((s) => s.name === 'واتساب')
+  const { settings } = useApp()
+  const SOCIAL = socialLinks(settings.store.social)
+  const wa = SOCIAL[0]
+  const more = SOCIAL.slice(2)
   return (
     <div className="container-w py-10 sm:py-14">
       <PageHead title="تواصل معنا" lead="راسلنا على واتساب أو على بريد خدمة العملاء، ونرد عليك بنفس اليوم." />
@@ -13,7 +17,7 @@ export default function Contact() {
           <span className="grid size-16 place-items-center rounded-full bg-accent text-accent-foreground"><BrandIcon icon={wa.icon} size={30} /></span>
           <div>
             <p className="font-display text-display-sm font-semibold">راسلنا على واتساب</p>
-            <p className="tabular mt-1 text-lg opacity-85" dir="ltr">0{WHATSAPP.slice(3)}</p>
+            <p className="tabular mt-1 text-lg opacity-85" dir="ltr">{localPhone()}</p>
             <p className="mt-4 flex items-center gap-2 text-sm opacity-75"><Clock className="size-4" />نرد عادة خلال ساعات العمل بنفس اليوم</p>
           </div>
           <ArrowUpLeft className="absolute top-8 end-8 size-7 text-accent transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1" />
@@ -27,6 +31,11 @@ export default function Contact() {
           </div>
         </a>
       </div>
+      {more.length > 0 && (
+        <ul className="mt-6 flex flex-wrap justify-center gap-3">
+          {more.map((x) => <li key={x.name}><a href={x.href} target="_blank" rel="noopener noreferrer" className="flex h-12 items-center gap-2 rounded-full bg-surface px-5 font-semibold text-primary shadow-hairline ring-1 ring-border hover:ring-primary"><BrandIcon icon={x.icon} size={18} />{x.name}</a></li>)}
+        </ul>
+      )}
     </div>
   )
 }

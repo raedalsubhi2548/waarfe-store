@@ -9,11 +9,13 @@ import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
 import { productPath, categoryPath, toSlug, RESERVED } from '../src/lib/slug.js'
 import { render, loadCatalog } from '../dist-ssr/entry-server.js'
 import { mergeSettings } from '../src/lib/theme.js'
+import { applyStore } from '../src/lib/store.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
 // The stylesheet is inlined into every page: no render-blocking request before the first paint.
 const template = readFileSync(join(DIST, 'index.html'), 'utf8').replace(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/, (_, href) => `<style>${readFileSync(join(DIST, href.slice(1)), 'utf8').replace(/<\/style/gi, '<\\/style')}</style>`)
 const catalog = await loadCatalog()
+applyStore(mergeSettings(catalog.settings).store) // the owner's store name, phone and email in titles, JSON-LD and links
 const { categories, products } = catalog
 const data = { products, categories, faq: FAQ, reviews: ALL_REVIEWS }
 // embedded for hydration; `<` escaped so no product text can close the script tag
@@ -50,7 +52,10 @@ for (const path of routes) {
 }
 
 // The SPA fallback for every other route keeps a neutral, crawlable head.
-writeFileSync(join(DIST, '200.html'), template)
+writeFileSync(join(DIST, '200.html'), SITE.name === 'منصة رائد' ? template : template
+  .replace(/<title>[\s\S]*?<\/title>/, `<title>${SITE.name.replace(/</g, '')}</title>`)
+  .replace(/<meta name="description"[^>]*>/, `<meta name="description" content="${SITE.description.replace(/["<>]/g, '')}" />`)
+  .replace(/<meta name="author"[^>]*>/, `<meta name="author" content="${SITE.name.replace(/["<>]/g, '')}" />`))
 
 const today = new Date().toISOString().slice(0, 10)
 const url = (p) => SITE.url.replace(/\/$/, '') + p
