@@ -13,4 +13,4 @@ let initialCatalog
 try { initialCatalog = JSON.parse(document.getElementById('__catalog')?.textContent || 'null') || undefined } catch { /* ignore */ }
 const app = <React.StrictMode><App Router={BrowserRouter} initialCatalog={initialCatalog} /></React.StrictMode>
 if (root.firstElementChild && initialCatalog && !ADMIN_HOST) ReactDOM.hydrateRoot(root, app)
-else { root.textContent = ''; ReactDOM.createRoot(root).render(app) }
+else { root.textContent = ''; document.documentElement.classList.remove('adm'); ReactDOM.createRoot(root).render(app) }
