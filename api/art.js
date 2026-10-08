@@ -28,6 +28,8 @@ const MAX_BYTES = 8e6
 export default async function handler(req, res) {
   // only the known parameters, so random query strings can't bypass the edge cache and burn compute
   if (Object.keys(req.query).some((k) => !['f', 'id', 'v', 'w'].includes(k))) return res.status(400).end('bad query')
+  if (req.query.v !== undefined && req.query.v !== '6') return res.status(400).end('bad version')
+  if (req.query.id !== undefined && !/^[\w-]{1,80}$/.test(String(req.query.id))) return res.status(400).end('bad id')
   const w = req.query.w === undefined ? SIZE : Number(req.query.w)
   if (![300, SIZE].includes(w)) return res.status(400).end('bad width')
   const f = String(req.query.f || '')

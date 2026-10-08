@@ -11,6 +11,7 @@ export default async function handler(req, res) {
   const { data: order } = await admin.from('orders').select('*').eq('id', orderId).single()
   if (!order || order.user_id !== user.id) return res.status(404).json({ error: 'الطلب غير موجود' })
   if (order.status !== 'pending') return res.status(409).json({ error: 'هذا الطلب مدفوع مسبقاً' })
+  if (!(Number(order.total) > 0)) return res.status(400).json({ error: 'مبلغ الطلب غير صالح' })
 
   // a retry (second tab, back button) reuses the open charge instead of creating a second one for the same order
   if (order.payment_ref) {

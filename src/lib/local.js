@@ -20,7 +20,8 @@ async function hash(text) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-export const DEMO_ADMIN = { email: 'admin@rraed.com', password: 'raed2026' }
+// demo-only login, compiled out of the production bundle
+export const DEMO_ADMIN = import.meta.env.DEV ? { email: 'admin@rraed.com', password: 'raed2026' } : null
 
 async function ensureSeed() {
   if (read('seed') === SEED_VERSION) return
@@ -30,7 +31,7 @@ async function ensureSeed() {
   write('orders', read('orders', []))
   write('coupons', read('coupons', []))
   const users = read('users', [])
-  if (!users.some((u) => u.email === DEMO_ADMIN.email)) {
+  if (DEMO_ADMIN && !users.some((u) => u.email === DEMO_ADMIN.email)) {
     users.push({
       id: 'u_admin', name: 'رائد', email: DEMO_ADMIN.email, phone: '', role: 'admin',
       pass: await hash(DEMO_ADMIN.password), createdAt: now,

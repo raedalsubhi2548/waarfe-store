@@ -1,6 +1,8 @@
 -- =====================================================================
--- Waarfe store — Supabase schema
--- Run once in Supabase → SQL Editor, then run seed.sql.
+-- منصة رائد — Supabase schema
+-- Run once in Supabase → SQL Editor, then run seed.sql, hardening.sql and options.sql.
+-- NOTE: options.sql replaces place_order/check_coupon with the current versions (options pricing, limits).
+--       If you ever re-run this file, run options.sql again afterwards.
 -- =====================================================================
 
 -- ---------- profiles ----------

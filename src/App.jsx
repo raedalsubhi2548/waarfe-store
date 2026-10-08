@@ -13,7 +13,8 @@ const lazy = (load) => reactLazy(() => load().catch((err) => {
   }
   throw err
 }))
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { ADMIN_HOST } from './lib/host.js'
 import { usePageViews } from './lib/analytics.js'
 import { DirectionProvider } from '@radix-ui/react-direction'
 import { AppProvider } from './state.jsx'
@@ -46,6 +47,13 @@ const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
 
 function PageViews() { usePageViews(); return null }
 
+// on admin.rraed.com everything except sign-in leads to the dashboard
+function AdminHostGate() {
+  const { pathname } = useLocation()
+  if (!ADMIN_HOST || pathname.startsWith('/admin') || pathname === '/login') return null
+  return <Navigate to="/admin" replace />
+}
+
 export default function App() {
   return (
     <DirectionProvider dir="rtl">
@@ -53,6 +61,7 @@ export default function App() {
       <ErrorBoundary>
       <BrowserRouter>
         <PageViews />
+        <AdminHostGate />
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />

@@ -56,6 +56,13 @@ ${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</
 </table></td></tr></table></body></html>`
 }
 
+/** A short plain alert to the store (ORDER_NOTIFY_TO, else the store email). */
+export async function sendAdminAlert(subject, text) {
+  const t = mailer(); if (!t) return
+  const to = process.env.ORDER_NOTIFY_TO || SELLER().email
+  await t.sendMail({ from: process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`, to, subject: `[تنبيه] ${subject}`, text })
+}
+
 /**
  * Sends the email for one moment of an order, once. Returns { sent, reason }.
  * `notified` (text[] on orders) remembers what was already sent, so retries and webhooks never repeat it.

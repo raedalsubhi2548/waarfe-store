@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Field, Input } from '@/components/ui/kit.jsx'
 import HumanCheck, { TURNSTILE_KEY } from '@/components/HumanCheck.jsx'
+import { ADMIN_HOST } from '@/lib/host.js'
 
 const PERKS = [
   { icon: Receipt, t: 'تتبّع كل طلب لحظة بلحظة' },
@@ -29,7 +30,7 @@ export default function Login() {
   const [captcha, setCaptcha] = useState('') // Turnstile token; each one works once
   const human = useRef(null)
 
-  if (authReady && user) return <Navigate to={next || (user.role === 'admin' ? '/admin' : '/account')} replace />
+  if (authReady && user) return <Navigate to={ADMIN_HOST ? '/admin' : next || (user.role === 'admin' ? '/admin' : '/account')} replace />
 
   const done = (u, msg) => { notify(msg); applyUser(u) } // the <Navigate> above takes over once the user is set
   const submit = async (e) => {
@@ -111,7 +112,7 @@ export default function Login() {
           بالمتابعة توافق على <Link to="/policies" className="font-semibold text-primary underline underline-offset-4">السياسات والشروط</Link>
         </p>
 
-        {isDemo && import.meta.env.DEV && (
+        {isDemo && import.meta.env.DEV && DEMO_ADMIN && (
           <div className="mt-6 rounded-md border-2 border-dashed border-accent bg-accent/10 p-4 text-sm leading-7">
             <strong>وضع العرض</strong> — البيانات محفوظة في متصفحك فقط. دخول الإدارة:{' '}
             <button type="button" className="font-bold text-primary underline underline-offset-4" onClick={() => { setMode('in'); setForm({ ...form, email: DEMO_ADMIN.email, password: DEMO_ADMIN.password }) }}>

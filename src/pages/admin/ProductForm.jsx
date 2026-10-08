@@ -11,6 +11,7 @@ import { AdminHead, useConfirm } from '@/components/admin/ui.jsx'
 import ServiceTicket from '@/components/home/ServiceTicket.jsx'
 import { productPath } from '@/lib/slug.js'
 import OptionsEditor, { tidyOptions } from '@/components/admin/OptionsEditor.jsx'
+import { storeUrl } from '@/lib/host.js'
 
 const EMPTY = { name: '', price: '', salePrice: '', categoryId: '', image: '', badge: '', summary: '', description: '', featured: false, active: true, digital: false, perUnit: '', fileUrl: '', sort: 0 }
 const slugify = (s) => s.trim().toLowerCase().replace(/[^\w؀-ۿ]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'product'
@@ -66,7 +67,7 @@ export default function ProductForm() {
         back={<Link to="/admin/products" className="mb-1 inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-primary"><ChevronRight className="size-4" />المنتجات</Link>}
         title={isNew ? 'منتج جديد' : p.name || 'بدون اسم'}
         action={<>
-          {!isNew && <Button asChild variant="ghost"><a href={productPath(p.id)} target="_blank" rel="noreferrer"><Eye className="size-4" />معاينة</a></Button>}
+          {!isNew && <Button asChild variant="ghost"><a href={storeUrl(productPath(p.id))} target="_blank" rel="noreferrer"><Eye className="size-4" />معاينة</a></Button>}
           <Button disabled={busy} className="hidden lg:inline-flex">{busy ? 'جاري الحفظ…' : isNew ? 'أضف المنتج' : 'حفظ التغييرات'}</Button>
         </>}
       />

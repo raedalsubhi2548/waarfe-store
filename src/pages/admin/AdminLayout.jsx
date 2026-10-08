@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/kit.jsx'
 import { ConfirmProvider } from '@/components/admin/ui.jsx'
 import ErrorBoundary from '@/components/ErrorBoundary.jsx'
+import { ADMIN_HOST, STORE_ORIGIN } from '@/lib/host.js'
 
 const NAV = [
   { to: '/admin', end: true, icon: LayoutDashboard, label: 'نظرة عامة' },
@@ -40,7 +41,7 @@ function Nav({ pending, onNavigate, dark }) {
 function SideFoot({ user, dark }) {
   return (
     <div className={cn('grid gap-1 border-t pt-4', dark ? 'border-white/10 [&_a]:text-white/70 [&_a:hover]:bg-white/[0.07] [&_a:hover]:text-white [&>button]:text-white/70' : 'border-border')}>
-      <Link to="/" target="_blank" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</Link>
+      <a href={STORE_ORIGIN} target="_blank" rel="noreferrer" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</a>
       <button onClick={() => api.signOut()} className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-danger-soft hover:text-danger"><LogOut className="size-4" />خروج</button>
       <div className={cn('mt-2 flex items-center gap-3 rounded-md p-3', dark ? 'bg-white/[0.06] [&_p:first-child]:text-white' : 'bg-sunken')}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-display font-semibold text-accent">{(user.name || user.email).charAt(0)}</span>
@@ -72,7 +73,20 @@ export default function AdminLayout() {
 
   if (!authReady) return <div className="p-8"><Skeleton className="h-96" /></div>
   if (!user) return <Navigate to="/login?next=/admin" replace />
-  if (!isAdmin) return <Navigate to="/account" replace />
+  if (!isAdmin) {
+    if (!ADMIN_HOST) return <Navigate to="/account" replace />
+    return (
+      <div className="grid min-h-dvh place-items-center bg-background p-6 text-center">
+        <div className="grid max-w-sm justify-items-center gap-4">
+          <Brand />
+          <h1 className="font-display text-2xl font-semibold text-primary">هذا الحساب ما عنده صلاحية لوحة التحكم</h1>
+          <p className="text-muted-foreground">سجّل دخولك بحساب المالك.</p>
+          <button onClick={() => api.signOut()} className="h-11 rounded-full bg-primary px-6 font-semibold text-primary-foreground">تسجيل خروج</button>
+          <a href={STORE_ORIGIN} className="text-sm font-semibold text-primary underline underline-offset-4">الذهاب للمتجر</a>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <ConfirmProvider>

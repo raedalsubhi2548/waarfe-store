@@ -2,8 +2,11 @@
 import { confirmCharge } from './_shared.js'
 
 export default async function handler(req, res) {
-  const { tap_id: tapId } = req.query
-  if (!tapId) return res.status(400).json({ ok: false })
+  const tapId = String(req.query.tap_id || '')
+  const orderId = String(req.query.order || '')
+  if (!/^chg_[\w]+$/.test(tapId)) return res.status(400).json({ ok: false })
   const out = await confirmCharge(tapId)
-  return res.status(200).json(out)
+  // answer only about the order the visitor is looking at
+  if (out.orderId && orderId && out.orderId !== orderId) return res.status(200).json({ ok: false })
+  return res.status(200).json({ ok: !!out.ok, status: out.status })
 }

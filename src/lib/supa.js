@@ -25,8 +25,10 @@ const productRow = (p) => ({
   description: p.description, active: p.active !== false, digital: !!p.digital, per_unit: p.perUnit || null,
   ...(Array.isArray(p.options) ? { options: p.options } : {}), // only once the options column exists (supabase/options.sql)
 })
+// items keep the image they had when ordered; old Salla mockups get the same store art as the catalog
+const itemImage = (it) => (!it.image || LEGACY_IMG.test(it.image) ? artFor({ id: it.productId, image: it.image }) : it.image)
 const order = (r) => r && ({
-  id: r.id, number: r.number, userId: r.user_id, customer: r.customer, items: r.items,
+  id: r.id, number: r.number, userId: r.user_id, customer: r.customer, items: (r.items || []).map((it) => ({ ...it, image: itemImage(it) })),
   subtotal: Number(r.subtotal), discount: Number(r.discount), coupon: r.coupon, total: Number(r.total),
   status: r.status, notes: r.notes, paymentMethod: r.payment_method, paymentRef: r.payment_ref || null, history: r.history || [], createdAt: r.created_at,
 })

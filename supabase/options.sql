@@ -1,6 +1,6 @@
--- Raed store — product options (run once in Supabase → SQL Editor). Safe to run again.
--- Adds the options column, fills it with the same options as the Salla store, and teaches place_order
--- to price them. Prices are still computed here in the database, never in the browser.
+-- منصة رائد — product options + security hardening (run in Supabase → SQL Editor). Safe to run again.
+-- Adds the options column with the same options as the Salla store, teaches place_order to price them,
+-- and tightens abuse limits (coupon guessing, order flooding, oversized input). Prices are always computed here.
 
 -- The AI ads guide and its section are taken off the store (old orders keep their own copy of the item).
 delete from public.products where id = 'waarfe-ai-ad-campaigns-guide';
@@ -16,6 +16,18 @@ update public.products set options = '[{"id":"services","name":"الخدمات .
 update public.products set options = '[{"id":"services","name":"الخدمات ..","type":"checkbox","required":false,"values":[{"id":"gtm","name":"Google Tag Manager","price":50},{"id":"gsc","name":"Google Search Console","price":50},{"id":"gmc","name":"Google Merchant Center","price":50}]}]'::jsonb where id = 'google-tools-integration';
 update public.products set options = '[{"id":"extras","name":"الاضافات","type":"radio","required":false,"values":[{"id":"pro","name":"سلة برو","price":200}]}]'::jsonb where id = 'salla-subscription';
 update public.products set options = '[{"id":"other-themes","name":"ثيمات أخرى","type":"radio","required":false,"values":[{"id":"malak","name":"ثيم ملاك","price":11},{"id":"celia","name":"ثيم سيليا","price":100}]}]'::jsonb where id = 'salla-theme';
+
+-- Coupons: optional usage cap
+alter table public.coupons add column if not exists max_uses int;
+alter table public.coupons add column if not exists used int not null default 0;
+
+-- a used-up coupon reads as invalid
+create or replace function public.check_coupon(p_code text) returns public.coupons
+language sql stable security definer set search_path = public as $$
+  select * from public.coupons
+  where code = upper(p_code) and active and (expires_at is null or expires_at > now())
+    and (max_uses is null or used < max_uses)
+$$;
 
 -- p_items: [{ product_id, qty, note, options: ["optionId:valueId", ...] }]
 create or replace function public.place_order(
@@ -40,7 +52,12 @@ declare
   v_chosen jsonb;
 begin
   if auth.uid() is null then raise exception 'سجّل دخولك أولاً'; end if;
-  if jsonb_array_length(p_items) = 0 then raise exception 'السلة فاضية'; end if;
+  if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) = 0 then raise exception 'السلة فاضية'; end if;
+  if jsonb_array_length(p_items) > 50 then raise exception 'عدد الخدمات في الطلب كبير'; end if;
+  -- no flooding: at most 15 orders an hour per account
+  if (select count(*) from public.orders where user_id = auth.uid() and created_at > now() - interval '1 hour') >= 15 then
+    raise exception 'محاولات كثيرة، حاول بعد شوي';
+  end if;
 
   for v_line in select * from jsonb_array_elements(p_items) loop
     select * into v_p from public.products where id = v_line->>'product_id' and active;
@@ -69,19 +86,43 @@ begin
     v_sub := v_sub + v_price * v_qty;
     v_items := v_items || jsonb_build_object(
       'productId', v_p.id, 'name', v_p.name, 'price', v_price, 'qty', v_qty,
-      'image', v_p.image, 'digital', v_p.digital, 'note', coalesce(v_line->>'note', ''), 'options', v_chosen);
+      'image', v_p.image, 'digital', v_p.digital, 'note', left(coalesce(v_line->>'note', ''), 500), 'options', v_chosen);
   end loop;
 
   if p_coupon is not null and p_coupon <> '' then
     v_c := public.check_coupon(p_coupon);
     if v_c.code is null then raise exception 'الكود غير صالح أو منتهي'; end if;
-    v_disc := least(v_sub, case when v_c.type = 'percent' then round(v_sub * v_c.value / 100, 2) else v_c.value end);
+    v_disc := least(v_sub, case when v_c.type = 'percent' then round(v_sub * least(v_c.value, 100) / 100, 2) else greatest(v_c.value, 0) end);
+    -- count the use; a coupon with max_uses stops once it is used up
+    update public.coupons set used = used + 1 where code = v_c.code and (max_uses is null or used < max_uses);
+    if not found then raise exception 'كود الخصم انتهى عدد استخداماته'; end if;
   end if;
 
   insert into public.orders (user_id, customer, items, subtotal, discount, coupon, total, notes, payment_method, history)
   values (auth.uid(), p_customer, v_items, v_sub, v_disc, nullif(upper(p_coupon), ''), v_sub - v_disc,
-          coalesce(p_notes, ''), coalesce(p_payment_method, 'card'),
+          left(coalesce(p_notes, ''), 2000), case when p_payment_method = 'bank' then 'bank' else 'card' end,
           jsonb_build_array(jsonb_build_object('status', 'pending', 'at', now())))
   returning id into v_id;
   return v_id;
 end $$;
+
+-- Guests can't call order/coupon functions (checkout needs an account anyway) — stops coupon guessing by bots
+revoke execute on function public.check_coupon(text) from anon, public;
+revoke execute on function public.place_order(jsonb, jsonb, text, text, text) from anon, public;
+grant execute on function public.check_coupon(text) to authenticated;
+grant execute on function public.place_order(jsonb, jsonb, text, text, text) to authenticated;
+
+-- Customers may edit only their name and phone, at sane lengths
+revoke update on public.profiles from authenticated;
+grant update (name, phone) on public.profiles to authenticated;
+do $$ begin
+  alter table public.profiles add constraint profiles_sizes check (length(name) <= 120 and length(phone) <= 20) not valid;
+exception when duplicate_object then null; end $$;
+
+-- No negative prices or over-100% coupons, even by a typo in the dashboard
+do $$ begin
+  alter table public.products add constraint products_sale_price_ok check (sale_price is null or sale_price >= 0) not valid;
+exception when duplicate_object then null; end $$;
+do $$ begin
+  alter table public.coupons add constraint coupons_value_ok check (value >= 0 and (type <> 'percent' or value <= 100)) not valid;
+exception when duplicate_object then null; end $$;

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Select, Skeleton, Switch } from '@/components/ui/kit.jsx'
 import { AdminHead, SearchBox, Segments, TableCard, Table, Th, Td, IconBtn, useConfirm } from '@/components/admin/ui.jsx'
 import { productPath } from '@/lib/slug.js'
+import { storeUrl } from '@/lib/host.js'
 
 export default function Products() {
   const { categories, refreshCatalog, notify } = useApp()
@@ -86,7 +87,7 @@ export default function Products() {
                     <Td><Switch checked={p.active} onChange={() => toggle(p)} label={p.active ? 'ظاهر' : 'مخفي'} /></Td>
                     <Td>
                       <div className="flex justify-end gap-1">
-                        <IconBtn onClick={() => window.open(productPath(p.id), '_blank')} aria-label="عرض في المتجر"><Eye className="size-4" /></IconBtn>
+                        <IconBtn onClick={() => window.open(storeUrl(productPath(p.id)), '_blank')} aria-label="عرض في المتجر"><Eye className="size-4" /></IconBtn>
                         <IconBtn onClick={() => nav(`/admin/products/${p.id}`)} aria-label="تعديل"><Pencil className="size-4" /></IconBtn>
                         <IconBtn tone="danger" onClick={() => remove(p)} aria-label="حذف"><Trash2 className="size-4" /></IconBtn>
                       </div>

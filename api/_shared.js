@@ -38,5 +38,11 @@ export async function confirmCharge(chargeId) {
       await sendOrderEmail(updated[0], 'paid').catch(() => {})
     }
   }
+  else if (order.payment_ref && order.payment_ref !== charge.id) {
+    // paid twice (two tabs): keep the first, flag the extra charge for a refund
+    console.error('extra captured charge', orderId, charge.id)
+    const { sendAdminAlert } = await import('./_mail.js')
+    await sendAdminAlert(`دفعة مكررة للطلب #${order.number}`, `الطلب #${order.number} مدفوع مسبقاً (${order.payment_ref})، ووصلت دفعة ثانية مقبولة ${charge.id} بمبلغ ${charge.amount} ر.س. راجعها في Tap واسترجعها للعميل.`).catch(() => {})
+  }
   return { ok: true, orderId }
 }
