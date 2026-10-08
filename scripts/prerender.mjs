@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path'
 import { seedProducts, seedCategories } from '../src/data/seed.js'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
-import { POLICY_SECTIONS, DECLARATION } from '../src/data/terms.js'
+import { POLICY_SECTIONS } from '../src/data/terms.js'
 import { SITE, WA_LOCAL, seoFor, headHtml } from '../src/lib/seo.js'
 import { productPath, fromSlug } from '../src/lib/slug.js'
 
@@ -29,7 +29,7 @@ function body(path) {
   if (path === '/reviews') return `<h1>آراء العملاء</h1>${ALL_REVIEWS.map((r) => `<blockquote><p>${esc(r.text)}</p><cite>${esc(r.name)}${r.city ? '، ' + esc(r.city) : ''}</cite></blockquote>`).join('')}`
   if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/${SITE.phone.slice(1)}">${WA_LOCAL}</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
   if (path === '/work') return `<h1>أعمالنا: متاجر سلة صممناها</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
-  if (path === '/policies') return `<h1>السياسات والشروط</h1>${POLICY_SECTIONS.map((x) => `<h2>${esc(x.h)}</h2><ul>${x.p.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`).join('')}<h2>${esc(DECLARATION.h)}</h2><p>${esc(DECLARATION.intro)}</p><ol>${DECLARATION.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>`
+  if (path === '/policies') return `<h1>السياسات والشروط</h1>${POLICY_SECTIONS.map((x) => `<h2>${esc(x.h)}</h2><ul>${x.p.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`).join('')}`
   return ''
 }
 

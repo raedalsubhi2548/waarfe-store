@@ -56,6 +56,7 @@ export function WorkGallery({ items, className, grid = false }) {
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-[rgb(11_19_34/0.92)] motion-safe:animate-[fade-in_200ms]" />
           <Dialog.Content
+            onCloseAutoFocus={(e) => e.preventDefault()}
             className="fixed inset-0 z-50 grid place-items-center p-4 outline-none sm:p-10"
             onTouchStart={(e) => { startX = e.touches[0].clientX }}
             onTouchEnd={(e) => { const dx = e.changedTouches[0].clientX - startX; if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1) }}

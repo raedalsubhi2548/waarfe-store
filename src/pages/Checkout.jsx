@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { CreditCard, Landmark, Lock } from 'lucide-react'
+import { CreditCard, Landmark, Lock, ChevronDown } from 'lucide-react'
+import { DECLARATION } from '@/data/terms.js'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
@@ -141,8 +142,15 @@ export default function Checkout() {
           {err && <p className="mt-3 text-sm text-danger" role="alert">{err}</p>}
           <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg bg-sunken p-3.5 text-sm leading-6">
             <input type="checkbox" checked={agreed} onChange={(e) => { setAgreed(e.target.checked); setErr('') }} className="mt-1 size-4 shrink-0 accent-[var(--primary)]" required />
-            <span>أقر بأنني قرأت <Link to="/policies" target="_blank" className="font-semibold text-primary underline">السياسات والشروط</Link> و<Link to="/policies#declaration" target="_blank" className="font-semibold text-primary underline">الإقرار والتعهد</Link> وأوافق عليها، ومنها: طلب التعديل خلال يوم واحد من التسليم، وخصم 7% رسوم معالجة عند إلغاء طلبات تمارا وتابي قبل التنفيذ.</span>
+            <span>أوافق على <Link to="/policies" target="_blank" className="font-semibold text-primary underline">السياسات والشروط</Link> وعلى الإقرار والتعهد التالي.</span>
           </label>
+          <details className="group mt-2 rounded-lg ring-1 ring-border">
+            <summary className="flex cursor-pointer list-none items-center justify-between px-3.5 py-2.5 text-sm font-semibold text-primary">{DECLARATION.h}<ChevronDown className="size-4 transition-transform group-open:rotate-180" /></summary>
+            <div className="border-t border-border px-3.5 py-3 text-[13px] leading-6 text-muted-foreground">
+              <p>{DECLARATION.intro}</p>
+              <ol className="mt-2 grid list-decimal gap-1.5 ps-5">{DECLARATION.items.map((x) => <li key={x}>{x}</li>)}</ol>
+            </div>
+          </details>
           <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
 
         </Panel>

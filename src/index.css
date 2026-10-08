@@ -19,6 +19,8 @@
   .site-main :is(h1, h2), .font-script { font-family: var(--p-font-script) !important; font-weight: 600; }
   :lang(ar), [dir="rtl"] * { letter-spacing: 0 !important; }
   :focus-visible { outline: 2.5px solid var(--ring); outline-offset: 3px; }
+  /* no grey flash on tap (phones) */
+  html { -webkit-tap-highlight-color: transparent; }
   ::selection { background: var(--accent); color: var(--accent-foreground); }
   button:not(:disabled), [role="button"] { cursor: pointer; }
 }

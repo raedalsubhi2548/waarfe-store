@@ -20,7 +20,7 @@ export function SearchDialog({ open, onOpenChange }) {
     <Dialog.Root open={open} onOpenChange={(v) => (v ? onOpenChange(v) : close())}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-primary/45 data-[state=open]:animate-[fade-in_200ms_ease-out]" />
-        <Dialog.Content className="fixed inset-x-4 top-[10vh] z-50 mx-auto max-w-xl overflow-hidden rounded-xl bg-surface shadow-overlay outline-none data-[state=open]:animate-[rise-in_260ms_var(--p-ease-emphasized)]">
+        <Dialog.Content onCloseAutoFocus={(e) => e.preventDefault()} className="fixed inset-x-4 top-[10vh] z-50 mx-auto max-w-xl overflow-hidden rounded-xl bg-surface shadow-overlay outline-none data-[state=open]:animate-[rise-in_260ms_var(--p-ease-emphasized)]">
           <Dialog.Title className="sr-only">بحث في الخدمات</Dialog.Title>
           <form onSubmit={(e) => { e.preventDefault(); nav(`/shop?q=${encodeURIComponent(q)}`); close() }} className="flex items-center gap-3 border-b border-border px-5">
             <Search className="size-5 text-primary" />
