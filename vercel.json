@@ -129,6 +129,28 @@
       ],
       "destination": "https://rraed.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/admin/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "rraed.com"
+        }
+      ],
+      "destination": "https://admin.rraed.com/admin/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/admin",
+      "has": [
+        {
+          "type": "host",
+          "value": "rraed.com"
+        }
+      ],
+      "destination": "https://admin.rraed.com/admin",
+      "permanent": false
     }
   ]
 }

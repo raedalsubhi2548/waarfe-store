@@ -1,22 +1,15 @@
 import { Link } from 'react-router-dom'
-import { Receipt, Heart, UserRound, PackageSearch, LogOut, LayoutDashboard, Package, Tags, Users, TicketPercent, LogIn, UserPlus, ChevronLeft } from 'lucide-react'
+import { Receipt, Heart, UserRound, PackageSearch, LogOut, LayoutDashboard, LogIn, UserPlus, ChevronLeft } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { ADMIN_ORIGIN } from '@/lib/host.js'
 
 const CUSTOMER = [
   { to: '/account', icon: Receipt, label: 'طلباتي' },
   { to: '/account/wishlist', icon: Heart, label: 'أمنياتي', count: 'wish' },
   { to: '/account/profile', icon: UserRound, label: 'بياناتي' },
-]
-const ADMIN = [
-  { to: '/admin', icon: LayoutDashboard, label: 'نظرة عامة' },
-  { to: '/admin/orders', icon: Receipt, label: 'الطلبات' },
-  { to: '/admin/products', icon: Package, label: 'المنتجات' },
-  { to: '/admin/categories', icon: Tags, label: 'التصنيفات' },
-  { to: '/admin/customers', icon: Users, label: 'العملاء' },
-  { to: '/admin/coupons', icon: TicketPercent, label: 'كوبونات الخصم' },
 ]
 
 function Row({ to, icon: I, label, badge }) {
@@ -54,13 +47,12 @@ export default function AccountSheet({ open, onOpenChange }) {
             </div>
 
             {isAdmin && (
-              <>
-                <p className="mt-6 mb-1 text-xs font-bold text-muted-foreground">لوحة التحكم</p>
-                <ul className="grid">{ADMIN.map((r) => <Row key={r.to} {...r} />)}</ul>
-              </>
+              <a href={ADMIN_ORIGIN} target="_blank" rel="noreferrer" className="mt-4 flex min-h-12 items-center gap-3 rounded-md bg-sunken px-3 py-3 text-[15px] font-bold text-primary active:bg-border">
+                <LayoutDashboard className="size-[18px]" /><span className="flex-1">لوحة التحكم</span><span className="text-xs font-semibold text-muted-foreground" dir="ltr">admin.rraed.com</span>
+              </a>
             )}
 
-            <p className="mt-6 mb-1 text-xs font-bold text-muted-foreground">{isAdmin ? 'حسابي كعميل' : 'حسابي'}</p>
+            <p className="mt-6 mb-1 text-xs font-bold text-muted-foreground">حسابي</p>
             <ul className="grid">{CUSTOMER.map((r) => <Row key={r.to} {...r} badge={r.count === 'wish' ? wishlist.length : 0} />)}</ul>
 
             <button onClick={() => { onOpenChange(false); api.signOut() }} className="mt-4 flex min-h-12 items-center gap-3 rounded-md px-2 text-[15px] font-semibold text-danger active:bg-danger-soft">

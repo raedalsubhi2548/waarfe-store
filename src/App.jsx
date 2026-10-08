@@ -14,7 +14,7 @@ const lazy = (load) => reactLazy(() => load().catch((err) => {
   throw err
 }))
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { ADMIN_HOST } from './lib/host.js'
+import { ADMIN_HOST, ADMIN_ORIGIN, LIVE_STORE } from './lib/host.js'
 import { usePageViews } from './lib/analytics.js'
 import { DirectionProvider } from '@radix-ui/react-direction'
 import { AppProvider } from './state.jsx'
@@ -50,7 +50,9 @@ function PageViews() { usePageViews(); return null }
 
 // on admin.rraed.com everything except sign-in leads to the dashboard
 function AdminHostGate() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
+  // the store itself never shows the dashboard: it opens on admin.rraed.com
+  if (LIVE_STORE && pathname.startsWith('/admin')) { location.replace(ADMIN_ORIGIN + pathname + search); return null }
   if (!ADMIN_HOST || pathname.startsWith('/admin')) return null
   return <Navigate to="/admin" replace />
 }

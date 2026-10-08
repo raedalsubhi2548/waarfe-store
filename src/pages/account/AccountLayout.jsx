@@ -6,6 +6,7 @@ import { api } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/kit.jsx'
+import { ADMIN_ORIGIN } from '@/lib/host.js'
 
 const TABS = [
   { to: '/account', end: true, icon: Receipt, label: 'طلباتي' },
@@ -30,7 +31,7 @@ export default function AccountLayout() {
             {user && <p className="text-sm text-muted-foreground" dir="ltr">{user.email}</p>}
           </div>
         </div>
-        {user?.role === 'admin' && <Button asChild variant="accent"><Link to="/admin"><LayoutDashboard className="size-4" />لوحة التحكم</Link></Button>}
+        {user?.role === 'admin' && <Button asChild variant="accent"><a href={ADMIN_ORIGIN} target="_blank" rel="noreferrer"><LayoutDashboard className="size-4" />لوحة التحكم</a></Button>}
       </header>
       {user && (
         <nav className="-mx-4 mb-8 flex gap-2 overflow-x-auto border-b border-border px-4 [scrollbar-width:none] sm:mx-0 sm:px-0" aria-label="حسابي">

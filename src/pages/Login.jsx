@@ -30,7 +30,7 @@ export default function Login() {
   const [captcha, setCaptcha] = useState('') // Turnstile token; each one works once
   const human = useRef(null)
 
-  if (authReady && user) return <Navigate to={ADMIN_HOST ? '/admin' : next || (user.role === 'admin' ? '/admin' : '/account')} replace />
+  if (authReady && user) return <Navigate to={ADMIN_HOST ? '/admin' : next && !next.startsWith('/admin') ? next : '/account'} replace />
 
   const done = (u, msg) => { notify(msg); applyUser(u) } // the <Navigate> above takes over once the user is set
   const submit = async (e) => {

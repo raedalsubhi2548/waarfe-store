@@ -36,7 +36,7 @@ export default function SiteHeader() {
     on(); window.addEventListener('scroll', on, { passive: true })
     return () => window.removeEventListener('scroll', on)
   }, [])
-  const accountTo = user ? (user.role === 'admin' ? '/admin' : '/account') : '/login'
+  const accountTo = user ? '/account' : '/login'
 
   const home = loc.pathname === '/'
   const clear = home && !scrolled
