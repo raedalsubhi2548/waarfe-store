@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { ShieldCheck, Receipt, Heart } from 'lucide-react'
 import { api, isDemo } from '@/lib/api.js'
@@ -7,6 +7,7 @@ import { useApp } from '@/state.jsx'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Field, Input } from '@/components/ui/kit.jsx'
+import HumanCheck, { TURNSTILE_KEY } from '@/components/HumanCheck.jsx'
 
 const PERKS = [
   { icon: Receipt, t: 'تتبّع كل طلب لحظة بلحظة' },
@@ -25,26 +26,32 @@ export default function Login() {
   const [info, setInfo] = useState('')
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [captcha, setCaptcha] = useState('') // Turnstile token; each one works once
+  const human = useRef(null)
 
   if (authReady && user) return <Navigate to={next || (user.role === 'admin' ? '/admin' : '/account')} replace />
 
   const done = (u, msg) => { notify(msg); applyUser(u) } // the <Navigate> above takes over once the user is set
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setBusy(true)
+    e.preventDefault(); setErr('')
+    const needsHuman = TURNSTILE_KEY && (mode === 'in' || mode === 'up' || mode === 'forgot')
+    if (needsHuman && !captcha) { setErr('انتظر لين يكتمل «تأكيد إنك إنسان»'); return }
+    setBusy(true)
     try {
-      if (mode === 'in') { const u = await api.signIn(form.email, form.password); done(u, `أهلاً ${u.name || ''}`) }
+      if (mode === 'in') { const u = await api.signIn(form.email, form.password, captcha); done(u, `أهلاً ${u.name || ''}`) }
       else if (mode === 'up') {
-        const r = await api.signUp(form)
+        const r = await api.signUp(form, captcha)
         if (r?.needsCode) { setMode('code'); setInfo(`أرسلنا رمز تحقق إلى ${r.email}`) } else done(r, 'تم إنشاء حسابك')
       }
       else if (mode === 'code') { const u = await api.verifySignup(form.email, form.code); done(u, 'تم تفعيل حسابك') }
-      else if (mode === 'forgot') { await api.sendResetCode(form.email); setMode('reset'); setInfo(`أرسلنا رمز التحقق إلى ${form.email.trim()}`) }
+      else if (mode === 'forgot') { await api.sendResetCode(form.email, captcha); setMode('reset'); setInfo(`أرسلنا رمز التحقق إلى ${form.email.trim()}`) }
       else if (mode === 'reset') { const u = await api.resetWithCode(form.email, form.code, form.password); done(u, 'تم تغيير كلمة المرور') }
-    } catch (e2) { setErr(e2.message) } finally { setBusy(false) }
+    } catch (e2) { setErr(e2.message) } finally { setBusy(false); if (needsHuman) human.current?.reset() }
   }
   const resend = async () => {
     setErr('')
-    try { mode === 'code' ? await api.resendSignup(form.email) : await api.sendResetCode(form.email); setInfo('أرسلنا رمز جديد، شيّك بريدك (والرسائل غير المهمة)') } catch (e2) { setErr(e2.message) }
+    if (TURNSTILE_KEY && !captcha) { setErr('انتظر لين يكتمل «تأكيد إنك إنسان» تحت'); return }
+    try { mode === 'code' ? await api.resendSignup(form.email, captcha) : await api.sendResetCode(form.email, captcha); setInfo('أرسلنا رمز جديد، شيّك بريدك (والرسائل غير المهمة)') } catch (e2) { setErr(e2.message) } finally { if (TURNSTILE_KEY) human.current?.reset() }
   }
   const f = (k) => ({ value: form[k], onChange: (e) => setForm({ ...form, [k]: e.target.value }) })
   const swap = (m) => { setMode(m); setErr(''); setInfo(''); setForm((x) => ({ ...x, code: '' })) }
@@ -93,6 +100,7 @@ export default function Login() {
             <Field label={mode === 'reset' ? 'كلمة المرور الجديدة' : 'كلمة المرور'} hint={mode !== 'in' ? '6 أحرف على الأقل' : undefined}><Input type="password" required minLength={6} {...f('password')} dir="ltr" autoComplete={mode === 'in' ? 'current-password' : 'new-password'} /></Field>
           )}
           {mode === 'in' && <button type="button" onClick={() => swap('forgot')} className="-mt-2 justify-self-start text-sm font-semibold text-primary underline-offset-4 hover:underline">نسيت كلمة المرور؟</button>}
+          <HumanCheck key={mode} ref={human} onToken={setCaptcha} />
           {err && <p className="rounded-md bg-danger-soft px-4 py-3 text-sm text-danger" role="alert">{err}</p>}
           <Button size="lg" disabled={busy} className="mt-2 w-full">{busy ? 'لحظة…' : CTA[mode]}</Button>
           {codeStep && <p className="text-center text-sm text-muted-foreground">ما وصلك؟ <button type="button" onClick={resend} className="font-semibold text-primary underline underline-offset-4">أرسل رمز جديد</button></p>}

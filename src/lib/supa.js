@@ -83,14 +83,14 @@ export const supa = {
     })
     return () => { alive = false; data.subscription.unsubscribe() }
   },
-  async signIn(email, password) {
-    const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password })
+  async signIn(email, password, captchaToken) {
+    const { data, error } = await sb.auth.signInWithPassword({ email: email.trim(), password, options: captchaToken ? { captchaToken } : undefined })
     if (error) throw new Error(translateAuthError(error.message))
     return loadProfile(data.user)
   },
-  async signUp({ name, email, phone, password }) {
+  async signUp({ name, email, phone, password }, captchaToken) {
     const { data, error } = await sb.auth.signUp({
-      email: email.trim(), password, options: { data: { name, phone }, emailRedirectTo: location.origin + '/account' },
+      email: email.trim(), password, options: { data: { name, phone }, emailRedirectTo: location.origin + '/account', ...(captchaToken ? { captchaToken } : {}) },
     })
     if (error) throw new Error(translateAuthError(error.message))
     // an already-registered email comes back with no identities and no email is sent (Supabase hides it on purpose)
@@ -104,12 +104,12 @@ export const supa = {
     if (error) throw new Error('الرمز غير صحيح أو انتهت صلاحيته')
     return loadProfile(data.user)
   },
-  async resendSignup(email) {
-    const { error } = await sb.auth.resend({ type: 'signup', email: email.trim() })
+  async resendSignup(email, captchaToken) {
+    const { error } = await sb.auth.resend({ type: 'signup', email: email.trim(), options: captchaToken ? { captchaToken } : undefined })
     if (error) throw new Error(translateAuthError(error.message))
   },
-  async sendResetCode(email) {
-    const { error } = await sb.auth.resetPasswordForEmail(email.trim())
+  async sendResetCode(email, captchaToken) {
+    const { error } = await sb.auth.resetPasswordForEmail(email.trim(), captchaToken ? { captchaToken } : undefined)
     if (error) throw new Error(translateAuthError(error.message))
   },
   async resetWithCode(email, code, password) {
