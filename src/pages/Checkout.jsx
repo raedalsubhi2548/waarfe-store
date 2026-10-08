@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { CreditCard, Landmark, Lock, ChevronDown } from 'lucide-react'
+import { CreditCard, Lock, ChevronDown } from 'lucide-react'
 import { DECLARATION } from '@/data/terms.js'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
@@ -11,7 +11,6 @@ import { trackBeginCheckout } from '@/lib/analytics.js'
 import { Button } from '@/components/ui/button'
 import { PageHead, Panel, Field, Input, Textarea, Skeleton } from '@/components/ui/kit.jsx'
 
-const BANK_INFO = import.meta.env.VITE_BANK_INFO || ''
 
 export default function Checkout() {
   const { user, authReady, lines, subtotal, clearCart, notify } = useApp()
@@ -76,7 +75,6 @@ export default function Checkout() {
         window.location.href = redirect
         return
       }
-      if (method === 'bank') api.notifyOrder?.(order.id, 'created') // the customer gets the order + bank details by email
       clearCart()
       nav(`/order/${order.id}?new=1`, { replace: true })
     } catch (e2) {
@@ -108,11 +106,6 @@ export default function Checkout() {
                 <input type="radio" name="pay" checked={method === 'card'} onChange={() => setMethod('card')} className="size-5 accent-[var(--primary)]" />
                 <CreditCard className="size-6 text-primary" />
                 <span className="grid"><b>بطاقة أو Apple Pay</b><small className="text-muted-foreground">مدى، فيزا، ماستركارد عبر بوابة Tap الآمنة</small></span>
-              </label>
-              <label className={pay('bank')}>
-                <input type="radio" name="pay" checked={method === 'bank'} onChange={() => setMethod('bank')} className="size-5 accent-[var(--primary)]" />
-                <Landmark className="size-6 text-primary" />
-                <span className="grid"><b>تحويل بنكي</b><small className="text-muted-foreground">{BANK_INFO ? 'تظهر لك بيانات الحساب بعد الطلب' : 'نرسل لك بيانات الحساب على واتساب بعد الطلب'}</small></span>
               </label>
             </div>
             {isDemo && method === 'card' && <p className="mt-4 rounded-md border border-dashed border-accent bg-accent/15 p-3 text-sm text-accent-text">وضع العرض: الدفع بالبطاقة يُسجَّل كمدفوع بدون خصم أي مبلغ.</p>}

@@ -12,7 +12,6 @@ import { Panel, OrderTracker, StatusPill, statusLabel, Skeleton, Empty } from '@
 
 export { statusLabel }
 export const StatusTrack = OrderTracker
-const BANK_INFO = import.meta.env.VITE_BANK_INFO || ''
 
 function DownloadButton({ orderId, productId }) {
   const { notify } = useApp()
@@ -71,7 +70,7 @@ export default function Order() {
           <div>
             <h1 className={cn('font-display text-2xl font-semibold sm:text-3xl', !paid && 'text-primary')}>{paid ? 'وصلنا طلبك' : 'استلمنا طلبك وبانتظار الدفع'}</h1>
             <p className={cn('mt-1', paid ? 'text-on-inverse/80' : 'text-muted-foreground')}>
-              <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : order.paymentMethod === 'bank' ? 'حوّل المبلغ وأرسل الإيصال، ونبدأ مباشرة.' : 'ما اكتملت عملية الدفع، تقدر تكملها الحين.'}
+              <span className="tabular">رقم الطلب #{order.number}.</span> {paid ? 'بنتواصل معك قريباً لبدء التنفيذ.' : 'ما اكتملت عملية الدفع، تقدر تكملها الحين.'}
             </p>
           </div>
         </div>
@@ -85,13 +84,6 @@ export default function Order() {
           {paid && <div className="mt-5"><InvoiceButton order={order} /></div>}
           {order.status === 'pending' && order.paymentMethod === 'card' && (
             <div className="mt-5"><Button size="lg" onClick={payNow} disabled={paying}><Lock />{paying ? 'نحوّلك لبوابة الدفع…' : `أكمل الدفع ${money(order.total)}`}</Button></div>
-          )}
-          {order.status === 'pending' && order.paymentMethod === 'bank' && (
-            <div className="mt-6 grid justify-items-start gap-3 rounded-lg bg-sunken p-5">
-              <h3 className="font-display font-semibold text-primary">التحويل البنكي</h3>
-              {BANK_INFO ? <p className="whitespace-pre-line">{BANK_INFO}</p> : <p className="text-muted-foreground">بنرسل لك بيانات الحساب على واتساب.</p>}
-              <Button asChild><a href={waLink(`السلام عليكم، طلبي رقم #${order.number} بقيمة ${money(order.total)}، أبي أرسل إيصال التحويل`)} target="_blank" rel="noreferrer"><MessageCircle />أرسل الإيصال على واتساب</a></Button>
-            </div>
           )}
           <h3 className="mt-8 mb-3 font-display font-semibold text-primary">السجل</h3>
           <ol className="relative grid gap-4 border-s-2 border-border-strong ps-5">

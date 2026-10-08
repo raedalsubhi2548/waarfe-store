@@ -3,7 +3,7 @@ import { admin, TAP, tapHeaders, siteUrl, userFromRequest } from './_shared.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
-  if (!process.env.TAP_SECRET_KEY) return res.status(503).json({ error: 'بوابة الدفع غير مفعّلة بعد. اختر التحويل البنكي أو تواصل معنا.' })
+  if (!process.env.TAP_SECRET_KEY) return res.status(503).json({ error: 'بوابة الدفع غير متاحة الحين، حاول بعد شوي أو تواصل معنا.' })
   const user = await userFromRequest(req)
   if (!user) return res.status(401).json({ error: 'سجّل دخولك أولاً' })
 

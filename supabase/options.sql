@@ -104,7 +104,7 @@ begin
 
   insert into public.orders (user_id, customer, items, subtotal, discount, coupon, total, notes, payment_method, history, terms_accepted_at, terms_version)
   values (auth.uid(), p_customer, v_items, v_sub, v_disc, nullif(upper(p_coupon), ''), v_sub - v_disc,
-          left(coalesce(p_notes, ''), 2000), case when p_payment_method = 'bank' then 'bank' else 'card' end,
+          left(coalesce(p_notes, ''), 2000), 'card',  -- payment is online only (Tap); bank transfer was removed
           jsonb_build_array(jsonb_build_object('status', 'pending', 'at', now())),
           now(), '2026-10')  -- checkout can't submit without accepting the terms (src/data/terms.js TERMS_VERSION)
   returning id into v_id;
