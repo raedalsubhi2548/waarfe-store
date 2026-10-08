@@ -16,10 +16,10 @@ export default function ServiceTicket({ p, className }) {
     <div className={cn('group relative h-full pt-2.5', className)}>
       {/* the pin */}
       <span className="pointer-events-none absolute top-0 left-1/2 z-20 -translate-x-1/2" aria-hidden="true">
-        <span className="block size-[16px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#5d7cb5,#233759_55%,#0f1a2c)] shadow-[0_4px_5px_-1px_rgb(0_0_0/0.45),inset_0_-2px_3px_rgb(0_0_0/0.3)]" />
+        <span className="block size-[16px] rounded-full bg-[radial-gradient(circle_at_35%_30%,#5d7cb5,var(--p-green-800)_55%,var(--p-green-950))] shadow-[0_4px_5px_-1px_rgb(0_0_0/0.45),inset_0_-2px_3px_rgb(0_0_0/0.3)]" />
         <span className="absolute top-[3px] left-[5px] size-[5px] rounded-full bg-white/70 blur-[0.5px]" />
       </span>
-      <article className="relative flex h-full flex-col rounded-[14px] bg-white p-2.5 pt-3.5 shadow-[0_1px_2px_rgb(27_43_68/0.08),0_18px_32px_-22px_rgb(27_43_68/0.5)] ring-1 ring-[#1b2b44]/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_4px_rgb(27_43_68/0.06),0_28px_44px_-24px_rgb(27_43_68/0.6)]">
+      <article className="relative flex h-full flex-col rounded-[14px] bg-white p-2.5 pt-3.5 shadow-[0_1px_2px_color-mix(in_srgb,var(--p-green-900)_8%,transparent),0_18px_32px_-22px_color-mix(in_srgb,var(--p-green-900)_50%,transparent)] ring-1 ring-[var(--p-green-900)]/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] group-hover:-translate-y-1 group-hover:shadow-[0_2px_4px_color-mix(in_srgb,var(--p-green-900)_6%,transparent),0_28px_44px_-24px_color-mix(in_srgb,var(--p-green-900)_60%,transparent)]">
         <Link to={productPath(p.id)} className="relative block overflow-hidden rounded-[10px] bg-sunken">
           <img src={p.image} srcSet={p.image?.startsWith('/api/art?') ? `${p.image}&w=300 300w, ${p.image} 600w` : undefined} sizes="(max-width: 640px) 46vw, (max-width: 1024px) 30vw, 260px" alt={p.name} loading="lazy" decoding="async" width="500" height="500" onError={(e) => { if (!e.currentTarget.dataset.fb) { e.currentTarget.dataset.fb = 1; e.currentTarget.src = coverFor(p) } }}
             className="aspect-square w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
@@ -43,7 +43,7 @@ export default function ServiceTicket({ p, className }) {
               {p.perUnit && <span className="block text-[11px] text-muted-foreground">{p.perUnit}</span>}
             </p>
             <button type="button" onClick={() => addToCart(p.id)} aria-label={`أضف ${p.name} للسلة`}
-              className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_rgb(27_43_68/0.7)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
+              className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
               <Plus className="size-[18px]" />
             </button>
           </div>

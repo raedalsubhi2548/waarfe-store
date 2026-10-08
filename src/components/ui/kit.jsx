@@ -43,11 +43,11 @@ export function Panel({ className, title, action, children }) {
 export function PageHead({ title, lead, crumbs, action }) {
   return (
     <div className={cn('relative mb-10 flex flex-wrap items-end gap-4', action ? 'justify-between' : 'justify-center text-center')}>
-      <span className="pointer-events-none absolute inset-x-[-50vw] -top-[calc(var(--header-height)+60px)] -z-10 h-[calc(100%+var(--header-height)+120px)] bg-[radial-gradient(40%_70%_at_50%_0%,rgb(27_43_68/0.08),transparent_75%)]" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-x-[-50vw] -top-[calc(var(--header-height)+60px)] -z-10 h-[calc(100%+var(--header-height)+120px)] bg-[radial-gradient(40%_70%_at_50%_0%,color-mix(in_srgb,var(--p-green-900)_8%,transparent),transparent_75%)]" aria-hidden="true" />
       <div className="max-w-2xl">
         {crumbs && <nav className={cn('mb-3 flex flex-wrap items-center gap-1.5 text-[13px] text-muted-foreground', !action && 'justify-center')} aria-label="المسار">{crumbs}</nav>}
         <h1 className="text-balance font-display text-[2.2rem] font-bold leading-[1.4] text-primary sm:text-[2.8rem]">{title}</h1>
-        <span className={cn('mt-3 block h-px w-24 bg-[linear-gradient(90deg,transparent,rgb(27_43_68/0.35),transparent)]', !action && 'mx-auto')} aria-hidden="true" />
+        <span className={cn('mt-3 block h-px w-24 bg-[linear-gradient(90deg,transparent,color-mix(in_srgb,var(--p-green-900)_35%,transparent),transparent)]', !action && 'mx-auto')} aria-hidden="true" />
         {lead && <p className="mt-3 text-[16.5px] leading-8 text-muted-foreground">{lead}</p>}
       </div>
       {action}

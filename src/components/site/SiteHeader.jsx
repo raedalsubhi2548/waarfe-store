@@ -24,7 +24,7 @@ function ScrollLine() {
 }
 
 export default function SiteHeader() {
-  const { count, setCartOpen, user, categories, products, wishlist } = useApp()
+  const { count, setCartOpen, user, categories, products, wishlist, settings } = useApp()
   const [menu, setMenu] = useState(false)
   const [acct, setAcct] = useState(false)
   const [search, setSearch] = useState(false)
@@ -38,13 +38,13 @@ export default function SiteHeader() {
   }, [])
   const accountTo = user ? '/account' : '/login'
 
-  const home = loc.pathname === '/'
+  const home = loc.pathname === '/' || loc.pathname === '/admin/preview' // the designer previews the home page there
   const clear = home && !scrolled
   const ink = clear ? 'text-on-inverse hover:bg-white/10' : 'text-primary hover:bg-sunken'
   const link = ({ isActive }) => cn('relative px-2.5 py-2 text-[14.5px] font-medium transition-colors after:absolute after:inset-x-2.5 after:bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-accent after:transition-transform after:duration-500 hover:after:scale-x-100', clear ? (isActive ? 'text-accent after:scale-x-100' : 'text-on-inverse/85 hover:text-accent') : (isActive ? 'text-primary after:scale-x-100' : 'text-foreground/80 hover:text-primary'))
 
   return (
-    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', !scrolled ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_rgb(27_43_68/0.35)] backdrop-blur-xl')}>
+    <header className={cn('sticky top-0 z-40 transition-[background-color,box-shadow,backdrop-filter] duration-500', !scrolled ? 'bg-transparent' : 'bg-background/80 shadow-[0_10px_30px_-20px_color-mix(in_srgb,var(--p-green-900)_35%,transparent)] backdrop-blur-xl')}>
       <div className="container-w grid h-[var(--header-height)] grid-cols-[1fr_auto_1fr] items-center gap-2">
         <div className="flex items-center gap-1">
           <button className={cn(iconBtn, ink, 'lg:hidden')} onClick={() => setMenu(true)} aria-label="أقسام المتجر">
@@ -64,8 +64,8 @@ export default function SiteHeader() {
 
         <Link to="/" className="relative grid h-full w-36 place-items-center sm:w-44" aria-label="منصة رائد — الرئيسية">
           {/* white logo melts into the navy hero; the navy one takes over once the header turns white */}
-          <img src="/logo-white.png" alt="" width="458" height="248" className={cn('absolute h-[52px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[62px]', clear ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0')} />
-          <img src="/logo-300.png" alt="منصة رائد Raed" width="458" height="248" className={cn('relative h-[44px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[48px]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
+          <img src={settings.logoLight} alt="" width="458" height="248" className={cn('absolute h-[calc(52px*var(--logo-scale,1))] max-w-[180%] w-auto object-contain transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[calc(62px*var(--logo-scale,1))]', clear ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0')} />
+          <img src={settings.logo} alt="منصة رائد Raed" width="458" height="248" className={cn('relative h-[calc(44px*var(--logo-scale,1))] max-w-[180%] w-auto object-contain transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[calc(48px*var(--logo-scale,1))]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
         </Link>
 
         <div className="flex items-center justify-end gap-0.5">
@@ -91,7 +91,7 @@ export default function SiteHeader() {
         <SheetContent side="start" className="overflow-y-auto p-5">
           <SheetTitle className="sr-only">أقسام المتجر</SheetTitle>
           <SheetDescription className="sr-only">تصفّح أقسام منصة رائد وروابط حسابك</SheetDescription>
-          <Link to="/" className="self-start pe-14"><img src="/logo-300.png" alt="منصة رائد Raed" width="458" height="248" className="h-12 w-auto" /></Link>
+          <Link to="/" className="self-start pe-14"><img src={settings.logo} alt="منصة رائد Raed" width="458" height="248" className="h-[calc(48px*var(--logo-scale,1))] w-auto" /></Link>
           <p className="mt-6 mb-2 text-xs font-bold text-muted-foreground">أقسام المتجر</p>
           <ul className="grid gap-2">
             {categories.map((c) => (

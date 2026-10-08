@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { api } from './lib/api.js'
 import { unitPrice, chosenOptions, cleanSelection } from './lib/format.js'
+import { mergeSettings } from './lib/theme.js'
 
 const Ctx = createContext(null)
 export const useApp = () => useContext(Ctx)
@@ -15,6 +16,11 @@ export function AppProvider({ children, initialCatalog }) {
   const [categories, setCategories] = useState(initialCatalog?.categories || [])
   const [products, setProducts] = useState(initialCatalog?.products || [])
   const [catalogReady, setCatalogReady] = useState(!!initialCatalog)
+  // the store designer's settings (logo, colours, hero…); `preview` holds an unsaved draft shown in the designer's preview
+  const [savedSettings, setSavedSettings] = useState(initialCatalog?.settings || null)
+  const [preview, setPreview] = useState(null)
+  const settings = useMemo(() => mergeSettings(preview || savedSettings), [preview, savedSettings])
+  const refreshSettings = useCallback(() => api.getSettings().then((s) => setSavedSettings(s || null)).catch(() => {}), [])
   // a pre-rendered page was built with an empty cart: read the saved one right after hydration, not during it
   const [cart, setCart] = useState(() => (initialCatalog ? [] : loadCart()))
   const cartLoaded = useRef(!initialCatalog)
@@ -39,11 +45,12 @@ export function AppProvider({ children, initialCatalog }) {
 
   useEffect(() => {
     refreshCatalog().catch(() => setCatalogReady(true))
+    refreshSettings()
     let alive = true, gotEvent = false
     api.currentUser().then((u) => { if (alive && !gotEvent) applyUser(u) }, () => alive && setAuthReady(true))
     const off = api.onAuth((u) => { gotEvent = true; if (alive) applyUser(u) })
     return () => { alive = false; off() }
-  }, [refreshCatalog, applyUser])
+  }, [refreshCatalog, refreshSettings, applyUser])
 
   useEffect(() => {
     let alive = true
@@ -95,6 +102,7 @@ export function AppProvider({ children, initialCatalog }) {
     user, authReady, applyUser, categories, products, byId, catalogReady, refreshCatalog,
     lines, subtotal, count, addToCart, setQty, setNote, clearCart, cartOpen, setCartOpen,
     wishlist, toggleWish, toast, notify,
+    settings, savedSettings, refreshSettings, setPreview,
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

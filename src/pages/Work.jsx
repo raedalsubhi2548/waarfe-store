@@ -6,7 +6,7 @@ import { WORK, WORK_FOLDER, STORES_FOLDER, STORE_PDFS, pdfView, pdfThumb, pdfDow
 import { Button } from '@/components/ui/button'
 import { waLink } from '@/lib/format.js'
 
-const jump = 'inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-primary shadow-[0_10px_24px_-16px_rgb(27_43_68/0.6)] ring-1 ring-primary/10 transition-colors hover:bg-primary hover:text-on-inverse'
+const jump = 'inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-primary shadow-[0_10px_24px_-16px_color-mix(in_srgb,var(--p-green-900)_60%,transparent)] ring-1 ring-primary/10 transition-colors hover:bg-primary hover:text-on-inverse'
 
 function SubHead({ icon: I, title, count, note }) {
   return (
@@ -31,7 +31,7 @@ export default function Work() {
         <SubHead icon={FileText} title="ملفات المتاجر" count={STORE_PDFS.length} note="ملف كل متجر سلّمناه كامل، مرّر على الغلاف يتصفّح لك، أو افتح الملف." />
         <ul className="mx-auto grid max-w-[1100px] grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 lg:gap-6">
           {STORE_PDFS.map((s, i) => (
-            <li key={s.id} className="group flex flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_44px_-28px_rgb(27_43_68/0.6)] ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1">
+            <li key={s.id} className="group flex flex-col overflow-hidden rounded-[18px] bg-white shadow-[0_1px_2px_color-mix(in_srgb,var(--p-green-900)_8%,transparent),0_24px_44px_-28px_color-mix(in_srgb,var(--p-green-900)_60%,transparent)] ring-1 ring-primary/[0.07] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1">
               {/* the file's own pages, gliding by on hover */}
               <a href={pdfView(s.id)} target="_blank" rel="noreferrer" className="relative m-2 mb-0 block aspect-[4/5] overflow-hidden rounded-[13px] bg-[linear-gradient(165deg,#fbfcfe,#e6ecf4)] [container-type:size] sm:m-2.5 sm:mb-0 sm:aspect-[4/3]">
                 <FileText className="absolute top-1/2 left-1/2 size-10 -translate-x-1/2 -translate-y-1/2 animate-pulse text-primary/15" strokeWidth={1.2} aria-hidden="true" />
@@ -52,7 +52,7 @@ export default function Work() {
         <p className="mt-8 text-center text-sm"><a href={STORES_FOLDER} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-primary underline underline-offset-4">مجلد ملفات المتاجر على Google Drive<ExternalLink className="size-3.5" /></a></p>
       </section>
 
-      <span className="mx-auto my-4 block h-px w-full max-w-[1040px] bg-[linear-gradient(90deg,transparent,rgb(27_43_68/0.15),transparent)]" aria-hidden="true" />
+      <span className="mx-auto my-4 block h-px w-full max-w-[1040px] bg-[linear-gradient(90deg,transparent,color-mix(in_srgb,var(--p-green-900)_15%,transparent),transparent)]" aria-hidden="true" />
 
       <section id="banners" className="scroll-mt-28 py-8 sm:py-12" aria-label="بنرات وسوشال ميديا">
         <SubHead icon={Images} title="صور التصاميم" count={WORK.length} note="بنرات وسوشال ميديا لعملائنا، اضغط أي تصميم وشوفه بحجمه الكامل." />

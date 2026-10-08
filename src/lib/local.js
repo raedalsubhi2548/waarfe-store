@@ -107,6 +107,9 @@ export const local = {
     if (read('products', []).some((p) => p.categoryId === id)) throw new Error('انقل منتجات هذا التصنيف أولاً ثم احذفه')
     write('categories', read('categories', []).filter((c) => c.id !== id))
   },
+  async getSettings() { return read('settings', null) },
+  async saveSettings(settings) { requireAdmin(); write('settings', settings) },
+  async rebuildSite() { return { ok: false, reason: 'demo' } },
   async uploadImage(file) {
     return new Promise((res, rej) => {
       const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file)

@@ -52,9 +52,9 @@ export default function Vine() {
     <div ref={box} className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-hidden" style={{ height: h || 0 }} aria-hidden="true">
       {d && (
         <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} fill="none" className="absolute inset-0">
-          <path d={d} stroke="#1b2b44" strokeOpacity=".035" strokeWidth="16" strokeLinecap="round" />
-          <path ref={path} d={d} stroke="#1b2b44" strokeOpacity=".16" strokeWidth="1.4" strokeLinecap="round" />
-          {leaves.map((l, i) => <circle key={i} cx={l.x} cy={l.y} r="4" fill="#1b2b44" opacity=".22" />)}
+          <path d={d} style={{ stroke: 'var(--p-green-900)' }} strokeOpacity=".035" strokeWidth="16" strokeLinecap="round" />
+          <path ref={path} d={d} style={{ stroke: 'var(--p-green-900)' }} strokeOpacity=".16" strokeWidth="1.4" strokeLinecap="round" />
+          {leaves.map((l, i) => <circle key={i} cx={l.x} cy={l.y} r="4" style={{ fill: 'var(--p-green-900)' }} opacity=".22" />)}
         </svg>
       )}
     </div>

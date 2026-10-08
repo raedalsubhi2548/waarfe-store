@@ -157,6 +157,22 @@ export const supa = {
     if (count) throw new Error('انقل منتجات هذا التصنيف أولاً ثم احذفه')
     check(await sb.from('categories').delete().eq('id', id))
   },
+  // ---------- store designer ----------
+  async getSettings() {
+    const { data, error } = await sb.from('site_settings').select('data').eq('id', 'main').maybeSingle()
+    if (error) return null // table not created yet (supabase/designer.sql): the defaults apply
+    return data?.data || null
+  },
+  async saveSettings(settings) {
+    const { error } = await sb.from('site_settings').upsert({ id: 'main', data: settings, updated_at: new Date().toISOString() })
+    if (error) throw new Error(/site_settings|relation|schema cache/i.test(error.message) ? 'شغّل ملف supabase/designer.sql في Supabase أولاً' : error.message)
+  },
+  /** Rebuilds the pre-rendered pages so search engines and link previews see the new design too. */
+  async rebuildSite() {
+    const { data } = await sb.auth.getSession()
+    const r = await fetch('/api/rebuild', { method: 'POST', headers: { authorization: 'Bearer ' + data.session?.access_token } })
+    return r.json().catch(() => ({ ok: false }))
+  },
   async uploadImage(file) {
     const path = `${Date.now()}-${file.name.replace(/[^\w.-]/g, '')}`
     check(await sb.storage.from('products').upload(path, file, { upsert: false }))

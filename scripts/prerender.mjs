@@ -8,6 +8,7 @@ import { ALL_REVIEWS } from '../src/data/reviews.js'
 import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
 import { productPath, categoryPath, toSlug, RESERVED } from '../src/lib/slug.js'
 import { render, loadCatalog } from '../dist-ssr/entry-server.js'
+import { mergeSettings } from '../src/lib/theme.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
 // The stylesheet is inlined into every page: no render-blocking request before the first paint.
@@ -18,7 +19,9 @@ const data = { products, categories, faq: FAQ, reviews: ALL_REVIEWS }
 // embedded for hydration; `<` escaped so no product text can close the script tag
 const catalogJson = `<script type="application/json" id="__catalog">${JSON.stringify(catalog).replace(/</g, '\\u003c')}</script>`
 // the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
-const HERO_PRELOAD = '    <link rel="preload" as="image" href="/brand/ai/raed-hero-mobile-v3.webp" type="image/webp" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="/brand/ai/raed-hero-v3.webp" type="image/webp" media="(min-width: 768px)" fetchpriority="high" />\n'
+const hero = mergeSettings(catalog.settings).hero
+const attr = (u) => u.replace(/["<>&]/g, encodeURIComponent)
+const HERO_PRELOAD = `    <link rel="preload" as="image" href="${attr(hero.imageMobile || hero.image || '/brand/ai/raed-hero-mobile-v3.webp')}" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="${attr(hero.image || '/brand/ai/raed-hero-v3.webp')}" media="(min-width: 768px)" fetchpriority="high" />\n`
 
 // categories and services share the top level with the fixed pages: a clash would hide one of them
 const taken = new Set(RESERVED)

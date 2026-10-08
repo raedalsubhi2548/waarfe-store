@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
 import { NavLink, Navigate, Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Receipt, Package, Tags, Users, TicketPercent, ExternalLink, LogOut, Menu, Plus } from 'lucide-react'
+import { LayoutDashboard, Receipt, Package, Tags, Users, TicketPercent, ExternalLink, LogOut, Menu, Plus, Palette } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
@@ -17,6 +17,7 @@ const NAV = [
   { to: '/admin/categories', icon: Tags, label: 'التصنيفات' },
   { to: '/admin/customers', icon: Users, label: 'العملاء' },
   { to: '/admin/coupons', icon: TicketPercent, label: 'كوبونات الخصم' },
+  { to: '/admin/design', icon: Palette, label: 'مصمم المتجر' },
 ]
 
 function Nav({ pending, onNavigate, dark }) {
@@ -51,12 +52,15 @@ function SideFoot({ user, dark }) {
   )
 }
 
-const Brand = ({ dark }) => (
+function Brand({ dark }) {
+  const { settings } = useApp()
+  return (
   <Link to="/admin" className="flex items-center gap-3">
-    <img src={dark ? '/logo-white.png' : '/logo.png'} alt="منصة رائد" className="h-11 w-auto" />
+    <img src={dark ? settings.logoLight : settings.logo} alt="منصة رائد" className="h-11 w-auto max-w-[150px] object-contain" />
     <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-bold', dark ? 'bg-white/10 text-white/80' : 'bg-accent/25 text-accent-text')}>لوحة التحكم</span>
   </Link>
-)
+  )
+}
 
 export default function AdminLayout() {
   useEffect(() => { let m = document.querySelector('meta[name="robots"]'); if (!m) { m = document.createElement('meta'); m.name = 'robots'; document.head.appendChild(m) } m.content = 'noindex,nofollow'; document.title = 'لوحة التحكم | منصة رائد' }, [])

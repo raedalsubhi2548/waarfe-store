@@ -7,14 +7,14 @@ import { WHATSAPP, EMAIL, waLink } from '@/lib/format.js'
 
 /** The page settles into deep navy: no hard edge, the white logo sits right on it, like in the header. */
 export default function SiteFooter() {
-  const { categories } = useApp()
+  const { categories, settings } = useApp()
   const col = 'mb-4 text-[13px] font-semibold text-on-inverse/55'
   const item = 'group flex min-h-9 items-center gap-2 text-[14px] text-on-inverse/80 transition-colors hover:text-white'
   return (
     <footer className="relative mt-10 text-on-inverse">
       {/* cream melts into green */}
-      <div className="h-40 bg-[linear-gradient(180deg,var(--background),#233759_85%,#1b2b44)] sm:h-56" aria-hidden="true" />
-      <div className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,#1b2b44,#0f1a2c)]">
+      <div className="h-40 bg-[linear-gradient(180deg,var(--background),var(--p-green-800)_85%,var(--p-green-900))] sm:h-56" aria-hidden="true" />
+      <div className="relative -mt-px overflow-hidden bg-[linear-gradient(180deg,var(--p-green-900),var(--p-green-950))]">
         <span className="pointer-events-none absolute top-0 left-1/2 size-[700px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(255_255_255/0.06),transparent)]" aria-hidden="true" />
 
         <div className="container-w relative pb-10">
@@ -33,7 +33,7 @@ export default function SiteFooter() {
             {/* brand */}
             <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-start">
               <Link to="/" className="block" aria-label="منصة رائد — الرئيسية">
-                <img src="/logo-white.png" alt="منصة رائد Raed" width="458" height="248" className="h-[76px] w-auto sm:h-[84px]" />
+                <img src={settings.logoLight} alt="منصة رائد Raed" width="458" height="248" loading="lazy" className="h-[calc(76px*var(--logo-scale,1))] w-auto sm:h-[calc(84px*var(--logo-scale,1))]" />
               </Link>
               <p className="max-w-[30ch] text-[14.5px] leading-7 text-on-inverse/70">نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.</p>
               <Social className="foot-social" />

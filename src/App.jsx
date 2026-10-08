@@ -47,6 +47,8 @@ const Categories = lazy(() => import('./pages/admin/Categories.jsx'))
 const Customers = lazy(() => import('./pages/admin/Customers.jsx'))
 const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin.jsx'))
+const Designer = lazy(() => import('./pages/admin/Designer.jsx'))
+const DesignPreview = lazy(() => import('./pages/admin/DesignPreview.jsx'))
 
 function PageViews() { usePageViews(); return null }
 
@@ -105,6 +107,9 @@ export default function App({ Router, routerProps = {}, initialCatalog }) {
             </Route>
             <Route path="*" element={<NotFound />} />
           </Route>
+          <Route path="admin/preview" element={<Suspense fallback={null}><DesignPreview /></Suspense>}>
+            <Route index element={<Home />} />
+          </Route>
           <Route path="admin/login" element={<Suspense fallback={<div className="min-h-dvh bg-[#0b1322]" />}><AdminLogin /></Suspense>} />
           <Route path="admin" element={<Suspense fallback={<PageFallback />}><AdminLayout /></Suspense>}>
             <Route index element={<Overview />} />
@@ -114,6 +119,7 @@ export default function App({ Router, routerProps = {}, initialCatalog }) {
             <Route path="categories" element={<Categories />} />
             <Route path="customers" element={<Customers />} />
             <Route path="coupons" element={<Coupons />} />
+            <Route path="design" element={<Designer />} />
           </Route>
         </Routes>
         <Toast />
