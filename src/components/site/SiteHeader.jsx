@@ -65,7 +65,7 @@ export default function SiteHeader() {
         <Link to="/" className="relative grid h-full w-36 place-items-center sm:w-44" aria-label="منصة رائد — الرئيسية">
           {/* white logo melts into the navy hero; the navy one takes over once the header turns white */}
           <img src="/logo-white.png" alt="" width="458" height="248" className={cn('absolute h-[52px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[62px]', clear ? 'scale-100 opacity-100' : 'pointer-events-none scale-90 opacity-0')} />
-          <img src="/logo.png" alt="منصة رائد Raed" width="458" height="248" className={cn('relative h-[44px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[48px]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
+          <img src="/logo-300.png" alt="منصة رائد Raed" width="458" height="248" className={cn('relative h-[44px] w-auto transition-[opacity,scale] duration-700 ease-[cubic-bezier(.16,1,.3,1)] sm:h-[48px]', clear ? 'scale-110 opacity-0' : 'scale-100 opacity-100')} />
         </Link>
 
         <div className="flex items-center justify-end gap-0.5">
@@ -91,7 +91,7 @@ export default function SiteHeader() {
         <SheetContent side="start" className="overflow-y-auto p-5">
           <SheetTitle className="sr-only">أقسام المتجر</SheetTitle>
           <SheetDescription className="sr-only">تصفّح أقسام منصة رائد وروابط حسابك</SheetDescription>
-          <Link to="/" className="self-start pe-14"><img src="/logo.png" alt="منصة رائد Raed" width="458" height="248" className="h-12 w-auto" /></Link>
+          <Link to="/" className="self-start pe-14"><img src="/logo-300.png" alt="منصة رائد Raed" width="458" height="248" className="h-12 w-auto" /></Link>
           <p className="mt-6 mb-2 text-xs font-bold text-muted-foreground">أقسام المتجر</p>
           <ul className="grid gap-2">
             {categories.map((c) => (

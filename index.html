@@ -9,8 +9,9 @@
     <meta name="author" content="منصة رائد Raed" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="manifest" href="/manifest.webmanifest" />
-    <script src="/boot.js"></script>
-    <style>/* the pre-rendered text is for search engines and no-JS readers; visitors see the app, so it never flashes */.prerender{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
+    <!-- the dashboard host never shows the pre-rendered store page while its app loads -->
+    <script>if(/^admin\./.test(location.hostname))document.documentElement.className='adm'</script>
+    <style>.adm #root>*{display:none}</style>
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>

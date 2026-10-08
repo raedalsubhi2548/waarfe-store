@@ -8,13 +8,16 @@ export const useApp = () => useContext(Ctx)
 const CART_KEY = 'raed:cart'
 const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY) || '[]') } catch { return [] } }
 
-export function AppProvider({ children }) {
+// initialCatalog: the catalog baked into the page at build time, so the first render already has products
+export function AppProvider({ children, initialCatalog }) {
   const [user, setUser] = useState(null)
   const [authReady, setAuthReady] = useState(false)
-  const [categories, setCategories] = useState([])
-  const [products, setProducts] = useState([])
-  const [catalogReady, setCatalogReady] = useState(false)
-  const [cart, setCart] = useState(loadCart)
+  const [categories, setCategories] = useState(initialCatalog?.categories || [])
+  const [products, setProducts] = useState(initialCatalog?.products || [])
+  const [catalogReady, setCatalogReady] = useState(!!initialCatalog)
+  // a pre-rendered page was built with an empty cart: read the saved one right after hydration, not during it
+  const [cart, setCart] = useState(() => (initialCatalog ? [] : loadCart()))
+  const cartLoaded = useRef(!initialCatalog)
   const [cartOpen, setCartOpen] = useState(false)
   const [wishlist, setWishlistState] = useState([])
   const [toast, setToast] = useState(null)
@@ -47,7 +50,10 @@ export function AppProvider({ children }) {
     api.getWishlist().then((w) => { if (alive) setWishlistState(Array.isArray(w) ? w : []) }).catch(() => {})
     return () => { alive = false }
   }, [user?.id])
-  useEffect(() => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)) } catch { /* ignore */ } }, [cart])
+  useEffect(() => {
+    if (!cartLoaded.current) { cartLoaded.current = true; const saved = loadCart(); if (saved.length) setCart(saved); return }
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)) } catch { /* ignore */ }
+  }, [cart])
 
   const byId = useMemo(() => Object.fromEntries(products.map((p) => [p.id, p])), [products])
 

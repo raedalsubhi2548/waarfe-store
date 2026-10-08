@@ -1,43 +1,27 @@
-// After `vite build`: write a real HTML file for every public page (own title, description,
-// canonical, Open Graph, JSON-LD and readable content), plus sitemap.xml and robots.txt.
-// The SPA still boots on top of each page, so visitors see no difference.
+// After `vite build` (+ the SSR build in dist-ssr): write a real HTML file for every public page, rendered by the
+// app itself with the live catalog (own title, description, canonical, Open Graph, JSON-LD), plus sitemap.xml and
+// robots.txt. The browser hydrates that HTML with the same catalog, so the first paint needs no JavaScript.
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { seedProducts, seedCategories } from '../src/data/seed.js'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
-import { POLICY_SECTIONS } from '../src/data/terms.js'
-import { SITE, WA_LOCAL, seoFor, headHtml } from '../src/lib/seo.js'
-import { productPath, fromSlug } from '../src/lib/slug.js'
+import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
+import { productPath } from '../src/lib/slug.js'
+import { render, loadCatalog } from '../dist-ssr/entry-server.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
-const template = readFileSync(join(DIST, 'index.html'), 'utf8')
-const data = { products: seedProducts, categories: seedCategories, faq: FAQ, reviews: ALL_REVIEWS }
-const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-const money = (n) => `${n} ر.س`
-const price = (p) => (p.salePrice && p.salePrice < p.price ? p.salePrice : p.price)
-const nav = `<nav><a href="/">الرئيسية</a> · <a href="/shop">كل الخدمات</a> · ${seedCategories.map((c) => `<a href="/c/${c.id}">${esc(c.name)}</a>`).join(' · ')} · <a href="/work">أعمالنا</a> · <a href="/reviews">آراء العملاء</a> · <a href="/contact">تواصل معنا</a></nav>`
-const list = (ps) => `<ul>${ps.map((p) => `<li><a href="${productPath(p.id)}">${esc(p.name)}</a> — ${money(price(p))}</li>`).join('')}</ul>`
-
-function body(path) {
-  if (path === '/') return `<h1>${esc(SITE.name)}: تصميم متاجر سلة وصفحات هبوط وتسويق</h1><p>${esc(SITE.description)}</p>${seedCategories.map((c) => `<h2><a href="/c/${c.id}">${esc(c.name)}</a></h2><p>${esc(c.blurb || '')}</p>${list(seedProducts.filter((p) => p.categoryId === c.id))}`).join('')}<h2>أسئلة تتكرر</h2>${FAQ.map((q) => `<h3>${esc(q.q)}</h3><p>${esc(q.a)}</p>`).join('')}`
-  if (path === '/shop') return `<h1>كل الخدمات</h1>${list(seedProducts)}`
-  const c = path.match(/^\/c\/(.+)$/)?.[1]
-  if (c) { const cat = seedCategories.find((x) => x.id === c); return `<h1>${esc(cat.name)}</h1><p>${esc(cat.blurb || '')}</p>${list(seedProducts.filter((p) => p.categoryId === c))}` }
-  const id = path.match(/^\/p\/(.+)$/)?.[1]
-  if (id) { const p = seedProducts.find((x) => x.id === fromSlug(id)); return `<h1>${esc(p.name)}</h1><p><strong>${money(price(p))}</strong></p><p>${esc(p.summary || '')}</p><div>${esc(p.description || '').replace(/\n/g, '<br>')}</div>` }
-  if (path === '/reviews') return `<h1>آراء العملاء</h1>${ALL_REVIEWS.map((r) => `<blockquote><p>${esc(r.text)}</p><cite>${esc(r.name)}${r.city ? '، ' + esc(r.city) : ''}</cite></blockquote>`).join('')}`
-  if (path === '/contact') return `<h1>تواصل معنا</h1><p>واتساب: <a href="https://wa.me/${SITE.phone.slice(1)}">${WA_LOCAL}</a></p><p>البريد: <a href="mailto:${SITE.email}">${SITE.email}</a></p>`
-  if (path === '/work') return `<h1>أعمالنا: متاجر سلة صممناها</h1><p>متاجر صممناها في سلة، وبنرات وتصاميم سوشال ميديا لعملائنا.</p>`
-  if (path === '/policies') return `<h1>السياسات والشروط</h1>${POLICY_SECTIONS.map((x) => `<h2>${esc(x.h)}</h2><ul>${x.p.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>`).join('')}`
-  return ''
-}
-
+// The stylesheet is inlined into every page: no render-blocking request before the first paint.
+const template = readFileSync(join(DIST, 'index.html'), 'utf8').replace(/<link rel="stylesheet"[^>]*href="(\/assets\/[^"]+\.css)"[^>]*>/, (_, href) => `<style>${readFileSync(join(DIST, href.slice(1)), 'utf8').replace(/<\/style/gi, '<\\/style')}</style>`)
+const catalog = await loadCatalog()
+const { categories, products } = catalog
+const data = { products, categories, faq: FAQ, reviews: ALL_REVIEWS }
+// embedded for hydration; `<` escaped so no product text can close the script tag
+const catalogJson = `<script type="application/json" id="__catalog">${JSON.stringify(catalog).replace(/</g, '\\u003c')}</script>`
 // the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
 const HERO_PRELOAD = '    <link rel="preload" as="image" href="/brand/ai/raed-hero-mobile-v3.webp" type="image/webp" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="/brand/ai/raed-hero-v3.webp" type="image/webp" media="(min-width: 768px)" fetchpriority="high" />\n'
 
 const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
-  ...seedCategories.map((c) => `/c/${c.id}`), ...seedProducts.map((p) => productPath(p.id))]
+  ...categories.map((c) => `/c/${c.id}`), ...products.filter((p) => p.active !== false).map((p) => productPath(p.id))]
 
 for (const path of routes) {
   const s = seoFor(path, data)
@@ -45,7 +29,7 @@ for (const path of routes) {
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta name="description"[^>]*>\s*/, '')
     .replace('</head>', `    ${headHtml(s)}\n${path === '/' ? HERO_PRELOAD : ''}  </head>`)
-    .replace('<div id="root"></div>', `<div id="root"><div class="prerender">${nav}${body(path)}<p><a href="https://wa.me/${SITE.phone.slice(1)}">واتساب ${WA_LOCAL}</a> · <a href="mailto:${SITE.email}">${SITE.email}</a></p></div></div>`)
+    .replace('<div id="root"></div>', `<div id="root">${await render(path, catalog)}</div>${catalogJson}`)
   const file = path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1) + '.html')
   mkdirSync(dirname(file), { recursive: true })
   writeFileSync(file, html)
@@ -74,4 +58,5 @@ Allow: /api/art
 
 Sitemap: ${url('/sitemap.xml')}
 `)
-console.log(`prerendered ${routes.length} pages, sitemap.xml, robots.txt`)
+console.log(`prerendered ${routes.length} pages (${products.length} products), sitemap.xml, robots.txt`)
+process.exit(0) // the Supabase client keeps timers alive

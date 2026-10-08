@@ -13,7 +13,7 @@ const lazy = (load) => reactLazy(() => load().catch((err) => {
   }
   throw err
 }))
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { ADMIN_HOST, ADMIN_ORIGIN, LIVE_STORE } from './lib/host.js'
 import { usePageViews } from './lib/analytics.js'
 import { DirectionProvider } from '@radix-ui/react-direction'
@@ -57,12 +57,13 @@ function AdminHostGate() {
   return <Navigate to="/admin" replace />
 }
 
-export default function App() {
+// The router is passed in: BrowserRouter in the browser (main.jsx), StaticRouter when pages are pre-rendered (entry-server.jsx).
+export default function App({ Router, routerProps = {}, initialCatalog }) {
   return (
     <DirectionProvider dir="rtl">
-    <AppProvider>
+    <AppProvider initialCatalog={initialCatalog}>
       <ErrorBoundary>
-      <BrowserRouter>
+      <Router {...routerProps}>
         <PageViews />
         <AdminHostGate />
         <Routes>
@@ -98,7 +99,7 @@ export default function App() {
           </Route>
         </Routes>
         <Toast />
-      </BrowserRouter>
+      </Router>
       </ErrorBoundary>
     </AppProvider>
     </DirectionProvider>

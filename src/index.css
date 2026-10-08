@@ -65,6 +65,9 @@
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
+/* below-the-fold blocks skip layout and paint until they near the screen (lighter first render) */
+.cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
 @keyframes fade-in { from { opacity: 0; } }
 @keyframes fade-out { to { opacity: 0; } }
 @keyframes sheet-in-start { from { transform: translateX(100%); } }

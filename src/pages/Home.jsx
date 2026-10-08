@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Star, Quote } from 'lucide-react'
+import { ArrowLeft, Quote } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { FAQ } from '@/data/content.js'
 import { ALL_REVIEWS } from '@/data/reviews.js'
 import { waLink, money, effectivePrice } from '@/lib/format.js'
 import { cn } from '@/lib/utils'
+import StarsSvg from '@/components/brand/Stars.jsx'
+const Stars = (p) => <StarsSvg size={14} {...p} />
 import { useInView } from '@/lib/useInView.js'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
@@ -16,7 +19,6 @@ import { SectionTitle } from '@/components/brand/Ornaments.jsx'
 import PayIcons from '@/components/brand/PayIcons.jsx'
 import Vine from '@/components/brand/Vine.jsx'
 
-const Stars = ({ className }) => <span className={cn('flex gap-0.5', className)} role="img" aria-label="5 من 5">{[0, 1, 2, 3, 4].map((k) => <Star key={k} className="size-3.5 text-[#f5b301]" fill="currentColor" strokeWidth={0} />)}</span>
 
 /** Fades/rises its children in once, when scrolled into view. */
 function Reveal({ as: T = 'div', className, delay = 0, children, ...p }) {
@@ -71,7 +73,7 @@ function Hero() {
       {/* the scene */}
       <picture className="absolute inset-0 -z-10">
         <source media="(max-width: 767px)" srcSet={`${ART}/raed-hero-mobile-v3.webp`} />
-        <img src={`${ART}/raed-hero-v3.webp`} alt="تصميم متاجر سلة من منصة رائد على الجوال واللابتوب" width="2800" height="1188" fetchPriority="high" decoding="async"
+        <img src={`${ART}/raed-hero-v3.webp`} alt="تصميم متاجر سلة من منصة رائد على الجوال واللابتوب" width="2800" height="1188" fetchpriority="high"
           className="size-full object-cover object-[50%_100%] md:object-[0%_50%] motion-safe:animate-[kenburns_28s_ease-in-out_infinite_alternate]" />
       </picture>
       {/* melt the scene into the header (top), the text side, and the page (bottom) */}
@@ -84,7 +86,7 @@ function Hero() {
 
       <div className="container-w relative flex min-h-[640px] flex-col justify-start pt-[calc(var(--header-height)+92px)] pb-[42vh] sm:min-h-[720px] md:min-h-[min(92vh,820px)] md:justify-center md:pb-32 md:pt-[calc(var(--header-height)+40px)]">
         <div className="mx-auto max-w-[560px] text-center md:ms-0 md:me-auto md:text-start lg:ms-[2%]">
-          <p className="inline-flex items-center gap-3 text-[14px] font-medium text-on-inverse/70 motion-safe:animate-[rise-in_700ms_var(--p-ease-emphasized)_both]">
+          <p className="inline-flex items-center gap-3 text-[14px] font-medium text-on-inverse/70 motion-safe:animate-[rise-in-solid_700ms_var(--p-ease-emphasized)_both]">
             <span className="h-px w-10 bg-[linear-gradient(90deg,transparent,rgb(251_252_254/0.6))]" />تصميم متاجر سلة<span className="h-px w-10 bg-[linear-gradient(270deg,transparent,rgb(251_252_254/0.6))] md:hidden" />
           </p>
           <h1 className="mt-5 font-display text-[2.35rem] font-bold leading-[1.35] sm:text-[3rem] lg:text-[3.6rem] lg:leading-[1.3] motion-safe:animate-[rise-in-solid_850ms_var(--p-ease-emphasized)_both]">
@@ -92,12 +94,12 @@ function Hero() {
             <span className="block">متجرك يستاهل</span>
             <span className="block font-light text-[#dfe6f1]">تصميم يليق فيه</span>
           </h1>
-          <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_rgb(15_26_44/0.9)] md:mx-0 motion-safe:animate-[rise-in_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in_1.15s_var(--p-ease-emphasized)_both]">
+          <p className="mx-auto mt-5 max-w-[30ch] text-[17px] sm:max-w-[34ch] leading-[1.9] text-on-inverse/85 [text-shadow:0_1px_12px_rgb(15_26_44/0.9)] md:mx-0 motion-safe:animate-[rise-in-solid_1s_var(--p-ease-emphasized)_both]">نصمم متجرك في سلة ونجهّزه للبيع خلال يومين إلى ستة أيام، بتفاصيل تشبه علامتك.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start motion-safe:animate-[rise-in-solid_1.15s_var(--p-ease-emphasized)_both]">
             <Button asChild size="lg" className="bg-background px-8 font-semibold text-primary shadow-[0_16px_34px_-14px_rgb(0_0_0/0.6)] hover:bg-white"><Link to="/p/salla-store-design">ابدأ متجرك<ArrowLeft className="size-4" /></Link></Button>
             <Button asChild size="lg" variant="inverse" className="px-7 font-medium backdrop-blur"><Link to="/work">شوف أعمالنا</Link></Button>
           </div>
-          <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in_1.3s_var(--p-ease-emphasized)_both]">
+          <div className="mt-8 flex justify-center md:justify-start motion-safe:animate-[rise-in-solid_1.3s_var(--p-ease-emphasized)_both]">
             <Link to="/reviews" className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-[#0f1a2c]/55 py-2 ps-2 pe-4 text-[13px] sm:gap-4 sm:py-2.5 sm:ps-3 sm:pe-5 text-white shadow-[0_18px_40px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/20 backdrop-blur-md transition-colors hover:bg-[#0f1a2c]/70 sm:text-[15.5px]">
               <span className="flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-primary sm:gap-2 sm:px-3">
                 <b className="tabular text-[15px] font-bold leading-none sm:text-[19px]">5.0</b><Stars className="text-primary [&_svg]:size-3 sm:[&_svg]:size-[15px]" />
@@ -121,7 +123,7 @@ function SceneBanner({ img, to, href, kicker, title, accent, body, cta, extra })
   const inner = (
     <>
       <span className="relative block aspect-[16/10] w-full overflow-hidden sm:aspect-auto sm:h-full">
-        <img src={img} alt="" loading="lazy" decoding="async"
+        <img src={img} srcSet={`${img.replace('.webp', '-800.webp')} 800w, ${img} 1600w`} sizes="(max-width: 640px) 92vw, 50vw" alt="" loading="lazy" decoding="async"
           className="size-full object-cover object-left transition-transform duration-[2s] ease-[cubic-bezier(.16,1,.3,1)] [mask-image:radial-gradient(ellipse_62%_62%_at_50%_50%,black_38%,transparent_100%)] group-hover:scale-[1.04]" />
       </span>
       <div className="relative flex flex-col justify-center px-2 pb-4 sm:py-10">
@@ -194,7 +196,7 @@ const CAT_ART = {
 function Categories() {
   const { categories, products } = useApp()
   return (
-    <section className="container-w">
+    <section className="cv-auto container-w">
       <ul className="mx-auto grid max-w-[1040px] grid-cols-2 gap-3 sm:gap-4 lg:aspect-[2/1] lg:grid-cols-4 lg:grid-rows-2">
         {categories.map((c, i) => {
           const n = products.filter((p) => p.categoryId === c.id).length
@@ -205,7 +207,7 @@ function Categories() {
             <Reveal as="li" key={c.id} delay={i * 80} className={cn(big ? 'col-span-2 aspect-[16/10] lg:row-span-2 lg:aspect-auto' : wide ? 'col-span-2 aspect-[2/1] lg:aspect-auto' : 'aspect-square lg:aspect-auto')}>
               <Link to={`/c/${c.id}`} className="group relative block size-full overflow-hidden rounded-[20px] bg-[#0f1a2c] shadow-[0_1px_2px_rgb(27_43_68/0.08),0_24px_40px_-24px_rgb(27_43_68/0.7)] ring-1 ring-primary/10">
                 {CAT_ART[c.id]
-                  ? <img src={`${ART}/${CAT_ART[c.id]}`} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
+                  ? <img src={`${ART}/${CAT_ART[c.id]}`} srcSet={`${ART}/${CAT_ART[c.id].replace('.webp', '-480.webp')} 480w, ${ART}/${CAT_ART[c.id]} 900w`} sizes={big ? '(max-width: 1024px) 92vw, 520px' : '(max-width: 1024px) 46vw, 260px'} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 size-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.06]" />
                   : <span className="absolute inset-0 grid place-items-center bg-[radial-gradient(80%_60%_at_50%_30%,#2c4470,#1b2b44_60%,#0f1a2c)] text-on-inverse"><Icon name={c.icon} size={big ? 44 : 30} /></span>}
                 <span className="absolute inset-0 bg-[linear-gradient(180deg,transparent_45%,rgb(15_26_44/0.85))]" aria-hidden="true" />
                 <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3.5 sm:p-5">
@@ -229,7 +231,7 @@ function CategoryShelf({ id }) {
   const items = products.filter((p) => p.categoryId === id).slice(0, 4)
   if (!catalogReady || !items.length) return null
   return (
-    <section className="py-12 sm:py-16">
+    <section className="cv-auto py-12 sm:py-16">
       <Title id={id} className="mb-10 sm:mb-14" />
       <div className="container-w">
         <Shelf items={items} />
@@ -244,7 +246,7 @@ function New() {
   const items = ['salla-store-design', 'landing-page-design', 'google-tools-integration', 'ai-integration-chatgpt-claude-salla'].map((id) => byId[id]).filter(Boolean)
   if (!catalogReady) return <div className="container-w grid grid-cols-2 gap-6 py-16 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <div key={i} className="aspect-square animate-pulse rounded-xl bg-sunken" />)}</div>
   return (
-    <section className="py-12 sm:py-16">
+    <section className="cv-auto py-12 sm:py-16">
       <Title id="new" className="mb-10 sm:mb-14" />
       <div className="container-w"><Shelf items={items} /><ViewAll to="/shop" /></div>
     </section>
@@ -252,11 +254,14 @@ function New() {
 }
 
 /* ---------------- Reviews: two rows drifting in opposite directions ---------------- */
+// The pre-rendered page carries each review once and stands still; the looping copy and the drift start after hydration.
 function ReviewRow({ items, reverse }) {
-  const row = [...items, ...items]
+  const [live, setLive] = useState(false)
+  useEffect(() => setLive(true), [])
+  const row = live ? [...items, ...items] : items
   return (
     <div className="group flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_8%,black_92%,transparent)]">
-      <ul className={cn('flex w-max shrink-0 gap-4 py-3 motion-safe:animate-[marquee_160s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
+      <ul className={cn('flex w-max shrink-0 gap-4 py-3', live && 'motion-safe:animate-[marquee_160s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
         {row.map((r, i) => (
           <li key={i} aria-hidden={i >= items.length || undefined} className="w-[280px] shrink-0 sm:w-[340px]">
             <figure className="flex h-full flex-col rounded-xl bg-surface p-5 shadow-[0_16px_40px_-30px_rgb(27_43_68/0.5)] ring-1 ring-accent/30">
@@ -275,10 +280,10 @@ function ReviewRow({ items, reverse }) {
 }
 
 function Reviews() {
-  const short = ALL_REVIEWS.filter((r) => r.text.length < 170)
+  const short = ALL_REVIEWS.filter((r) => r.text.length < 170).slice(0, 20)
   const half = Math.ceil(short.length / 2)
   return (
-    <section className="py-12 sm:py-16">
+    <section className="cv-auto py-12 sm:py-16">
       <Title id="reviews" className="mb-10 sm:mb-12" />
       <div className="grid gap-2">
         <ReviewRow items={short.slice(0, half)} />
@@ -299,7 +304,7 @@ export default function Home() {
       <Promises />
       <New />
       <LandingPromo />
-      <section className="py-12 sm:py-16">
+      <section className="cv-auto py-12 sm:py-16">
         <Title id="categories" className="mb-10 sm:mb-14" />
         <Categories />
       </section>
@@ -309,7 +314,7 @@ export default function Home() {
       <CategoryShelf id="government-services" />
       <GalleryWall />
       <Reviews />
-      <section className="container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
+      <section className="cv-auto container-w grid gap-8 py-16 sm:py-24 lg:grid-cols-[0.7fr_1.3fr]">
         <Head eyebrow="قبل ما تطلب" title="أسئلة تتكرر" />
         <Accordion type="single" collapsible className="grid gap-3">
           {FAQ.map((q, i) => (
