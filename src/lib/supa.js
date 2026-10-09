@@ -188,8 +188,12 @@ export const supa = {
     return r.json().catch(() => ({ ok: false }))
   },
   async uploadImage(file) {
-    const path = `${Date.now()}-${file.name.replace(/[^\w.-]/g, '')}`
-    check(await sb.storage.from('products').upload(path, file, { upsert: false }))
+    // images only (SVG is allowed for logos: it is served from the storage domain, not the store), and a sane size
+    if (!/^image\/(png|jpeg|webp|gif|avif|svg\+xml)$/.test(file.type)) throw new Error('الصيغ المسموحة: PNG أو JPG أو WebP أو GIF أو SVG')
+    if (file.size > 5 * 1024 * 1024) throw new Error('حجم الصورة أكبر من 5 ميجا')
+    const ext = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/avif': 'avif', 'image/svg+xml': 'svg' }[file.type]
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+    check(await sb.storage.from('products').upload(path, file, { upsert: false, contentType: file.type }))
     return sb.storage.from('products').getPublicUrl(path).data.publicUrl
   },
 

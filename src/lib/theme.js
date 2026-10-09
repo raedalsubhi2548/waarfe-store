@@ -133,8 +133,17 @@ export const PRESETS = [
 const HEX = /^#[0-9a-f]{6}$/i
 const safeColor = (v, d) => (typeof v === 'string' && HEX.test(v.trim()) ? v.trim().toLowerCase() : d)
 // images and links: our own paths or https only (the values end up in src/href attributes)
-const safeUrl = (v, d = '') => (typeof v === 'string' && (/^\/(?!\/)/.test(v.trim()) || /^https:\/\//i.test(v.trim()) || /^data:image\/(png|jpe?g|webp|svg\+xml);base64,/i.test(v.trim())) ? v.trim() : d)
-const safeLink = (v, d = '') => (typeof v === 'string' && (/^\/(?!\/)/.test(v.trim()) || /^https:\/\//i.test(v.trim())) ? v.trim() : d)
+// Addresses from the dashboard end up in links, <img src>, CSS url() and the prerendered HTML:
+// only same-site paths ("/x", never "//x" or "/\\x") and https:// URLs, with no spaces, quotes, angle brackets or backslashes.
+const URL_OK = /^(?:\/(?![\/\\])|https:\/\/[^\/\\\s])[^\s"'<>`\\]*$/i
+const safeUrl = (v, d = '') => {
+  const t = typeof v === 'string' ? v.trim() : ''
+  return t && (URL_OK.test(t) || /^data:image\/(png|jpe?g|webp|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(t)) ? t : d
+}
+const safeLink = (v, d = '') => {
+  const t = typeof v === 'string' ? v.trim() : ''
+  return t && URL_OK.test(t) ? t : d
+}
 const text = (v, d, max = 160) => (typeof v === 'string' ? v.slice(0, max) : d)
 
 /** Saved settings on top of the defaults, every value checked. */
@@ -217,6 +226,6 @@ export function themeCss(settings) {
     css += `:is(a,button,input,select,textarea,label).rounded-full{border-radius:${btn}!important}:is(.rounded-xl,.rounded-lg,.rounded-2xl,[class*="rounded-[18px]"],[class*="rounded-[20px]"],[class*="rounded-[34px]"]){border-radius:${card}!important}`
   }
   // a background picture behind the whole store (characters that could end the url() are escaped)
-  if (s.background.image) css += `body{background-image:url("${s.background.image.replace(/["\\\n\r()]/g, encodeURIComponent)}");background-size:cover;background-position:center;background-attachment:fixed}`
+  if (s.background.image) css += `body{background-image:url("${s.background.image.replace(/["'\\\n\r()<>]/g, encodeURIComponent)}");background-size:cover;background-position:center;background-attachment:fixed}`
   return css
 }

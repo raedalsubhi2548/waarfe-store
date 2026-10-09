@@ -47,7 +47,10 @@ const productSet = new Set(products.filter((p) => p.active !== false).map((p) =>
 const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
   ...categories.map((c) => categoryPath(c.id)), ...products.filter((p) => p.active !== false).map((p) => productPath(p.id))]
 
+const xml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 for (const path of routes) {
+  // ids come from the database: only plain slugs may become file names (no "../", no slashes)
+  if (path !== '/' && !/^\/[\p{L}\p{N}_-]+$/u.test(path) && !['/shop', '/work', '/reviews', '/contact', '/policies'].includes(path)) throw new Error(`bad page address: ${path}`)
   const s = seoFor(path, data)
   let html = template
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
@@ -72,7 +75,7 @@ const today = new Date().toISOString().slice(0, 10)
 const url = (p) => SITE.url.replace(/\/$/, '') + p
 writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map((r) => `  <url><loc>${url(r === '/' ? '/' : r)}</loc><lastmod>${today}</lastmod><changefreq>${r === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${r === '/' ? '1.0' : productSet.has(r) ? '0.8' : '0.6'}</priority></url>`).join('\n')}
+${routes.map((r) => `  <url><loc>${xml(url(r === '/' ? '/' : r))}</loc><lastmod>${today}</lastmod><changefreq>${r === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${r === '/' ? '1.0' : productSet.has(r) ? '0.8' : '0.6'}</priority></url>`).join('\n')}
 </urlset>
 `)
 writeFileSync(join(DIST, 'robots.txt'), `User-agent: *

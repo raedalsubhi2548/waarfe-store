@@ -67,7 +67,7 @@ function ColorField({ label, value, onChange }) {
 }
 
 const LinkHint = 'صفحة داخل المتجر مثل /shop أو /salla-store-design، أو رابط يبدأ بـ https://'
-const linkOk = (v) => !v || /^\/(?!\/)/.test(v) || /^https:\/\/[^\s]+\.[^\s]+/i.test(v)
+const linkOk = (v) => !v || /^(?:\/(?![\/\\])|https:\/\/[^\/\\\s]+\.[^\s]+)[^\s"'<>`\\]*$/i.test(v)
 /** A link field that says so right away when the address won't be accepted (it would be dropped on publish). */
 function LinkInput({ value, onChange, className, placeholder = '/shop' }) {
   const bad = !linkOk(value)

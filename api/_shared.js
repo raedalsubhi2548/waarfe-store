@@ -38,6 +38,12 @@ export async function confirmCharge(chargeId) {
       await sendOrderEmail(updated[0], 'paid').catch(() => {})
     }
   }
+  else if (order.status === 'cancelled') {
+    // money arrived for an order that was cancelled meanwhile (by the admin, or replaced by a newer checkout)
+    console.error('captured charge on cancelled order', orderId, charge.id)
+    const { sendAdminAlert } = await import('./_mail.js')
+    await sendAdminAlert(`دفعة على طلب ملغي #${order.number}`, `وصلت دفعة مقبولة ${charge.id} بمبلغ ${charge.amount} ر.س للطلب #${order.number} وهو ملغي. راجعها في Tap: نفّذ الطلب أو استرجع المبلغ للعميل.`).catch(() => {})
+  }
   else if (order.payment_ref && order.payment_ref !== charge.id) {
     // paid twice (two tabs): keep the first, flag the extra charge for a refund
     console.error('extra captured charge', orderId, charge.id)
