@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { MessageCircle, Mail, Phone, CreditCard, Landmark, Inbox, ChevronLeft, Copy, FileText } from 'lucide-react'
+import { MessageCircle, Mail, Phone, CreditCard, Landmark, Inbox, ChevronLeft, Copy, FileText, BellRing } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { ORDER_STATUSES } from '@/data/seed.js'
@@ -113,6 +113,14 @@ export default function Orders() {
   const setParam = (k, v) => { const n = new URLSearchParams(params); v ? n.set(k, v) : n.delete(k); setParams(n) }
   const shown = useMemo(() => (orders || []).filter((o) => (!filter || o.status === filter) && (!q || String(o.number).includes(q) || (o.customer?.name || '').includes(q) || (o.customer?.phone || '').includes(q) || (o.customer?.email || '').includes(q))), [orders, filter, q])
   const count = (id) => (orders || []).filter((o) => o.status === id).length
+  const [testing, setTesting] = useState(false)
+  const testNotice = async () => {
+    setTesting(true)
+    const r = await api.testOrderNotice().catch(() => ({ sent: false, reason: 'server' }))
+    setTesting(false)
+    if (r.sent) notify(`أرسلنا رسالة تجربة إلى ${r.to}، شيّك الوارد والسبام`)
+    else notify({ 'smtp-not-configured': 'إيميل المتجر (SMTP) مو مضبوط في Vercel، فما يطلع أي إشعار', 'smtp-error': 'فشل الإرسال: تأكد من بيانات SMTP في Vercel', demo: 'التجربة تشتغل على المتجر الحقيقي فقط' }[r.reason] || 'تعذّر الإرسال، حاول مرة ثانية', 'err')
+  }
   const copyCsv = async () => {
     const rows = [['رقم', 'العميل', 'الجوال', 'الحالة', 'الإجمالي', 'التاريخ'], ...shown.map((o) => [o.number, o.customer?.name, o.customer?.phone, statusLabel(o.status), o.total, o.createdAt])]
     try { await navigator.clipboard.writeText(rows.map((r) => r.join('\t')).join('\n')); notify('نُسخت الطلبات، الصقها في Excel') } catch { notify('ما قدرنا ننسخ', 'err') }
@@ -120,7 +128,10 @@ export default function Orders() {
 
   return (
     <>
-      <AdminHead title="الطلبات" lead={orders ? `${orders.length} طلب` : undefined} action={orders?.length > 0 && <Button variant="outline" size="sm" onClick={copyCsv}><Copy className="size-4" />نسخ الجدول</Button>} />
+      <AdminHead title="الطلبات" lead={orders ? `${orders.length} طلب` : undefined} action={<>
+        <Button variant="outline" size="sm" onClick={testNotice} disabled={testing}><BellRing className="size-4" />{testing ? 'يرسل…' : 'جرّب إشعار الطلبات'}</Button>
+        {orders?.length > 0 && <Button variant="outline" size="sm" onClick={copyCsv}><Copy className="size-4" />نسخ الجدول</Button>}
+      </>} />
       <div className="mb-4 grid gap-3">
         <Segments value={filter} onChange={(v) => setParam('status', v)} options={[{ id: '', label: 'الكل', count: orders?.length || 0 }, ...ORDER_STATUSES.map((s) => ({ id: s.id, label: s.label, count: count(s.id) }))]} />
         <SearchBox value={q} onChange={setQ} placeholder="رقم الطلب، اسم العميل، الجوال أو البريد" className="max-w-md" />

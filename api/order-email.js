@@ -2,13 +2,22 @@
 //  · the customer may only trigger "created" for their own bank-transfer order (card orders get "paid" from Tap)
 //  · an admin may trigger the email for the order's current status (after changing it in the dashboard)
 import { admin, userFromRequest } from './_shared.js'
-import { sendOrderEmail, EVENT_IDS } from './_mail.js'
+import { sendOrderEmail, sendAdminAlert, EVENT_IDS } from './_mail.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
   const user = await userFromRequest(req)
   if (!user) return res.status(401).json({ error: 'سجّل دخولك أولاً' })
-  const { orderId, event } = req.body || {}
+  const { orderId, event, test } = req.body || {}
+  if (test) {
+    // the admin checks the store's notification email from the dashboard
+    const { data: me } = await admin.from('profiles').select('role').eq('id', user.id).single()
+    if (me?.role !== 'admin') return res.status(403).json({ error: 'غير مسموح' })
+    try {
+      const out = await sendAdminAlert('تجربة إشعار الطلبات', 'هذي رسالة تجربة من لوحة التحكم. إذا وصلتك، إشعارات الطلبات الجديدة المدفوعة توصل على هذا الإيميل.')
+      return res.status(200).json(out)
+    } catch (err) { return res.status(200).json({ sent: false, reason: 'smtp-error', detail: String(err?.message || '').slice(0, 200) }) }
+  }
   if (!orderId || !EVENT_IDS.includes(event)) return res.status(400).json({ error: 'طلب غير صالح' })
 
   const { data: order } = await admin.from('orders').select('*').eq('id', orderId).single()

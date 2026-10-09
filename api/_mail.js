@@ -76,11 +76,15 @@ ${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</
 </table></td></tr></table></body></html>`
 }
 
-/** A short plain alert to the store (ORDER_NOTIFY_TO, else the store email). */
+// where the store's notifications go: ORDER_NOTIFY_TO (Vercel), else the email in «مصمم المتجر ← معلومات المتجر»
+export const storeInbox = async () => process.env.ORDER_NOTIFY_TO || (await loadSeller()).email
+
+/** A short plain alert to the store. Throws if sending fails (callers that don't care add .catch). */
 export async function sendAdminAlert(subject, text) {
-  const t = mailer(); if (!t) return
-  const to = process.env.ORDER_NOTIFY_TO || (await loadSeller()).email
+  const t = mailer(); if (!t) return { sent: false, reason: 'smtp-not-configured' }
+  const to = await storeInbox()
   await t.sendMail({ from: process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`, to, subject: `[تنبيه] ${subject}`, text })
+  return { sent: true, to }
 }
 
 /**
@@ -106,15 +110,17 @@ export async function sendOrderEmail(orderOrId, ev) {
   const s = await loadSeller()
   const attachments = ev === 'paid' ? [{ filename: `فاتورة-${order.number}.pdf`, content: await invoicePdf(order, s), contentType: 'application/pdf' }] : []
   const from = process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`
+  // the store's own copy for new paid orders goes out on its own, so a customer-side failure never hides it
+  const storeCopy = (ev === 'created' || ev === 'paid')
+    ? storeInbox().then((copy) => copy && t.sendMail({ from, to: copy, replyTo: to, subject: `[طلب جديد] #${order.number} · ${money(order.total)} ر.س · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }))
+      .catch((err) => console.error('store copy failed', order.id, err?.message))
+    : null
   try {
     await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev, s), attachments })
-    // a copy to the store for new and paid orders
-    const copy = process.env.ORDER_NOTIFY_TO
-    if (copy && (ev === 'created' || ev === 'paid')) {
-      await t.sendMail({ from, to: copy, subject: `[نسخة المتجر] ${EVENTS[ev].subject(order)} · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }).catch(() => {})
-    }
+    await storeCopy
     return { sent: true }
   } catch (err) {
+    await storeCopy
     // let a later retry try again
     if ('notified' in order) await admin.from('orders').update({ notified: done }).eq('id', order.id)
     console.error('mail failed', ev, order.id, err?.message)

@@ -270,6 +270,11 @@ export const supa = {
       body: JSON.stringify({ orderId, event }),
     }).catch(() => {})
   },
+  async testOrderNotice() {
+    const { data } = await sb.auth.getSession()
+    const r = await fetch('/api/order-email', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + data.session?.access_token }, body: JSON.stringify({ test: true }) })
+    return r.json().catch(() => ({ sent: false, reason: 'server' }))
+  },
   async downloadInvoice(order) {
     const { data } = await sb.auth.getSession()
     const res = await fetch(`/api/invoice?order=${encodeURIComponent(order.id)}`, { headers: { authorization: 'Bearer ' + data.session?.access_token } })
