@@ -66,8 +66,8 @@ export default function Checkout() {
     if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setPhoneErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); document.getElementById('checkout-phone')?.focus(); return }
     setPhoneErr('')
     if (!agreed) { setErr('لازم توافق على السياسات والشروط والإقرار والتعهد قبل إتمام الطلب'); return }
-    const embedded = EMBED && method === 'card' && total > 0
-    if (embedded && !cardOk) { setErr(cardState === 'failed' ? 'نموذج البطاقة ما تحمّل، اختر طريقة دفع ثانية' : 'اكتب بيانات البطاقة كاملة'); return }
+    const embedded = EMBED && cardState !== 'failed' && method === 'card' && total > 0
+    if (embedded && !cardOk) { setErr('اكتب بيانات البطاقة كاملة'); return }
     setBusy(true)
     try {
       // the card is read first (a one-time token from Tap), so a typo in it never creates an order
@@ -96,7 +96,7 @@ export default function Checkout() {
       nav(`/order/${order.id}?new=1`, { replace: true })
     } catch (e2) {
       // a remembered order that's already paid or gone can't be reused; the next try starts a fresh one
-      if (EMBED && method === 'card') card.current?.reset?.()
+      if (EMBED && cardState !== 'failed' && method === 'card') card.current?.reset?.()
       if (/مدفوع|غير موجود/.test(e2.message)) { pending.current = undefined; try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
       setErr(e2.message); setBusy(false)
     }
@@ -120,7 +120,7 @@ export default function Checkout() {
           </Panel>
           <Panel title="طريقة الدفع">
             <div className="grid gap-3">
-              {EMBED ? <>
+              {EMBED && cardState !== 'failed' ? <>
                 <div className={cn(pay('card'), 'cursor-default flex-col items-stretch gap-4')}>
                   <label className="flex cursor-pointer items-center gap-4">
                     <input type="radio" name="pay" checked={method === 'card'} onChange={() => setMethod('card')} className="size-5 accent-[var(--primary)]" />

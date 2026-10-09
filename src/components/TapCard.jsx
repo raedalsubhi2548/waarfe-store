@@ -59,8 +59,10 @@ const TapCard = forwardRef(function TapCard({ amount, customer, onValid, onState
         onSuccess: (data) => { const p = pendingRef.current; pendingRef.current = null; if (data?.id) p?.resolve(data.id); else p?.reject(new Error('تعذّر قراءة البطاقة، حاول مرة ثانية')) },
         onError: (err) => {
           const p = pendingRef.current; pendingRef.current = null
-          p?.reject(new Error('تأكد من بيانات البطاقة'))
-          if (!p) console.warn('tap card', err)
+          if (p) return p.reject(new Error('تأكد من بيانات البطاقة'))
+          // an error before the fields are ready (key not linked to this domain, Tap down…): checkout falls back to Tap's page
+          setState((st) => (st === 'ready' ? st : 'failed'))
+          console.warn('tap card', err)
         },
       })
       unmount = out?.unmount
