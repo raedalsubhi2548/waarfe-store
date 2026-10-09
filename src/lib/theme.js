@@ -117,6 +117,10 @@ function cleanBlock(b) {
 
 export const DEFAULT_HEADER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'المدونة', to: '/blog' }, { label: 'تواصل', to: '/contact' }]
 export const DEFAULT_FOOTER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'المدونة', to: '/blog' }, { label: 'السياسات والشروط', to: '/policies' }]
+// links saved before the blog existed were exactly the old defaults: those stores get the new defaults (with the blog)
+const OLD_HEADER = 'كل الخدمات>/shop|أعمالنا>/work|آراء العملاء>/reviews|تواصل>/contact'
+const OLD_FOOTER = 'كل الخدمات>/shop|أعمالنا>/work|آراء العملاء>/reviews|السياسات والشروط>/policies'
+const sig = (links) => links.map((l) => `${l.label}>${l.to}`).join('|')
 export const DEFAULT_CTA = ['محتار من وين تبدأ؟', 'قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.']
 export const DEFAULT_ABOUT = 'نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.'
 
@@ -161,7 +165,7 @@ export function mergeSettings(raw) {
     home: (Array.isArray(s.home) ? s.home : defaultHome(typeof s.hero === 'object' ? s.hero : {})).slice(0, 30).map(cleanBlock).filter(Boolean),
     background: { image: safeUrl(s.background?.image, ''), decor: s.background?.decor !== false },
     header: {
-      links: Array.isArray(s.header?.links) ? s.header.links.slice(0, 6).map((l) => ({ label: text(l?.label, '', 24), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : DEFAULT_HEADER_LINKS,
+      links: ((h) => (h && sig(h) !== OLD_HEADER ? h : DEFAULT_HEADER_LINKS))(Array.isArray(s.header?.links) ? s.header.links.slice(0, 6).map((l) => ({ label: text(l?.label, '', 24), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : null),
       search: s.header?.search !== false, wishlist: s.header?.wishlist !== false,
     },
     store: {
@@ -179,7 +183,7 @@ export function mergeSettings(raw) {
     radius: RADII.some(([k]) => k === s.radius) ? s.radius : 'round',
     categoryImages: Object.fromEntries(Object.entries(s.categoryImages && typeof s.categoryImages === 'object' ? s.categoryImages : {}).filter(([k, v]) => SLUG.test(k) && safeUrl(v, '')).slice(0, 40)),
     footer: {
-      links: Array.isArray(s.footer?.links) ? s.footer.links.slice(0, 8).map((l) => ({ label: text(l?.label, '', 30), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : null,
+      links: ((f) => (f && sig(f) === OLD_FOOTER ? null : f))(Array.isArray(s.footer?.links) ? s.footer.links.slice(0, 8).map((l) => ({ label: text(l?.label, '', 30), to: safeLink(l?.to, '') })).filter((l) => l.label && l.to) : null),
       about: text(s.footer?.about, DEFAULT_ABOUT, 200), payments: s.footer?.payments !== false,
       cta: s.footer?.cta !== false, ctaTitle: text(s.footer?.ctaTitle, DEFAULT_CTA[0], 60) || DEFAULT_CTA[0], ctaText: text(s.footer?.ctaText, DEFAULT_CTA[1], 140),
     },
