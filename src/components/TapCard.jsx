@@ -35,6 +35,8 @@ const TapCard = forwardRef(function TapCard({ amount, customer, onValid, onState
 
   useEffect(() => {
     let unmount, gone = false
+    // fields that never get ready (wrong key for this domain, Tap unreachable) count as failed after 10 s
+    const slow = setTimeout(() => setState((st) => (st === 'ready' ? st : 'failed')), 10000)
     loadSdk().then((C) => {
       if (gone) return
       const phone = String(customer?.phone || '').replace(/\D/g, '').replace(/^(966|0)/, '')
@@ -52,7 +54,7 @@ const TapCard = forwardRef(function TapCard({ amount, customer, onValid, onState
         fields: { cardHolder: true },
         addons: { displayPaymentBrands: true, loader: true, saveCard: false },
         interface: { locale: C.Locale.AR, theme: C.Theme.LIGHT, edges: C.Edges.CURVED, direction: C.Direction.RTL },
-        onReady: () => setState('ready'),
+        onReady: () => { clearTimeout(slow); setState('ready') },
         // both report a boolean: onValidInput(true) when the card is complete, onInvalidInput(true) when it isn't
         onValidInput: (v) => onValid?.(v === true),
         onInvalidInput: (v) => { if (v === true) onValid?.(false) },
@@ -67,7 +69,7 @@ const TapCard = forwardRef(function TapCard({ amount, customer, onValid, onState
       })
       unmount = out?.unmount
     }).catch(() => !gone && setState('failed'))
-    return () => { gone = true; try { unmount?.() } catch { /* already gone */ } }
+    return () => { gone = true; clearTimeout(slow); try { unmount?.() } catch { /* already gone */ } }
     // the card fields are drawn once; the charged amount always comes from the order on the server
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
