@@ -9,6 +9,7 @@ import { SITE, seoFor, headHtml } from '../src/lib/seo.js'
 import { productPath, categoryPath, toSlug, RESERVED } from '../src/lib/slug.js'
 import { render, loadCatalog } from '../dist-ssr/entry-server.js'
 import { mergeSettings } from '../src/lib/theme.js'
+import { POSTS, blogPath } from '../src/data/blog/index.js'
 import { applyStore } from '../src/lib/store.js'
 
 const DIST = new URL('../dist/', import.meta.url).pathname
@@ -44,13 +45,13 @@ for (const slug of [...categories.map((c) => c.id), ...products.map((p) => toSlu
 }
 const productSet = new Set(products.filter((p) => p.active !== false).map((p) => productPath(p.id)))
 
-const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies',
+const routes = ['/', '/shop', '/work', '/reviews', '/contact', '/policies', blogPath(), ...POSTS.map((p) => blogPath(p.slug)),
   ...categories.map((c) => categoryPath(c.id)), ...products.filter((p) => p.active !== false).map((p) => productPath(p.id))]
 
 const xml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 for (const path of routes) {
   // ids come from the database: only plain slugs may become file names (no "../", no slashes)
-  if (path !== '/' && !/^\/[\p{L}\p{N}_-]+$/u.test(path) && !['/shop', '/work', '/reviews', '/contact', '/policies'].includes(path)) throw new Error(`bad page address: ${path}`)
+  if (path !== '/' && !/^\/[\p{L}\p{N}_-]+$/u.test(path) && !['/shop', '/work', '/reviews', '/contact', '/policies', '/blog'].includes(path) && !/^\/blog\/[a-z0-9-]+$/.test(path)) throw new Error(`bad page address: ${path}`)
   const s = seoFor(path, data)
   let html = template
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')

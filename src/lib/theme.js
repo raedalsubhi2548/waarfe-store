@@ -115,8 +115,8 @@ function cleanBlock(b) {
   return out
 }
 
-export const DEFAULT_HEADER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'تواصل', to: '/contact' }]
-export const DEFAULT_FOOTER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'السياسات والشروط', to: '/policies' }]
+export const DEFAULT_HEADER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'المدونة', to: '/blog' }, { label: 'تواصل', to: '/contact' }]
+export const DEFAULT_FOOTER_LINKS = [{ label: 'كل الخدمات', to: '/shop' }, { label: 'أعمالنا', to: '/work' }, { label: 'آراء العملاء', to: '/reviews' }, { label: 'المدونة', to: '/blog' }, { label: 'السياسات والشروط', to: '/policies' }]
 export const DEFAULT_CTA = ['محتار من وين تبدأ؟', 'قل لنا وش نشاطك، ونرتّب لك اللي تحتاجه فعلاً.']
 export const DEFAULT_ABOUT = 'نصمم متجرك ونسوّقه ونجهّز أوراقه الرسمية، من جهة وحدة.'
 

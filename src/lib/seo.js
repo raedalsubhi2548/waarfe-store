@@ -1,4 +1,5 @@
 import { fromSlug, toSlug, productPath } from './slug.js'
+import { POSTS, BLOG_CATEGORIES, blogPath } from '../data/blog/index.js'
 // One source of truth for titles, descriptions, canonical links, social cards and structured
 // data. Used at runtime (useSeo) and at build time (scripts/prerender.mjs) so crawlers that do
 // not run JavaScript still get the full head for every public page.
@@ -22,6 +23,11 @@ export const SITE = {
   description: 'منصة رائد: تصميم متاجر سلة احترافية، صفحات هبوط مبرمجة بدون اشتراك شهري، حملات إعلانية على سناب وتيك توك وإنستغرام، ربط أدوات قوقل والبكسل، والخدمات الحكومية للمتاجر في السعودية.',
 }
 
+const BLOG_ART = {
+  design: '/brand/og/raed-design.jpg',
+  marketing: '/brand/og/raed-marketing.jpg',
+  legal: '/brand/og/raed-government.jpg',
+}
 const CAT_ART = {
   'design-services': '/brand/og/raed-design.jpg',
   'marketing-services': '/brand/og/raed-marketing.jpg',
@@ -123,6 +129,53 @@ export function seoFor(path, data = {}) {
       jsonLd: [crumbs([['الرئيسية', '/'], ['كل الخدمات', '/shop']]), itemList(products)],
     }
   }
+  if (path === '/blog') {
+    return {
+      ...base,
+      title: t('المدونة: أدلة عملية لتجار سلة'),
+      description: clip('أدلة خطوة بخطوة لتجار سلة: تصميم المتجر وتخصيص الثيم، ربط بكسل سناب وتيك توك وGoogle Analytics، وثيقة العمل الحر والسجل التجاري، وتوثيق منصة الأعمال.'),
+      jsonLd: [crumbs([['الرئيسية', '/'], ['المدونة', '/blog']]), {
+        '@context': 'https://schema.org', '@type': 'Blog', name: `مدونة ${SITE.name}`, url: abs('/blog'), inLanguage: 'ar',
+        publisher: { '@id': abs('/#org') },
+        blogPost: POSTS.map((p) => ({ '@type': 'BlogPosting', headline: p.title, url: abs(blogPath(p.slug)), datePublished: p.date })),
+      }],
+    }
+  }
+  const bm = path.match(/^\/blog\/([a-z0-9-]+)$/)
+  if (bm) {
+    const p = POSTS.find((x) => x.slug === bm[1])
+    if (!p) return { ...base, title: t('المقال غير موجود'), description: SITE.description, robots: 'noindex' }
+    const img = abs(BLOG_ART[p.category] || SITE.ogImage)
+    return {
+      ...base,
+      type: 'article',
+      title: t(p.seoTitle || p.title),
+      description: clip(p.description),
+      keywords: p.keywords,
+      image: img,
+      article: { published: p.date, modified: p.updated || p.date, section: BLOG_CATEGORIES[p.category]?.name },
+      jsonLd: [
+        crumbs([['الرئيسية', '/'], ['المدونة', '/blog'], [p.title, blogPath(p.slug)]]),
+        {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: p.title,
+          description: p.description,
+          image: [img],
+          datePublished: p.date,
+          dateModified: p.updated || p.date,
+          inLanguage: 'ar',
+          articleSection: BLOG_CATEGORIES[p.category]?.name,
+          keywords: p.keywords,
+          mainEntityOfPage: abs(blogPath(p.slug)),
+          author: { '@type': 'Organization', name: SITE.name, url: abs('/') },
+          publisher: { '@id': abs('/#org') },
+          citation: (p.sources || []).map((x) => x.url),
+        },
+        p.faq?.length && { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: p.faq.map((q) => ({ '@type': 'Question', name: q.q, acceptedAnswer: { '@type': 'Answer', text: q.a } })) },
+      ].filter(Boolean),
+    }
+  }
   const slug = path.match(/^\/([^/]+)$/)?.[1]
   const cm = slug && (data.category || categories.find((x) => x.id === slug))
   if (cm) {
@@ -204,6 +257,7 @@ export function headHtml(s) {
     `<meta name="twitter:title" content="${e(s.title)}" />`,
     `<meta name="twitter:description" content="${e(s.description)}" />`,
     `<meta name="twitter:image" content="${e(s.image)}" />`,
+    ...(s.article ? [`<meta property="article:published_time" content="${e(s.article.published)}" />`, `<meta property="article:modified_time" content="${e(s.article.modified)}" />`, `<meta property="article:section" content="${e(s.article.section)}" />`] : []),
     ...(s.price != null ? [`<meta property="product:price:amount" content="${e(s.price)}" />`, `<meta property="product:price:currency" content="SAR" />`] : []),
     ...s.jsonLd.map((j) => `<script type="application/ld+json">${JSON.stringify(j).replace(/</g, '\\u003c')}</script>`),
   ].join('\n    ')
