@@ -52,10 +52,12 @@ export default function Checkout() {
     try { setCoupon(await api.validateCoupon(code)); notify('تم تطبيق الخصم') } catch (e) { setCoupon(null); setCouponErr(e.message) }
   }
 
+  const [phoneErr, setPhoneErr] = useState('')
   const submit = async (e) => {
     e.preventDefault()
     setErr('')
-    if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); return }
+    if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setPhoneErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); document.getElementById('checkout-phone')?.focus(); return }
+    setPhoneErr('')
     if (!agreed) { setErr('لازم توافق على السياسات والشروط والإقرار والتعهد قبل إتمام الطلب'); return }
     setBusy(true)
     try {
@@ -99,7 +101,7 @@ export default function Checkout() {
           <Panel title="بيانات التواصل">
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="الاسم"><Input required {...f('name')} autoComplete="name" /></Field>
-              <Field label="رقم الجوال"><Input required {...f('phone')} inputMode="tel" dir="ltr" placeholder="05xxxxxxxx" autoComplete="tel" className="text-end" /></Field>
+              <Field label="رقم الجوال" error={phoneErr}><Input id="checkout-phone" required {...f('phone')} type="tel" name="tel" inputMode="tel" dir="ltr" placeholder="05xxxxxxxx" autoComplete="tel" aria-invalid={!!phoneErr || undefined} className="text-end" /></Field>
               <Field label="البريد الإلكتروني" className="sm:col-span-2"><Input type="email" required {...f('email')} dir="ltr" readOnly className="text-end" /></Field>
               <Field label="ملاحظات للطلب (اختياري)" className="sm:col-span-2"><Textarea rows={3} {...f('notes')} placeholder="رابط متجرك، أفضل وقت للتواصل، أو أي تفاصيل" /></Field>
             </div>
@@ -127,10 +129,10 @@ export default function Checkout() {
             ))}
           </ul>
           <div className="mt-5 flex gap-2">
-            <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="كود الخصم" aria-label="كود الخصم" dir="ltr" className="h-11 text-end" />
+            <Input value={code} onChange={(e) => setCode(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (code.trim()) applyCoupon() } }} name="coupon" autoComplete="off" spellCheck={false} autoCapitalize="characters" enterKeyHint="done" placeholder="كود الخصم" aria-label="كود الخصم" aria-invalid={!!couponErr || undefined} dir="ltr" className="h-11 text-end" />
             <Button type="button" variant="outline" size="sm" className="h-11" onClick={applyCoupon} disabled={!code.trim()}>تطبيق</Button>
           </div>
-          {couponErr && <p className="mt-2 text-sm text-danger">{couponErr}</p>}
+          {couponErr && <p className="mt-2 text-sm text-danger" role="alert">{couponErr}</p>}
           <dl className="mt-5 grid gap-2 border-t border-border pt-4 text-[15px]">
             <div className="flex justify-between"><dt className="text-muted-foreground">المجموع</dt><dd className="tabular">{money(subtotal)}</dd></div>
             {discount > 0 && <div className="flex justify-between text-success"><dt>خصم {coupon.code}</dt><dd className="tabular">− {money(discount)}</dd></div>}
@@ -148,6 +150,7 @@ export default function Checkout() {
               <ol className="mt-2 grid list-decimal gap-1.5 ps-5">{DECLARATION.items.map((x) => <li key={x}>{x}</li>)}</ol>
             </div>
           </details>
+          {!agreed && <p className="mt-3 text-center text-[13px] text-muted-foreground">علّم على الموافقة فوق عشان يتفعّل زر الدفع</p>}
           <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : total === 0 ? 'أكمل الطلب' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
 
         </Panel>

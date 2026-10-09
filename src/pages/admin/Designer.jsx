@@ -316,6 +316,13 @@ export default function Designer() {
   // the saved settings can arrive after the page opens: take them as long as nothing was edited yet
   useEffect(() => { if (!touched.current) setDraft(saved) }, [saved])
   const dirty = JSON.stringify(mergeSettings(draft)) !== JSON.stringify(saved)
+  // closing or reloading the tab with unpublished work asks first
+  useEffect(() => {
+    if (!dirty) return
+    const warn = (e) => { e.preventDefault(); e.returnValue = '' }
+    addEventListener('beforeunload', warn)
+    return () => removeEventListener('beforeunload', warn)
+  }, [dirty])
   const patch = (fn) => { touched.current = true; setDraft((d) => { const n = structuredClone(d); fn(n); return n }) }
   const post = (msg) => frame.current?.contentWindow?.postMessage(msg, location.origin)
   const c = draft.colors, a = draft.announcement

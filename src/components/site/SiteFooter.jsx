@@ -78,7 +78,7 @@ export default function SiteFooter() {
           <div className="mt-12 flex flex-col items-center gap-5 border-t border-white/10 pt-7 lg:flex-row-reverse lg:justify-between">
             {settings.footer.payments && <PayIcons size="sm" className="w-full max-w-[320px]" />}
             <p className="text-center text-[13px] text-on-inverse/55 lg:text-start">
-              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">{settings.store.name}</b> <span dir="ltr" className="tabular">© {new Date().getFullYear()}</span>
+              جميع الحقوق محفوظة لـ<b className="font-semibold text-on-inverse/80">{settings.store.name}</b> <span dir="ltr" className="tabular" suppressHydrationWarning>© {new Date().getFullYear()}</span>
             </p>
           </div>
         </div>

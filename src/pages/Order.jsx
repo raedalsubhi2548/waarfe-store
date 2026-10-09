@@ -18,7 +18,9 @@ function DownloadButton({ orderId, productId }) {
   const [busy, setBusy] = useState(false)
   const go = async () => {
     setBusy(true)
-    try { window.open(await api.downloadUrl(orderId, productId), '_blank', 'noopener') } catch (e) { notify(e.message, 'err') } finally { setBusy(false) }
+    // open the tab inside the tap itself (Safari blocks one opened after a wait), then send it to the file
+    const tab = window.open('', '_blank')
+    try { const url = await api.downloadUrl(orderId, productId); if (tab) { tab.opener = null; tab.location.href = url } else window.location.href = url } catch (e) { tab?.close(); notify(e.message, 'err') } finally { setBusy(false) }
   }
   return <Button variant="accent" size="sm" className="mt-2 h-9" onClick={go} disabled={busy}><Download />{busy ? 'لحظة…' : 'تحميل الملف'}</Button>
 }

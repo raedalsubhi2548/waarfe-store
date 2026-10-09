@@ -25,7 +25,7 @@ export default function ServiceTicket({ p, className }) {
             className="aspect-square w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.04]" />
         </Link>
         <button type="button" onClick={() => toggleWish(p.id)} aria-pressed={wished} aria-label={wished ? 'إزالة من الأمنيات' : 'إضافة إلى الأمنيات'}
-          className={cn('absolute top-[22px] end-[18px] z-10 grid size-8 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-colors', wished ? 'text-danger' : 'text-primary/60 hover:text-primary')}>
+          className={cn('absolute top-[16px] end-[12px] z-10 grid size-11 place-items-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-colors', wished ? 'text-danger' : 'text-primary/60 hover:text-primary')}>
           <Heart className="size-[15px]" fill={wished ? 'currentColor' : 'none'} />
         </button>
         {(p.badge || sale) && (
@@ -43,7 +43,7 @@ export default function ServiceTicket({ p, className }) {
               {p.perUnit && <span className="block text-[11px] text-muted-foreground">{p.perUnit}</span>}
             </p>
             <button type="button" onClick={() => addToCart(p.id)} aria-label={`أضف ${p.name} للسلة`}
-              className="relative z-10 grid size-9 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
+              className="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-primary text-on-inverse shadow-[0_8px_16px_-8px_color-mix(in_srgb,var(--p-green-900)_70%,transparent)] transition-[background-color,scale] duration-300 hover:scale-105 hover:bg-primary-hover active:scale-95">
               <Plus className="size-[18px]" />
             </button>
           </div>

@@ -72,7 +72,7 @@ export function Qty({ value, onChange, size = 'md' }) {
     <div className={cn('inline-flex items-center rounded-full border-[1.5px] border-border-strong', h)}>
       <button type="button" onClick={() => onChange(value + 1)} className="grid h-full w-10 place-items-center rounded-full text-primary hover:bg-sunken" aria-label="زيادة الكمية"><Plus className="size-4" /></button>
       <span className="tabular min-w-7 text-center font-bold" aria-live="polite">{value}</span>
-      <button type="button" onClick={() => onChange(value - 1)} className="grid h-full w-10 place-items-center rounded-full text-primary hover:bg-sunken" aria-label="تقليل الكمية"><Minus className="size-4" /></button>
+      <button type="button" onClick={() => onChange(Math.max(1, value - 1))} disabled={value <= 1} className="grid h-full w-10 place-items-center rounded-full text-primary hover:bg-sunken disabled:opacity-30 disabled:hover:bg-transparent" aria-label="تقليل الكمية"><Minus className="size-4" /></button>
     </div>
   )
 }

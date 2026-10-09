@@ -24,7 +24,12 @@ export default function Policies() {
     SECTIONS.forEach((x) => { const el = document.getElementById(x.id); if (el) io.observe(el) })
     return () => io.disconnect()
   }, [])
-  useEffect(() => { document.querySelector(`[data-nav="${active}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' }) }, [active])
+  // keep the active chip in view by scrolling the chip row only (scrollIntoView would also move the page on phones)
+  useEffect(() => {
+    const el = document.querySelector(`[data-nav="${active}"]`), nav = el?.parentElement
+    if (!el || !nav || nav.scrollWidth <= nav.clientWidth) return
+    nav.scrollTo({ left: el.offsetLeft - (nav.clientWidth - el.offsetWidth) / 2, behavior: 'smooth' })
+  }, [active])
   return (
     <div className="container-w py-10 sm:py-14">
       <PageHead title="السياسات والشروط" lead="راجعها قبل الطلب. إذا عندك سؤال، كلّمنا على واتساب." />

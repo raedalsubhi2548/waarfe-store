@@ -271,7 +271,7 @@ function ReviewRow({ items, reverse }) {
   const row = live ? [...items, ...items] : items
   return (
     <div className="group flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_8%,black_92%,transparent)]">
-      <ul className={cn('flex w-max shrink-0 gap-4 py-3', live && 'motion-safe:animate-[marquee_160s_linear_infinite] group-hover:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
+      <ul className={cn('flex w-max shrink-0 gap-4 py-3', live && 'motion-safe:animate-[marquee_160s_linear_infinite] group-hover:[animation-play-state:paused] group-active:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]', reverse && '[animation-direction:reverse]')}>
         {row.map((r, i) => (
           <li key={i} aria-hidden={i >= items.length || undefined} className="w-[280px] shrink-0 sm:w-[340px]">
             <figure className="flex h-full flex-col rounded-xl bg-surface p-5 shadow-[0_16px_40px_-30px_color-mix(in_srgb,var(--p-green-900)_50%,transparent)] ring-1 ring-accent/30">

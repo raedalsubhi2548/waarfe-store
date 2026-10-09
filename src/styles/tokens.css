@@ -99,7 +99,7 @@
 
   --border: var(--p-cream-200);
   --border-strong: var(--p-cream-300);
-  --ring: var(--p-gold-500);
+  --ring: var(--p-gold-700); /* readable focus ring on cream (≥3:1) */
 
   --success: var(--p-teal-700);   --success-soft: var(--p-teal-100);
   --warning: var(--p-amber-700);  --warning-soft: var(--p-amber-100);

@@ -75,7 +75,7 @@ export function ConfirmProvider({ children }) {
             {state?.body && <Dialog.Description className="mt-1 text-sm leading-7 text-muted-foreground">{state.body}</Dialog.Description>}
             <div className="mt-6 flex gap-2">
               <Button className="flex-1 bg-danger text-white hover:bg-danger/90" onClick={() => close(true)}>{state?.ok || 'حذف'}</Button>
-              <Button variant="outline" className="flex-1" onClick={() => close(false)}>إلغاء</Button>
+              <Button variant="outline" className="flex-1" onClick={() => close(false)} autoFocus>إلغاء</Button>
             </div>
           </Dialog.Content>
         </Dialog.Portal>

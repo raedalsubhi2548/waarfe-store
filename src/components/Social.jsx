@@ -23,7 +23,7 @@ export default function Social({ className = '' }) {
     <ul className={'social ' + className}>
       {SOCIAL.map((s) => (
         <li key={s.name}>
-          <a href={s.href} target="_blank" rel="noreferrer" aria-label={s.name} title={s.name} style={{ '--brand': '#' + s.icon.hex }}>
+          <a href={s.href} {...(s.href.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noopener noreferrer' })} aria-label={s.name} title={s.name} style={{ '--brand': '#' + s.icon.hex }}>
             <BrandIcon icon={s.icon} />
           </a>
         </li>

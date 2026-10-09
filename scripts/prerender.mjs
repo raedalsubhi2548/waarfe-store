@@ -1,7 +1,7 @@
 // After `vite build` (+ the SSR build in dist-ssr): write a real HTML file for every public page, rendered by the
 // app itself with the live catalog (own title, description, canonical, Open Graph, JSON-LD), plus sitemap.xml and
 // robots.txt. The browser hydrates that HTML with the same catalog, so the first paint needs no JavaScript.
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { FAQ } from '../src/data/content.js'
 import { ALL_REVIEWS } from '../src/data/reviews.js'
@@ -23,6 +23,17 @@ const catalogJson = `<script type="application/json" id="__catalog">${JSON.strin
 // the home hero is the biggest thing on the first screen: start fetching it with the HTML, not after the app runs
 const hero = mergeSettings(catalog.settings).home.find((b) => b.on && b.type === 'hero') || { image: '', imageMobile: '' }
 const attr = (u) => u.replace(/["<>&]/g, encodeURIComponent)
+// warm connections and the two fonts of the first screen (only while the original fonts are in use)
+const S0 = mergeSettings(catalog.settings)
+const assets = readdirSync(join(DIST, 'assets'))
+const font = (re) => assets.find((f) => re.test(f))
+const sb = (process.env.VITE_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '')
+const EARLY = [
+  ...(/^https:\/\/[\w.-]+$/.test(sb) ? [`<link rel="preconnect" href="${sb}" crossorigin />`] : []),
+  '<link rel="dns-prefetch" href="https://www.googletagmanager.com" />',
+  ...(S0.fonts.heading === 'marhey' ? [font(/^marhey-arabic-600-normal-.*\.woff2$/)] : []),
+  ...(S0.fonts.body === 'plex' ? [font(/^ibm-plex-sans-arabic-arabic-400-normal-.*\.woff2$/)] : []),
+].filter(Boolean).map((x) => (x.startsWith('<') ? x : `<link rel="preload" as="font" type="font/woff2" href="/assets/${x}" crossorigin />`)).join('\n    ')
 const HERO_PRELOAD = `    <link rel="preload" as="image" href="${attr(hero.imageMobile || hero.image || '/brand/ai/raed-hero-mobile-v3.webp')}" media="(max-width: 767px)" fetchpriority="high" />\n    <link rel="preload" as="image" href="${attr(hero.image || '/brand/ai/raed-hero-v3.webp')}" media="(min-width: 768px)" fetchpriority="high" />\n`
 
 // categories and services share the top level with the fixed pages: a clash would hide one of them
@@ -43,7 +54,7 @@ for (const path of routes) {
     .replace(/<meta name="description"[^>]*>\s*/, '')
     // title, description and Open Graph come first in <head>: link previews (WhatsApp, X…) read only the start of the
     // page, and the inlined stylesheet would otherwise push them past that point
-    .replace(/(<meta name="viewport"[^>]*>\n)/, `$1    ${headHtml(s)}\n`)
+    .replace(/(<meta name="viewport"[^>]*>\n)/, `$1    ${headHtml(s)}\n    ${EARLY}\n`)
     .replace('</head>', `${path === '/' ? HERO_PRELOAD : ''}  </head>`)
     .replace('<div id="root"></div>', `<div id="root">${await render(path, catalog)}</div>${catalogJson}`)
   const file = path === '/' ? join(DIST, 'index.html') : join(DIST, path.slice(1) + '.html')

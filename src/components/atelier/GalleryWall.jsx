@@ -10,7 +10,7 @@ function Row({ ids, reverse }) {
   const list = [...ids, ...ids]
   return (
     <div className="group/row flex overflow-hidden [mask-image:linear-gradient(to_left,transparent,black_10%,black_90%,transparent)]">
-      <ul className={`flex w-max shrink-0 gap-4 py-4 motion-safe:animate-[marquee_120s_linear_infinite] group-hover/row:[animation-play-state:paused] sm:gap-5 ${reverse ? '[animation-direction:reverse]' : ''}`}>
+      <ul className={`flex w-max shrink-0 gap-4 py-4 motion-safe:animate-[marquee_120s_linear_infinite] group-hover/row:[animation-play-state:paused] group-active/row:[animation-play-state:paused] group-focus-within/row:[animation-play-state:paused] sm:gap-5 ${reverse ? '[animation-direction:reverse]' : ''}`}>
         {list.map((i, k) => (
           <li key={k} aria-hidden={k >= ids.length || undefined} className="shrink-0">
             <Link to="/work#banners" tabIndex={k >= ids.length ? -1 : undefined} className="group block overflow-hidden rounded-[18px] bg-[#ffffff] p-1.5 shadow-[0_1px_2px_color-mix(in_srgb,var(--p-green-900)_6%,transparent),0_24px_40px_-26px_color-mix(in_srgb,var(--p-green-900)_55%,transparent)] ring-1 ring-primary/[0.06] transition-[translate,box-shadow] duration-500 ease-[cubic-bezier(.16,1,.3,1)] hover:-translate-y-1.5 hover:shadow-[0_2px_4px_color-mix(in_srgb,var(--p-green-900)_6%,transparent),0_32px_50px_-26px_color-mix(in_srgb,var(--p-green-900)_60%,transparent)]">
