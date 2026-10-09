@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { CreditCard, Lock, ChevronDown, Wallet } from 'lucide-react'
-import TapCard, { TAP_PUBLIC_KEY } from '@/components/TapCard.jsx'
+import { CreditCard, Lock, ChevronDown } from 'lucide-react'
 import { DECLARATION } from '@/data/terms.js'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
@@ -13,9 +12,6 @@ import { Button } from '@/components/ui/button'
 import { PageHead, Panel, Field, Input, Textarea, Skeleton } from '@/components/ui/kit.jsx'
 
 
-// card fields inside the checkout when the Tap public key is set; otherwise (and for Apple Pay etc.) Tap's own page
-const EMBED = !!TAP_PUBLIC_KEY && !isDemo
-
 export default function Checkout() {
   const { user, authReady, lines, subtotal, clearCart, notify } = useApp()
   const nav = useNavigate()
@@ -26,9 +22,6 @@ export default function Checkout() {
   const [couponErr, setCouponErr] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
-  const card = useRef(null)
-  const [cardOk, setCardOk] = useState(false)
-  const [cardState, setCardState] = useState('loading')
   const [agreed, setAgreed] = useState(false) // the declaration must be accepted for every order
   const [leaving, setLeaving] = useState(false) // on the way to Tap: keep this screen, don't bounce to the empty cart
   // a card order whose payment didn't finish (failed to start, or the customer came back from Tap) is reused, not duplicated
@@ -46,7 +39,7 @@ export default function Checkout() {
   useEffect(() => { if (!counted.current && lines.length) { counted.current = true; trackBeginCheckout(lines, subtotal) } }, [lines, subtotal])
   useEffect(() => { if (user) setForm((f) => ({ ...f, name: f.name || user.name, phone: f.phone || user.phone, email: user.email })) }, [user])
 
-  if (leaving) return <div className="container-w grid min-h-[50vh] place-items-center py-14"><p className="flex items-center gap-3 text-lg font-semibold text-primary"><Lock className="size-5" />{leaving === 'bank' ? 'نحوّلك لبنكك لتأكيد الدفع…' : 'نحوّلك لبوابة الدفع الآمنة…'}</p></div>
+  if (leaving) return <div className="container-w grid min-h-[50vh] place-items-center py-14"><p className="flex items-center gap-3 text-lg font-semibold text-primary"><Lock className="size-5" />نحوّلك لبوابة الدفع الآمنة…</p></div>
   if (!authReady) return <div className="container-w py-14"><Skeleton className="h-96" /></div>
   if (!user) return <Navigate to="/login?next=/checkout" replace />
   if (lines.length === 0) return <Navigate to="/cart" replace />
@@ -66,29 +59,25 @@ export default function Checkout() {
     if (!/^0?5\d{8}$|^\+?9665\d{8}$/.test(form.phone.replace(/\s/g, ''))) { setPhoneErr('اكتب رقم جوال سعودي صحيح، مثل 05xxxxxxxx'); document.getElementById('checkout-phone')?.focus(); return }
     setPhoneErr('')
     if (!agreed) { setErr('لازم توافق على السياسات والشروط والإقرار والتعهد قبل إتمام الطلب'); return }
-    const embedded = EMBED && method === 'card' && total > 0
-    if (embedded && !cardOk) { setErr(cardState === 'failed' ? 'نموذج البطاقة ما تحمّل، اختر طريقة دفع ثانية' : 'اكتب بيانات البطاقة كاملة'); return }
     setBusy(true)
     try {
-      // the card is read first (a one-time token from Tap), so a typo in it never creates an order
-      const token = embedded ? await card.current.tokenize() : null
       const items = lines.map(({ product: p, qty, note, options, chosen, unit }) => ({ productId: p.id, name: p.name, price: unit, qty, note: note || '', image: p.image, digital: !!p.digital, optionKeys: options, options: chosen }))
       // if paying failed a moment ago, retry the same order instead of creating a duplicate
       const key = `${method}|${total}|${coupon?.code || ''}|${lines.map((l) => l.key + 'x' + l.qty).join(',')}`
       const order = (pending.current?.key === key && pending.current.order) || await api.createOrder({
         items, customer: { name: form.name, phone: form.phone, email: form.email },
-        notes: form.notes, coupon: coupon?.code || null, subtotal, discount, total, paymentMethod: 'card',
+        notes: form.notes, coupon: coupon?.code || null, subtotal, discount, total, paymentMethod: method,
       })
-      if ((method === 'card' || method === 'tap') && !isDemo) {
+      if (method === 'card' && !isDemo) {
         pending.current = { key, order }
         try { sessionStorage.setItem('raed:pending-order', JSON.stringify({ key, order: { id: order.id, number: order.number } })) } catch { /* private mode */ }
-        const { redirect, free, paid } = await api.startPayment(order, token)
-        if (free || paid) { // a 100% coupon: the order is already paid, no payment page
+        const { redirect, free } = await api.startPayment(order)
+        if (free) { // a 100% coupon: the order is already paid, no payment page
           pending.current = undefined; try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ }
           clearCart(); nav(`/order/${order.id}?new=1`, { replace: true }); return
         }
         // the cart is emptied only after Tap confirms the payment (on the order page), so a cancelled payment keeps it
-        setLeaving(token ? 'bank' : 'tap')
+        setLeaving(true)
         window.location.href = redirect
         return
       }
@@ -96,7 +85,6 @@ export default function Checkout() {
       nav(`/order/${order.id}?new=1`, { replace: true })
     } catch (e2) {
       // a remembered order that's already paid or gone can't be reused; the next try starts a fresh one
-      if (EMBED && method === 'card') card.current?.reset?.()
       if (/مدفوع|غير موجود/.test(e2.message)) { pending.current = undefined; try { sessionStorage.removeItem('raed:pending-order') } catch { /* ignore */ } }
       setErr(e2.message); setBusy(false)
     }
@@ -120,29 +108,11 @@ export default function Checkout() {
           </Panel>
           <Panel title="طريقة الدفع">
             <div className="grid gap-3">
-              {EMBED ? <>
-                <div className={cn(pay('card'), 'cursor-default flex-col items-stretch gap-4')}>
-                  <label className="flex cursor-pointer items-center gap-4">
-                    <input type="radio" name="pay" checked={method === 'card'} onChange={() => setMethod('card')} className="size-5 accent-[var(--primary)]" />
-                    <CreditCard className="size-6 text-primary" />
-                    <span className="grid"><b>بطاقة</b><small className="text-muted-foreground">مدى، فيزا، ماستركارد</small></span>
-                  </label>
-                  <div className={cn((method !== 'card' || total === 0) && 'hidden')}>
-                    <TapCard ref={card} amount={total} customer={form} onValid={setCardOk} onState={setCardState} />
-                  </div>
-                </div>
-                <label className={pay('tap')}>
-                  <input type="radio" name="pay" checked={method === 'tap'} onChange={() => setMethod('tap')} className="size-5 accent-[var(--primary)]" />
-                  <Wallet className="size-6 text-primary" />
-                  <span className="grid"><b>Apple Pay وطرق دفع أخرى</b><small className="text-muted-foreground">عبر بوابة Tap الآمنة</small></span>
-                </label>
-              </> : (
               <label className={pay('card')}>
                 <input type="radio" name="pay" checked={method === 'card'} onChange={() => setMethod('card')} className="size-5 accent-[var(--primary)]" />
                 <CreditCard className="size-6 text-primary" />
                 <span className="grid"><b>بطاقة أو Apple Pay</b><small className="text-muted-foreground">مدى، فيزا، ماستركارد عبر بوابة Tap الآمنة</small></span>
               </label>
-              )}
             </div>
             {isDemo && method === 'card' && <p className="mt-4 rounded-md border border-dashed border-accent bg-accent/15 p-3 text-sm text-accent-text">وضع العرض: الدفع بالبطاقة يُسجَّل كمدفوع بدون خصم أي مبلغ.</p>}
           </Panel>
@@ -181,7 +151,7 @@ export default function Checkout() {
             </div>
           </details>
           {!agreed && <p className="mt-3 text-center text-[13px] text-muted-foreground">علّم على الموافقة فوق عشان يتفعّل زر الدفع</p>}
-          <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : total === 0 ? 'أكمل الطلب' : method === 'card' || method === 'tap' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
+          <Button size="lg" className="mt-4 w-full" disabled={busy || !agreed}><Lock />{busy ? 'جاري تأكيد الطلب…' : total === 0 ? 'أكمل الطلب' : method === 'card' ? `ادفع ${money(total)}` : 'أكّد الطلب'}</Button>
 
         </Panel>
       </form>
