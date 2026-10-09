@@ -32,6 +32,11 @@ export async function loadSeller() {
 }
 
 let transport
+// emails show the store's name as the sender (the address stays MAIL_FROM's, or the SMTP login)
+const sender = (name) => {
+  const addr = (String(process.env.MAIL_FROM || '').match(/<([^>]+)>/)?.[1] || process.env.MAIL_FROM || process.env.SMTP_USER || '').trim()
+  return { name: String(name || 'منصة رائد').replace(/["<>\r\n]/g, ''), address: addr }
+}
 const mailer = () => {
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) return null
   const port = Number(process.env.SMTP_PORT || 465)
@@ -41,12 +46,17 @@ const mailer = () => {
 
 // what each moment of the order says to the customer
 const EVENTS = {
-  created: { subject: (o) => `استلمنا طلبك رقم ${o.number}`, title: 'استلمنا طلبك', body: (o) => o.payment_method === 'bank' ? 'شكراً لك! طلبك مسجّل عندنا. حوّل المبلغ على الحساب البنكي الموضّح، ونبدأ التنفيذ أول ما يوصلنا التحويل.' : 'شكراً لك! طلبك مسجّل عندنا وبانتظار إتمام الدفع.' },
-  paid: { subject: (o) => `تم الدفع، وهذي فاتورة طلبك رقم ${o.number}`, title: 'تم استلام الدفع', body: () => 'وصلنا الدفع، وأرفقنا لك فاتورة طلبك. بنتواصل معك قريباً ونبدأ التنفيذ.' },
-  in_progress: { subject: (o) => `بدأنا تنفيذ طلبك رقم ${o.number}`, title: 'بدأنا التنفيذ', body: () => 'فريقنا بدأ يشتغل على طلبك الحين، ونحدّثك أول بأول.' },
-  review: { subject: (o) => `طلبك رقم ${o.number} جاهز لمراجعتك`, title: 'جاهز لمراجعتك', body: () => 'خلصنا الشغل وهو جاهز تشوفه. راجعه وقل لنا ملاحظاتك.' },
-  completed: { subject: (o) => `اكتمل طلبك رقم ${o.number}`, title: 'اكتمل طلبك', body: () => 'تم تسليم طلبك بالكامل. شكراً لثقتك، ويسعدنا نسمع رأيك.' },
-  cancelled: { subject: (o) => `تم إلغاء طلبك رقم ${o.number}`, title: 'تم إلغاء الطلب', body: () => 'تم إلغاء طلبك. لو عندك أي استفسار تواصل معنا.' },
+  created: { subject: (o) => `🎉 وصلنا طلبك #${o.number}`, pre: 'طلبك مسجّل عندنا، وهذي تفاصيله.', title: 'استلمنا طلبك', body: (o) => o.payment_method === 'bank' ? 'شكراً لك! طلبك مسجّل عندنا. حوّل المبلغ على الحساب البنكي الموضّح، ونبدأ التنفيذ أول ما يوصلنا التحويل.' : 'شكراً لك! طلبك مسجّل عندنا وبانتظار إتمام الدفع.' },
+  paid: { subject: (o) => `✅ تأكّد طلبك #${o.number} · فاتورتك مرفقة`, pre: 'وصلنا الدفع، وبنبدأ على طلبك قريب.', title: 'تم استلام الدفع', body: () => 'وصلنا الدفع، وأرفقنا لك فاتورة طلبك. بنتواصل معك قريباً ونبدأ التنفيذ.' },
+  in_progress: { subject: (o) => `🚀 بدأنا العمل على طلبك #${o.number}`, pre: 'فريقنا بدأ يشتغل على طلبك الحين.', title: 'بدأنا التنفيذ', body: () => 'فريقنا بدأ يشتغل على طلبك الحين، ونحدّثك أول بأول.' },
+  review: { subject: (o) => `👀 طلبك #${o.number} جاهز لمراجعتك`, pre: 'خلصنا الشغل، شوفه وقل لنا رأيك.', title: 'جاهز لمراجعتك', body: () => 'خلصنا الشغل وهو جاهز تشوفه. راجعه وقل لنا ملاحظاتك.' },
+  completed: { subject: (o) => `🎁 اكتمل طلبك #${o.number} · شكراً لثقتك`, pre: 'تم تسليم طلبك بالكامل.', title: 'اكتمل طلبك', body: () => 'تم تسليم طلبك بالكامل. شكراً لثقتك، ويسعدنا نسمع رأيك.' },
+  cancelled: { subject: (o) => `تم إلغاء طلبك #${o.number}`, pre: 'لو عندك أي استفسار، تواصل معنا.', title: 'تم إلغاء الطلب', body: () => 'تم إلغاء طلبك. لو عندك أي استفسار تواصل معنا.' },
+}
+// what the owner's copy is called in his inbox
+const OWNER = {
+  paid: (o) => `💰 طلب جديد #${o.number} · ${Number(o.total) > 0 ? `${Number(o.total).toLocaleString('en', { maximumFractionDigits: 2 })} ر.س` : 'مجاني بكوبون'} · ${o.customer?.name || 'عميل'}`,
+  created: (o) => `🆕 طلب جديد بانتظار الدفع #${o.number} · ${o.customer?.name || 'عميل'}`,
 }
 export const EVENT_IDS = Object.keys(EVENTS)
 
@@ -58,6 +68,7 @@ function html(order, ev, s = SELLER()) {
   const rows = (order.items || []).map((it) => `<tr><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733">${esc(it.name)}${it.qty > 1 ? ` <span style="color:#6b7686">× ${it.qty}</span>` : ''}${(it.options || []).map((o) => `<div style="font-size:12px;line-height:1.7;color:#6b7686">${esc(o.option)}: ${esc(o.value)}</div>`).join('')}</td><td style="padding:10px 0;border-bottom:1px solid #e9edf3;font-size:14px;color:#1f2733;text-align:left;white-space:nowrap" dir="ltr">${money(it.price * it.qty)} ر.س</td></tr>`).join('')
   return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
 <body style="margin:0;background:#f3f6fa;font-family:Tahoma,'Segoe UI',Arial,sans-serif">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${esc(e.pre)}${'&#8204;&nbsp;'.repeat(60)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f6fa;padding:24px 12px"><tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:18px;overflow:hidden;direction:rtl;text-align:right">
 <tr><td style="background:#1b2b44;padding:26px 28px" align="center"><img src="${s.logo || base + '/logo-white.png'}" width="150" alt="${esc(s.name)}" style="display:block;border:0;height:auto"></td></tr>
@@ -92,7 +103,7 @@ export async function storeInbox() {
 export async function sendAdminAlert(subject, text) {
   const t = mailer(); if (!t) return { sent: false, reason: 'smtp-not-configured' }
   const to = await storeInbox()
-  await t.sendMail({ from: process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`, to, subject: `[تنبيه] ${subject}`, text })
+  await t.sendMail({ from: sender((await loadSeller()).name), to, subject: `⚠️ ${subject}`, text })
   return { sent: true, to }
 }
 
@@ -118,11 +129,9 @@ export async function sendOrderEmail(orderOrId, ev) {
 
   const s = await loadSeller()
   const attachments = ev === 'paid' ? [{ filename: `فاتورة-${order.number}.pdf`, content: await invoicePdf(order, s), contentType: 'application/pdf' }] : []
-  const from = process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`
-  // the store's own copy for new paid orders goes out on its own, so a customer-side failure never hides it
+  const from = sender(s.name)
   // the owner gets a copy of every email the customer gets; a new paid order is marked clearly
-  const tag = ev === 'paid' ? '🛒 طلب جديد مدفوع' : `نسخة: ${EVENTS[ev].title}`
-  const storeCopy = storeInbox().then((copy) => copy && t.sendMail({ from, to: copy, replyTo: to, subject: `[${tag}] #${order.number} · ${money(order.total)} ر.س · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }))
+  const storeCopy = storeInbox().then((copy) => copy && t.sendMail({ from, to: copy, replyTo: to, subject: OWNER[ev] ? OWNER[ev](order) : `📋 ${EVENTS[ev].title} · #${order.number} · ${order.customer?.name || 'عميل'}`, html: html(order, ev, s), attachments }))
     .catch((err) => console.error('store copy failed', order.id, err?.message))
   try {
     await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev, s), attachments })
