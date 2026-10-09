@@ -31,7 +31,7 @@ export default function Coupons() {
 
   return (
     <>
-      <AdminHead title="كوبونات الخصم" lead="أكواد يكتبها العميل في صفحة الدفع. الخصم يُحسب على السيرفر." />
+      <AdminHead title="كوبونات الخصم" />
       <Panel title="كود جديد" className="mb-6">
         <form onSubmit={add} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_auto] lg:items-end">
           <Field label="الكود"><Input required value={f.code} onChange={(e) => setF({ ...f, code: e.target.value.toUpperCase().replace(/\s/g, '') })} dir="ltr" placeholder="RAMADAN" className="font-mono" /></Field>
@@ -43,7 +43,7 @@ export default function Coupons() {
       </Panel>
 
       {!list ? <Skeleton className="h-48" /> : list.length === 0 ? (
-        <div className="grid justify-items-center gap-2 rounded-lg border-2 border-dashed border-border-strong py-14 text-center"><TicketPercent className="size-8 text-muted-foreground" /><p className="text-muted-foreground">ما فيه أكواد. أضف أول كود من فوق.</p></div>
+        <div className="grid justify-items-center gap-2 rounded-lg border-2 border-dashed border-border-strong py-14 text-center"><TicketPercent className="size-8 text-muted-foreground" /><p className="text-muted-foreground">ما فيه أكواد.</p></div>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {list.map((c) => (

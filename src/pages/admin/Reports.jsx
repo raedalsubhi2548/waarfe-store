@@ -154,7 +154,7 @@ function Hours({ rows }) {
         ))}
       </div>
       <div className="tabular mt-1.5 flex justify-between text-[11px] text-muted-foreground" dir="ltr">{["12 ص", "6 ص", "12 م", "6 م", "11 م"].map((t) => <span key={t} dir="rtl">{t}</span>)}</div>
-      {peak && <p className="mt-3 text-sm text-muted-foreground">أكثر وقت زيارات: <strong className="text-primary">{h12(+peak[0])} – {h12((+peak[0] + 1) % 24)}</strong> بتوقيت السعودية</p>}
+      {peak && <p className="mt-3 text-sm text-muted-foreground">أكثر وقت زيارات: <strong className="text-primary">{h12(+peak[0])} – {h12((+peak[0] + 1) % 24)}</strong></p>}
     </div>
   )
 }
@@ -196,7 +196,7 @@ export default function Reports() {
   }
 
   const head = (
-    <AdminHead title="التقارير" lead="زوار متجرك ومبيعاته، بعدّاد خاص فيك يستبعد البوتات ومعاينات الروابط."
+    <AdminHead title="التقارير"
       action={<>
         <Button variant="outline" onClick={() => load()} disabled={busy} aria-label="تحديث"><RefreshCw className={cn('size-4', busy && 'animate-spin')} />تحديث</Button>
         {data && <Button variant="outline" onClick={exportCsv}><Download className="size-4" />تصدير Excel</Button>}
@@ -230,23 +230,20 @@ export default function Reports() {
           <span className="relative flex size-3"><span className={cn('absolute inline-flex size-full rounded-full bg-success opacity-75', d.live > 0 && 'motion-safe:animate-ping')} /><span className="relative inline-flex size-3 rounded-full bg-success" /></span>
           <p className="text-sm"><strong className="tabular font-display text-2xl">{num(d.live)}</strong> <span className="opacity-80">{d.live === 1 ? 'زائر' : 'زوار'} على المتجر الحين</span></p>
         </div>
-        <p className="text-xs opacity-70">آخر ٥ دقائق · يتحدث كل دقيقة{updated && ` · ${updated.toLocaleTimeString('ar-SA-u-nu-latn', { hour: 'numeric', minute: '2-digit' })}`}</p>
+        <p className="text-xs opacity-70">{updated && `${updated.toLocaleTimeString('ar-SA-u-nu-latn', { hour: 'numeric', minute: '2-digit' })}`}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <Kpi icon={Users} label="الزوار" value={num(d.visitors)} change={delta(d.visitors, d.prev.visitors)} hint="أشخاص مختلفين" tone="bg-primary text-accent" />
+        <Kpi icon={Users} label="الزوار" value={num(d.visitors)} change={delta(d.visitors, d.prev.visitors)} tone="bg-primary text-accent" />
         <Kpi icon={Eye} label="مشاهدات الصفحات" value={num(d.views)} change={delta(d.views, d.prev.views)} hint={d.sessions ? `${(d.views / d.sessions).toFixed(1)} صفحة لكل زيارة` : null} />
-        <Kpi icon={MousePointerClick} label="الزيارات" value={num(d.sessions)} hint={`ارتداد ${d.bounce}% (شافوا صفحة وحدة)`} />
+        <Kpi icon={MousePointerClick} label="الزيارات" value={num(d.sessions)} hint={`ارتداد ${d.bounce}%`} />
         <Kpi icon={Timer} label="متوسط مدة الزيارة" value={dur(d.avgDuration)} hint={`زوار جدد ${pct(d.newVisitors, d.visitors)}%`} />
         <Kpi icon={Wallet} label="المبيعات" value={money(d.revenue)} change={delta(d.revenue, d.prev.revenue)} tone="bg-accent/30 text-accent-text" />
         <Kpi icon={Receipt} label="الطلبات المدفوعة" value={num(d.paidOrders)} change={delta(d.paidOrders, d.prev.orders)} hint={d.pending ? `${num(d.pending)} بانتظار الدفع` : null} />
-        <Kpi icon={Percent} label="معدل التحويل" value={`${conv}%`} hint="طلبات مدفوعة ÷ زيارات" />
-        <Kpi icon={UserPlus} label="عملاء جدد" value={num(d.newCustomers)} hint={d.paidOrders ? `متوسط الطلب ${money(aov)}` : 'سجّلوا حساب في الفترة'} />
+        <Kpi icon={Percent} label="معدل التحويل" value={`${conv}%`} />
+        <Kpi icon={UserPlus} label="عملاء جدد" value={num(d.newCustomers)} hint={d.paidOrders ? `متوسط الطلب ${money(aov)}` : null} />
       </div>
 
-      {d.visitors === 0 && d.prev.visitors === 0 && (
-        <p className="mt-4 rounded-lg bg-accent/15 px-4 py-3 text-sm text-accent-text">عدّاد الزوار يبدأ من لحظة تفعيله، فالأرقام تتجمع من الحين. المبيعات محسوبة من كل الطلبات.</p>
-      )}
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
         <Panel title="الزوار يومياً">
@@ -302,17 +299,17 @@ export default function Reports() {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Panel title="أكثر الخدمات مبيعاً" action={<Link to="/admin/products" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">المنتجات</Link>}>
-          <BarList empty="تظهر هنا بعد أول طلب مدفوع في الفترة." rows={d.products.map((p) => ({ k: p.id, label: p.k, n: Number(p.n), value: money(p.n), sub: `${num(p.qty)} مبيع` }))} />
+          <BarList empty="ما فيه مبيعات في هذي الفترة." rows={d.products.map((p) => ({ k: p.id, label: p.k, n: Number(p.n), value: money(p.n), sub: `${num(p.qty)} مبيع` }))} />
         </Panel>
         <Panel title="كوبونات الخصم" action={<Link to="/admin/coupons" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">الكوبونات</Link>}>
-          <BarList empty="ما استُخدم كوبون في طلب مدفوع بهذي الفترة." rows={d.coupons.map((c) => ({ k: c.k, label: c.k, n: Number(c.n), sub: `خصم ${money(c.d)}` }))} unit=" طلب" />
+          <BarList empty="ما فيه كوبونات مستخدمة في هذي الفترة." rows={d.coupons.map((c) => ({ k: c.k, label: c.k, n: Number(c.n), sub: `خصم ${money(c.d)}` }))} unit=" طلب" />
           {d.discount > 0 && <p className="mt-4 text-sm text-muted-foreground">إجمالي الخصومات: <strong className="text-primary">{money(d.discount)}</strong></p>}
         </Panel>
       </div>
 
       <section className="mt-4">
         <h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold text-primary"><Clock3 className="size-4 text-muted-foreground" />الزوار الحين</h2>
-        {d.liveList.length === 0 ? <p className="rounded-lg bg-surface px-4 py-6 text-center text-sm text-muted-foreground ring-1 ring-border">ما فيه أحد على المتجر في آخر ٥ دقائق.</p> : (
+        {d.liveList.length === 0 ? <p className="rounded-lg bg-surface px-4 py-6 text-center text-sm text-muted-foreground ring-1 ring-border">ما فيه أحد على المتجر الحين.</p> : (
           <TableCard>
             <Table className="min-w-[560px]">
               <thead><tr><Th>الصفحة</Th><Th>المكان</Th><Th>الجهاز</Th><Th>جاء من</Th><Th>آخر نشاط</Th></tr></thead>

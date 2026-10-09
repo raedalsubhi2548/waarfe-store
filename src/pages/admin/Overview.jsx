@@ -130,7 +130,7 @@ export default function Overview() {
         </Panel>
 
         <Panel title="الأكثر مبيعاً" action={<Link to="/admin/products" className="text-sm font-semibold text-primary underline-offset-4 hover:underline">المنتجات</Link>}>
-          {top.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">تظهر هنا بعد أول طلب مدفوع.</p> : (
+          {top.length === 0 ? <p className="py-8 text-center text-sm text-muted-foreground">ما فيه مبيعات للحين.</p> : (
             <ol className="grid gap-4">
               {top.map((t, i) => (
                 <li key={t.id} className="grid grid-cols-[auto_1fr_auto] items-center gap-3">

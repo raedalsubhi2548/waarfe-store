@@ -55,7 +55,7 @@ export default function Categories() {
   }
   return (
     <>
-      <AdminHead title="التصنيفات" lead={`${categories.length} تصنيف. الترتيب يحدد ظهورها في المتجر والقائمة.`} />
+      <AdminHead title="التصنيفات" lead={`${categories.length} تصنيف`} />
       <form className="mb-4 flex gap-2 rounded-lg bg-sunken p-3" onSubmit={add}>
         <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسم تصنيف جديد" required aria-label="اسم التصنيف" className="h-11 flex-1 bg-surface" />
         <Button><Plus className="size-4" />أضف</Button>

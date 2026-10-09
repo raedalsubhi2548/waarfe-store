@@ -77,7 +77,7 @@ function OrderDetail({ order, onSaved }) {
               className={cn('h-9 rounded-full px-3 text-xs font-bold ring-1 transition-colors', status === s.id ? 'bg-primary text-on-inverse ring-primary' : 'ring-border hover:ring-primary')}>{s.label}</button>
           ))}
         </div>
-        <Field label="ملاحظة للعميل" hint="تظهر في سجل الطلب عند العميل (اختياري)"><Textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} /></Field>
+        <Field label="ملاحظة للعميل"><Textarea rows={2} value={note} onChange={(e) => setNote(e.target.value)} /></Field>
         <Button onClick={save} disabled={busy || (status === order.status && !note)}>{busy ? 'جاري الحفظ…' : 'حفظ التحديث'}</Button>
       </section>
 

@@ -11,7 +11,7 @@ export default function OptionsEditor({ value = [], onChange }) {
   const setVal = (i, j, patch) => set(i, { values: value[i].values.map((v, k) => (k === j ? { ...v, ...patch } : v)) })
   return (
     <div className="grid gap-4">
-      {value.length === 0 && <p className="text-sm text-muted-foreground">ما فيه خيارات. أضف خيار لو الخدمة لها إضافات أو أنواع.</p>}
+      {value.length === 0 && <p className="text-sm text-muted-foreground">ما فيه خيارات.</p>}
       {value.map((o, i) => (
         <div key={o.id} className="grid gap-3 rounded-lg bg-sunken p-4">
           <div className="flex items-center gap-2">

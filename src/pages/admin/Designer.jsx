@@ -66,7 +66,6 @@ function ColorField({ label, value, onChange }) {
   )
 }
 
-const LinkHint = 'صفحة داخل المتجر مثل /shop أو /salla-store-design، أو رابط يبدأ بـ https://'
 const linkOk = (v) => !v || /^(?:\/(?![\/\\])|https:\/\/[^\/\\\s]+\.[^\s]+)[^\s"'<>`\\]*$/i.test(v)
 /** A link field that says so right away when the address won't be accepted (it would be dropped on publish). */
 function LinkInput({ value, onChange, className, placeholder = '/shop' }) {
@@ -148,15 +147,14 @@ function BlockForm({ block, onChange, catImages, setCatImage }) {
         else if (kind === 'product') control = <Select value={v} onChange={(e) => set(key, e.target.value)}><option value="">بدون</option>{products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</Select>
         else if (kind === 'products') control = <ProductPicker value={v} onChange={(x) => set(key, x)} />
         else if (kind === 'items') control = <ItemsEditor value={v} onChange={(x) => set(key, x)} />
-        return <Field key={key} label={label} hint={kind === 'link' ? LinkHint : undefined} className={wide ? 'sm:col-span-2' : ''}>{control}</Field>
+        return <Field key={key} label={label} className={wide ? 'sm:col-span-2' : ''}>{control}</Field>
       })}
       {block.type === 'categories' && catImages && (
         <div className="grid gap-3 sm:col-span-2">
-          <p className="text-sm font-semibold text-primary">صور الأقسام <span className="font-normal text-muted-foreground">(اختياري، مربعة أو طولية)</span></p>
+          <p className="text-sm font-semibold text-primary">صور الأقسام</p>
           <div className="grid grid-cols-2 gap-3">
             {categories.map((c) => <ImageSlot key={c.id} tall label={c.name} value={catImages[c.id] || ''} fallback={BUILT_IN_CAT[c.id] ? `/brand/ai/raed-cat-${BUILT_IN_CAT[c.id]}-480.webp` : ''} onChange={(url) => setCatImage(c.id, url)} />)}
           </div>
-          <p className="text-xs leading-5 text-muted-foreground">إضافة الأقسام وتسميتها من صفحة «التصنيفات». القسم بدون صورة يظهر بأيقونته على لون المتجر.</p>
         </div>
       )}
     </div>
@@ -189,7 +187,7 @@ function HomeBlocks({ blocks, onChange, focus, catImages, setCatImage }) {
               <span className="grid size-9 shrink-0 place-items-center rounded-md bg-sunken text-primary"><I className="size-[18px]" /></span>
               <button type="button" onClick={() => { setOpen(isOpen ? null : b.id); if (!isOpen) focus(b.id) }} className="min-w-0 flex-1 text-start">
                 <b className="block truncate text-sm font-semibold text-primary">{def.name}</b>
-                <span className="block truncate text-xs text-muted-foreground">{label(b) || def.hint}</span>
+                <span className="block truncate text-xs text-muted-foreground">{label(b)}</span>
               </button>
               <div className="flex shrink-0 items-center">
                 <IconB onClick={() => move(i, -1)} disabled={i === 0} label="لفوق"><ChevronUp className="size-4" /></IconB>
@@ -240,7 +238,7 @@ const IconB = ({ onClick, disabled, label, active, children }) => (
     className={cn('grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-sunken hover:text-primary disabled:opacity-30 disabled:hover:bg-transparent', active && 'bg-primary/10 text-primary')}>{children}</button>
 )
 
-function HeaderLinks({ value, onChange, max = 6, hint = 'تظهر في هيدر الكمبيوتر وفي القائمة الجانبية بالجوال.' }) {
+function HeaderLinks({ value, onChange, max = 6 }) {
   const set = (i, k, v) => onChange(value.map((x, j) => (j === i ? { ...x, [k]: v } : x)))
   const move = (i, d) => { const n = [...value]; [n[i], n[i + d]] = [n[i + d], n[i]]; onChange(n) }
   return (
@@ -254,7 +252,6 @@ function HeaderLinks({ value, onChange, max = 6, hint = 'تظهر في هيدر 
         </div>
       ))}
       {value.length < max && <Button type="button" variant="outline" size="sm" className="justify-self-start" onClick={() => onChange([...value, { label: '', to: '' }])}><Plus className="size-4" />أضف رابط</Button>}
-      <p className="text-xs leading-5 text-muted-foreground">{hint} {LinkHint}</p>
     </div>
   )
 }
@@ -281,7 +278,7 @@ function Preview({ draft, frame }) {
   return (
     <div className="grid gap-3">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-primary">معاينة مباشرة <span className="font-normal text-muted-foreground">· الروابط تشتغل بعد النشر</span></p>
+        <p className="text-sm font-semibold text-primary">معاينة مباشرة</p>
         <div className="flex rounded-full bg-sunken p-1 ring-1 ring-border">
           {[['mobile', Smartphone, 'جوال'], ['desktop', Monitor, 'كمبيوتر']].map(([id, I, t]) => (
             <button key={id} type="button" onClick={() => setDevice(id)} className={cn('flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold transition-colors', device === id ? 'bg-primary text-on-inverse' : 'text-muted-foreground hover:text-primary')}>
@@ -345,7 +342,7 @@ export default function Designer() {
 
   return (
     <>
-      <AdminHead title="مصمم المتجر" lead="رتّب صفحتك الرئيسية، وغيّر شعارك وألوانك وهيدر وفوتر متجرك، وشوف النتيجة مباشرة قبل النشر." />
+      <AdminHead title="مصمم المتجر" />
 
       <div className="grid gap-6 pb-28 xl:grid-cols-[minmax(400px,500px)_1fr] xl:items-start">
         <div className="grid gap-5">
@@ -358,7 +355,6 @@ export default function Designer() {
 
           {tab === 'home' && (
             <Panel title="عناصر الصفحة الرئيسية">
-              <p className="-mt-2 mb-4 text-sm leading-6 text-muted-foreground">رتّبها بالأسهم، وأخفِ اللي ما تبيه بالعين، واضغط على أي عنصر تعدّله.</p>
               <HomeBlocks blocks={draft.home} catImages={draft.categoryImages} setCatImage={(id, url) => patch((d) => { if (url) d.categoryImages[id] = url; else delete d.categoryImages[id] })} onChange={(home) => patch((d) => { d.home = home })} focus={(id) => setTimeout(() => post({ type: 'raed:focus', id }), 120)} />
             </Panel>
           )}
@@ -369,18 +365,16 @@ export default function Designer() {
                 <Field label="الاسم بالعربي"><Input value={draft.store.name} maxLength={40} onChange={(e) => patch((d) => { d.store.name = e.target.value })} /></Field>
                 <Field label="الاسم بالإنجليزي (اختياري)"><Input value={draft.store.nameEn} maxLength={40} dir="ltr" onChange={(e) => patch((d) => { d.store.nameEn = e.target.value })} /></Field>
               </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">يظهر في عناوين الصفحات وقوقل والفوتر والإيميلات والفواتير.</p>
             </Panel>
             <Panel title="وصف المتجر لقوقل">
               <Textarea value={draft.store.description} maxLength={300} onChange={(e) => patch((d) => { d.store.description = e.target.value })} placeholder={SITE.description} />
-              <p className="mt-2 text-xs leading-5 text-muted-foreground">جملتين عن متجرك وش يبيع ولمين، فيها الكلمات اللي يبحث عنها عملاؤك. فاضي = الوصف الحالي. <span className="tabular">{draft.store.description.length}/300</span></p>
+              <p className="tabular mt-2 text-end text-xs text-muted-foreground">{draft.store.description.length}/300</p>
             </Panel>
             <Panel title="التواصل">
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="رقم الواتساب والجوال" hint={/^\d{9,15}$/.test(normPhone(draft.store.whatsapp)) ? undefined : 'اكتب رقم صحيح، مثل 05xxxxxxxx'}><Input value={draft.store.whatsapp.replace(/^966/, '0')} inputMode="tel" dir="ltr" onChange={(e) => patch((d) => { d.store.whatsapp = normPhone(e.target.value) || e.target.value })} placeholder="05xxxxxxxx" className="text-end" /></Field>
                 <Field label="البريد الإلكتروني" hint={/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(draft.store.email) ? undefined : 'اكتب بريد صحيح'}><Input value={draft.store.email} type="email" dir="ltr" onChange={(e) => patch((d) => { d.store.email = e.target.value.trim() })} className="text-end" /></Field>
               </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">كل أزرار واتساب في المتجر، وصفحة تواصل معنا، والفوتر، والفاتورة تاخذ منها.</p>
             </Panel>
             <Panel title="حسابات التواصل الاجتماعي">
               <div className="grid gap-3">
@@ -388,21 +382,19 @@ export default function Designer() {
                   <Field key={k} label={label}><LinkInput value={draft.store.social[k]} onChange={(v) => patch((d) => { d.store.social[k] = v })} placeholder="https://" /></Field>
                 ))}
               </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">تظهر أيقوناتها في الفوتر والقائمة وصفحة تواصل معنا. الرابط كامل يبدأ بـ https://</p>
             </Panel>
           </>}
 
           {tab === 'brand' && <>
             <Panel title="الشعار">
               <div className="grid gap-4 sm:grid-cols-2">
-                <ImageSlot label="على الخلفية الفاتحة" value={draft.logo} fallback={DEFAULT_SETTINGS.logo} onChange={(v) => patch((d) => { d.logo = v || DEFAULT_SETTINGS.logo })} hint="يظهر في الهيدر بعد التمرير والقوائم." />
-                <ImageSlot dark label="على الخلفية الغامقة" value={draft.logoLight} fallback={DEFAULT_SETTINGS.logoLight} onChange={(v) => patch((d) => { d.logoLight = v || DEFAULT_SETTINGS.logoLight })} hint="فوق صورة الواجهة وفي الفوتر. الأفضل نسخة بيضاء." />
+                <ImageSlot label="على الخلفية الفاتحة" value={draft.logo} fallback={DEFAULT_SETTINGS.logo} onChange={(v) => patch((d) => { d.logo = v || DEFAULT_SETTINGS.logo })} />
+                <ImageSlot dark label="على الخلفية الغامقة" value={draft.logoLight} fallback={DEFAULT_SETTINGS.logoLight} onChange={(v) => patch((d) => { d.logoLight = v || DEFAULT_SETTINGS.logoLight })} />
               </div>
               <label className="mt-5 grid gap-2">
                 <span className="flex items-center justify-between text-sm font-semibold text-primary">حجم الشعار <span className="tabular text-muted-foreground">{draft.logoScale}%</span></span>
                 <input type="range" min="60" max="160" step="5" value={draft.logoScale} onChange={(e) => patch((d) => { d.logoScale = Number(e.target.value) })} className="w-full accent-[var(--primary)]" />
               </label>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">الأفضل صورة PNG بخلفية شفافة، بعرض 600 بكسل أو أكثر.</p>
             </Panel>
 
             <Panel title="الألوان">
@@ -425,7 +417,6 @@ export default function Designer() {
                 <ColorField label="اللون المميّز" value={c.accent} onChange={(v) => patch((d) => { d.colors.accent = v })} />
                 <ColorField label="لون خلفية المتجر" value={c.background} onChange={(v) => patch((d) => { d.colors.background = v })} />
               </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">الأساسي للأزرار والعناوين والواجهة الغامقة، والمميّز للمسات الصغيرة. باقي الدرجات تتولّد تلقائيًا وبقراءة واضحة.</p>
             </Panel>
 
             <Panel title="الخطوط">
@@ -433,7 +424,6 @@ export default function Designer() {
                 <Field label="خط العناوين"><Select value={draft.fonts.heading} onChange={(e) => patch((d) => { d.fonts.heading = e.target.value })}>{FONTS.heading.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Select></Field>
                 <Field label="خط النصوص"><Select value={draft.fonts.body} onChange={(e) => patch((d) => { d.fonts.body = e.target.value })}>{FONTS.body.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Select></Field>
               </div>
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">كل الخطوط عربية ومحمّلة من متجرك نفسه. شوف الفرق في المعاينة.</p>
             </Panel>
             <Panel title="شكل الأزرار والبطاقات">
               <div className="grid grid-cols-3 gap-2">
@@ -445,7 +435,7 @@ export default function Designer() {
               </div>
             </Panel>
             <Panel title="خلفية المتجر">
-              <ImageSlot tall label="صورة خلفية لكل صفحات المتجر (اختياري)" value={draft.background.image} onChange={(v) => patch((d) => { d.background.image = v })} hint="تكون فاتحة وهادئة عشان النصوص تبان. بدون صورة تكون الخلفية باللون اللي اخترته." />
+              <ImageSlot tall label="صورة خلفية لكل صفحات المتجر (اختياري)" value={draft.background.image} onChange={(v) => patch((d) => { d.background.image = v })} />
               <div className="mt-4"><Switch checked={draft.background.decor} onChange={(v) => patch((d) => { d.background.decor = v })} label="الزخارف الخفيفة (الخط المنحني والظلال)" /></div>
             </Panel>
           </>}
@@ -454,7 +444,7 @@ export default function Designer() {
             <Panel title="شريط الإعلان" action={<Switch checked={a.on} onChange={(v) => patch((d) => { d.announcement.on = v })} label={a.on ? 'ظاهر' : 'مخفي'} />}>
               <div className="grid gap-3">
                 <Field label="نص الإعلان"><Input value={a.text} maxLength={140} onChange={(e) => patch((d) => { d.announcement.text = e.target.value })} placeholder="مثال: خصم 20% على تصميم المتاجر لفترة محدودة" /></Field>
-                <Field label="رابط (اختياري)" hint={LinkHint}><LinkInput value={a.link} onChange={(x) => patch((d) => { d.announcement.link = x })} /></Field>
+                <Field label="رابط (اختياري)"><LinkInput value={a.link} onChange={(x) => patch((d) => { d.announcement.link = x })} /></Field>
               </div>
             </Panel>
             <Panel title="الهيدر">
@@ -470,12 +460,11 @@ export default function Designer() {
               <div className="grid gap-3">
                 <Field label="العنوان"><Input value={draft.footer.ctaTitle} maxLength={60} onChange={(e) => patch((d) => { d.footer.ctaTitle = e.target.value })} /></Field>
                 <Field label="السطر تحته"><Input value={draft.footer.ctaText} maxLength={140} onChange={(e) => patch((d) => { d.footer.ctaText = e.target.value })} /></Field>
-                <p className="text-xs leading-5 text-muted-foreground">تحتها زر واتساب المتجر.</p>
               </div>
             </Panel>
             <Panel title="الفوتر">
               <p className="mb-2 text-sm font-semibold text-primary">روابط عمود «{draft.store.name}»</p>
-              <HeaderLinks value={draft.footer.links || DEFAULT_FOOTER_LINKS} onChange={(links) => patch((d) => { d.footer.links = links })} max={8} hint="حتى 8 روابط. عمود الأقسام وعمود حسابك يتعبّون تلقائيًا." />
+              <HeaderLinks value={draft.footer.links || DEFAULT_FOOTER_LINKS} onChange={(links) => patch((d) => { d.footer.links = links })} max={8} />
               <div className="mt-4" />
               <Field label="نبذة تحت الشعار"><Textarea value={draft.footer.about} maxLength={200} onChange={(e) => patch((d) => { d.footer.about = e.target.value })} placeholder={DEFAULT_ABOUT} /></Field>
               <div className="mt-4"><Switch checked={draft.footer.payments} onChange={(v) => patch((d) => { d.footer.payments = v; setTimeout(() => post({ type: 'raed:scroll', top: 'end' }), 50) })} label="شعارات طرق الدفع" /></div>

@@ -77,8 +77,8 @@ export default function ProductForm() {
           <Panel title="المعلومات الأساسية">
             <div className="grid gap-4">
               <Field label="اسم المنتج"><Input required value={p.name} onChange={set('name')} /></Field>
-              <Field label="وصف قصير" hint="سطر أو سطرين يظهر تحت اسم المنتج"><Textarea rows={2} value={p.summary} onChange={set('summary')} /></Field>
-              <Field label="الوصف الكامل" hint="الفقرة الأولى مقدمة. اكتب «## عنوان» لقسم جديد، و«- » قبل كل نقطة.">
+              <Field label="وصف قصير"><Textarea rows={2} value={p.summary} onChange={set('summary')} /></Field>
+              <Field label="الوصف الكامل">
                 <Textarea rows={12} value={p.description} onChange={set('description')} className="text-sm leading-7" />
               </Field>
             </div>
@@ -103,7 +103,7 @@ export default function ProductForm() {
           )}
           {!isNew && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg p-5 ring-1 ring-danger/30">
-              <div><p className="font-bold text-danger">حذف المنتج</p><p className="text-sm text-muted-foreground">لا يمكن التراجع. الأفضل إخفاؤه إذا تبيه يرجع لاحقاً.</p></div>
+              <div><p className="font-bold text-danger">حذف المنتج</p></div>
               <Button type="button" variant="outline" onClick={remove} className="border-danger/40 text-danger hover:bg-danger-soft"><Trash2 className="size-4" />حذف</Button>
             </div>
           )}
@@ -132,7 +132,7 @@ export default function ProductForm() {
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="السعر (ر.س)"><Input required type="number" min="0" step="0.01" value={p.price} onChange={set('price')} dir="ltr" className="tabular" /></Field>
-                <Field label="سعر التخفيض" hint={discount ? `خصم ${discount}%` : 'اختياري'}><Input type="number" min="0" step="0.01" value={p.salePrice} onChange={set('salePrice')} dir="ltr" className="tabular" /></Field>
+                <Field label="سعر التخفيض" hint={discount ? `خصم ${discount}%` : undefined}><Input type="number" min="0" step="0.01" value={p.salePrice} onChange={set('salePrice')} dir="ltr" className="tabular" /></Field>
               </div>
               <Field label="التصنيف"><Select required value={p.categoryId} onChange={set('categoryId')}>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Select></Field>
               <div className="grid grid-cols-2 gap-3">
@@ -148,7 +148,7 @@ export default function ProductForm() {
               <Switch checked={p.active} onChange={flag('active')} label="ظاهر في المتجر" />
               <Switch checked={p.featured} onChange={flag('featured')} label="مميّز (يظهر أولاً)" />
               <Switch checked={p.digital} onChange={flag('digital')} label="منتج رقمي (ملف يحمّله العميل)" />
-              {p.digital && <Field label="مسار الملف" hint="يظهر للعميل بعد الدفع فقط، من مخزن downloads"><Input value={p.fileUrl || ''} onChange={set('fileUrl')} dir="ltr" className="h-10 text-sm" /></Field>}
+              {p.digital && <Field label="مسار الملف"><Input value={p.fileUrl || ''} onChange={set('fileUrl')} dir="ltr" className="h-10 text-sm" /></Field>}
             </div>
           </Panel>
 
