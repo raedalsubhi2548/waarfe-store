@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
 import { NavLink, Navigate, Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Receipt, Package, Tags, Users, TicketPercent, ExternalLink, LogOut, Menu, Plus, Palette } from 'lucide-react'
+import { LayoutDashboard, Receipt, Package, Tags, Users, TicketPercent, ExternalLink, LogOut, Menu, Plus, Palette, ChartColumn } from 'lucide-react'
 import { useApp } from '@/state.jsx'
 import { api, isDemo } from '@/lib/api.js'
 import { cn } from '@/lib/utils'
@@ -13,6 +13,7 @@ import { ADMIN_HOST, STORE_ORIGIN } from '@/lib/host.js'
 const NAV = [
   { to: '/admin', end: true, icon: LayoutDashboard, label: 'نظرة عامة' },
   { to: '/admin/orders', icon: Receipt, label: 'الطلبات', badge: 'orders' },
+  { to: '/admin/reports', icon: ChartColumn, label: 'التقارير' },
   { to: '/admin/products', icon: Package, label: 'المنتجات' },
   { to: '/admin/categories', icon: Tags, label: 'التصنيفات' },
   { to: '/admin/customers', icon: Users, label: 'العملاء' },

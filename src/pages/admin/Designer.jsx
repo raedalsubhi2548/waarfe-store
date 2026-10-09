@@ -281,7 +281,7 @@ function Preview({ draft, frame }) {
   return (
     <div className="grid gap-3">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-primary">معاينة مباشرة <span className="font-normal text-muted-foreground">· الروابط معطلة هنا</span></p>
+        <p className="text-sm font-semibold text-primary">معاينة مباشرة <span className="font-normal text-muted-foreground">· الروابط تشتغل بعد النشر</span></p>
         <div className="flex rounded-full bg-sunken p-1 ring-1 ring-border">
           {[['mobile', Smartphone, 'جوال'], ['desktop', Monitor, 'كمبيوتر']].map(([id, I, t]) => (
             <button key={id} type="button" onClick={() => setDevice(id)} className={cn('flex h-9 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold transition-colors', device === id ? 'bg-primary text-on-inverse' : 'text-muted-foreground hover:text-primary')}>

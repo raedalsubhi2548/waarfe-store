@@ -47,6 +47,7 @@ const Categories = lazy(() => import('./pages/admin/Categories.jsx'))
 const Customers = lazy(() => import('./pages/admin/Customers.jsx'))
 const Coupons = lazy(() => import('./pages/admin/Coupons.jsx'))
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin.jsx'))
+const Reports = lazy(() => import('./pages/admin/Reports.jsx'))
 const Designer = lazy(() => import('./pages/admin/Designer.jsx'))
 const DesignPreview = lazy(() => import('./pages/admin/DesignPreview.jsx'))
 
@@ -114,6 +115,7 @@ export default function App({ Router, routerProps = {}, initialCatalog }) {
           <Route path="admin" element={<Suspense fallback={<PageFallback />}><AdminLayout /></Suspense>}>
             <Route index element={<Overview />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="reports" element={<Reports />} />
             <Route path="products" element={<Products />} />
             <Route path="products/:id" element={<ProductForm />} />
             <Route path="categories" element={<Categories />} />

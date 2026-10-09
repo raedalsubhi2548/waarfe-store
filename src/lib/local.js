@@ -138,6 +138,55 @@ export const local = {
     if (!o || (o.userId !== me.id && me.role !== 'admin')) return null
     return o
   },
+  // ---- reports (same shape as the admin_report function in supabase/reports.sql) ----
+  async recordVisit(h) {
+    const all = read('visits', [])
+    if (h.t === 'leave') { const v = all.find((x) => x.id === h.id); if (v && h.d > (v.dur || 0)) { v.dur = h.d; write('visits', all) } return }
+    const ua = h.ua || ''
+    all.push({ id: h.id, at: h.at, kind: h.t, vid: h.vid, sid: h.sid, path: h.p, source: h.u || 'مباشر', campaign: h.c || null, country: 'SA', city: 'الرياض',
+      device: /iPad|Tablet/i.test(ua) ? 'تابلت' : /Mobi|iPhone|Android/i.test(ua) ? 'جوال' : 'كمبيوتر', os: /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows' : /Mac/.test(ua) ? 'macOS' : 'Linux',
+      browser: /Edg\//.test(ua) ? 'Edge' : /Firefox/.test(ua) ? 'Firefox' : /Chrome/.test(ua) ? 'Chrome' : 'Safari', dur: null })
+    write('visits', all.slice(-5000))
+  },
+  async adminReport(from, to) {
+    requireAdmin()
+    const F = new Date(from).getTime(), T = new Date(to).getTime(), L = T - F
+    const visits = read('visits', []), orders = read('orders', []), users = read('users', [])
+    const inR = (t, a, b) => { const x = new Date(t).getTime(); return x >= a && x < b }
+    const v = visits.filter((x) => inR(x.at, F, T)), pv = v.filter((x) => x.kind === 'view'), prv = visits.filter((x) => x.kind === 'view' && inR(x.at, F - L, F))
+    const uniq = (a, k = 'vid') => new Set(a.map((x) => x[k])).size
+    const sess = Object.values(pv.reduce((m, x) => { (m[x.sid] ||= { n: 0, d: 0, first: x }).n++; m[x.sid].d += x.dur || 0; if (x.at < m[x.sid].first.at) m[x.sid].first = x; return m }, {}))
+    const isPaid = (o) => !['pending', 'cancelled'].includes(o.status)
+    const o = orders.filter((x) => inR(x.createdAt, F, T)), paid = o.filter(isPaid), ppaid = orders.filter((x) => inR(x.createdAt, F - L, F) && isPaid(x))
+    const day = (t) => new Date(new Date(t).getTime() + 3 * 3600e3).toISOString().slice(0, 10)
+    const days = []; for (let d = day(F); d <= day(T - 1000); d = day(new Date(d).getTime() + 864e5 + 1)) days.push(d)
+    const top = (arr, key, n = 10, distinct = 'vid') => Object.entries(arr.reduce((m, x) => { const k = key(x); if (k == null) return m; (m[k] ||= new Set()).add(distinct ? x[distinct] : x.id); return m }, {}))
+      .map(([k, set]) => ({ k, n: set.size })).sort((a, b) => b.n - a.n).slice(0, n)
+    const live = visits.filter((x) => x.kind === 'view' && Date.now() - new Date(x.at).getTime() < 5 * 60e3)
+    const liveLast = Object.values(live.reduce((m, x) => { if (!m[x.vid] || m[x.vid].at < x.at) m[x.vid] = x; return m }, {})).sort((a, b) => (a.at < b.at ? 1 : -1)).slice(0, 30)
+    const items = paid.flatMap((x) => x.items || [])
+    const prods = Object.values(items.reduce((m, it) => { const r = (m[it.productId] ||= { id: it.productId, k: it.name, qty: 0, n: 0 }); r.qty += it.qty; r.n += it.price * it.qty; return m }, {})).sort((a, b) => b.n - a.n).slice(0, 10)
+    const coup = Object.values(paid.filter((x) => x.coupon).reduce((m, x) => { const r = (m[x.coupon] ||= { k: x.coupon, n: 0, d: 0 }); r.n++; r.d += x.discount || 0; return m }, {})).sort((a, b) => b.n - a.n)
+    return {
+      visitors: uniq(pv), views: pv.length, sessions: sess.length,
+      bounce: sess.length ? Math.round((1000 * sess.filter((x) => x.n === 1).length) / sess.length) / 10 : 0,
+      avgDuration: sess.length ? Math.round(sess.reduce((a, x) => a + x.d, 0) / sess.length) : 0,
+      newVisitors: uniq(pv.filter((x) => !visits.some((y) => y.vid === x.vid && new Date(y.at).getTime() < F))),
+      live: uniq(live), liveList: liveLast,
+      carts: uniq(v.filter((x) => x.kind === 'cart')), checkouts: uniq(v.filter((x) => x.kind === 'checkout')),
+      revenue: paid.reduce((a, x) => a + x.total, 0), paidOrders: paid.length, buyers: new Set(paid.map((x) => x.userId)).size,
+      discount: paid.reduce((a, x) => a + (x.discount || 0), 0), pending: o.filter((x) => x.status === 'pending').length, cancelled: o.filter((x) => x.status === 'cancelled').length,
+      newCustomers: users.filter((u) => u.role !== 'admin' && u.createdAt && inR(u.createdAt, F, T)).length,
+      prev: { visitors: uniq(prv), views: prv.length, revenue: ppaid.reduce((a, x) => a + x.total, 0), orders: ppaid.length },
+      daily: days.map((d) => { const dp = pv.filter((x) => day(x.at) === d), dpaid = paid.filter((x) => day(x.createdAt) === d); return { day: d, visitors: uniq(dp), views: dp.length, orders: dpaid.length, revenue: dpaid.reduce((a, x) => a + x.total, 0) } }),
+      pages: Object.values(pv.reduce((m, x) => { const r = (m[x.path] ||= { k: x.path, n: 0, s: new Set() }); r.n++; r.s.add(x.vid); return m }, {})).map((r) => ({ k: r.k, n: r.n, u: r.s.size })).sort((a, b) => b.n - a.n).slice(0, 12),
+      sources: top(sess.map((x) => x.first), (x) => x.source, 10, 'sid'),
+      campaigns: top(pv, (x) => x.campaign, 10, 'sid'),
+      countries: top(pv, (x) => x.country || '??'), cities: top(pv, (x) => x.city), devices: top(pv, (x) => x.device, 10), browsers: top(pv, (x) => x.browser, 8), systems: top(pv, (x) => x.os, 8),
+      hours: Object.entries(pv.reduce((m, x) => { const h = (new Date(x.at).getUTCHours() + 3) % 24; m[h] = (m[h] || 0) + 1; return m }, {})).map(([k, n]) => ({ k: +k, n })).sort((a, b) => a.k - b.k),
+      products: prods, coupons: coup,
+    }
+  },
   async allOrders() { requireAdmin(); return read('orders', []) },
   async updateOrderStatus(id, status, note) {
     requireAdmin()

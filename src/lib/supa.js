@@ -210,6 +210,7 @@ export const supa = {
     return check(await sb.from('orders').select('*').eq('user_id', me.id).order('created_at', { ascending: false })).map(order)
   },
   async getOrder(id) { return order(check(await sb.from('orders').select('*').eq('id', id).maybeSingle())) },
+  async adminReport(from, to) { return check(await sb.rpc('admin_report', { p_from: from, p_to: to })) },
   async allOrders() { return check(await sb.from('orders').select('*').order('created_at', { ascending: false })).map(order) },
   async updateOrderStatus(id, status, note) {
     check(await sb.rpc('set_order_status', { p_order: id, p_status: status, p_note: note || '' }))
