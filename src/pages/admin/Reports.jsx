@@ -1,12 +1,11 @@
 // التقارير: visitors (our own count, see api/hit.js) and sales for a chosen period, compared with the period before it.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Users, Eye, MousePointerClick, Timer, Wallet, Receipt, Percent, UserPlus, ArrowUp, ArrowDown, Download, RefreshCw, EyeOff, Globe, Smartphone, Clock3 } from 'lucide-react'
+import { Users, Eye, MousePointerClick, Timer, Wallet, Receipt, Percent, UserPlus, ArrowUp, ArrowDown, Download, RefreshCw, Globe, Smartphone, Clock3 } from 'lucide-react'
 import { api } from '@/lib/api.js'
 import { useApp } from '@/state.jsx'
 import { money, num } from '@/lib/format.js'
 import { productPath, categoryPath } from '@/lib/slug.js'
-import { storeUrl } from '@/lib/host.js'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Panel, Skeleton } from '@/components/ui/kit.jsx'
@@ -197,7 +196,7 @@ export default function Reports() {
   }
 
   const head = (
-    <AdminHead title="التقارير" lead="زوار متجرك ومبيعاته، بعدّاد خاص فيك يستبعد البوتات ومعاينات الروابط وزياراتك أنت."
+    <AdminHead title="التقارير" lead="زوار متجرك ومبيعاته، بعدّاد خاص فيك يستبعد البوتات ومعاينات الروابط."
       action={<>
         <Button variant="outline" onClick={() => load()} disabled={busy} aria-label="تحديث"><RefreshCw className={cn('size-4', busy && 'animate-spin')} />تحديث</Button>
         {data && <Button variant="outline" onClick={exportCsv}><Download className="size-4" />تصدير Excel</Button>}
@@ -343,10 +342,6 @@ export default function Reports() {
         </div>
       </details>
 
-      <div className="mt-6 grid gap-2 rounded-lg bg-sunken px-5 py-4 text-sm text-muted-foreground">
-        <p className="flex items-start gap-2"><EyeOff className="mt-0.5 size-4 shrink-0" /><span>عشان ما تنحسب زياراتك أنت: افتح هذا الرابط مرة وحدة من كل جهاز وجوال تستخدمه ← <a href={storeUrl('/?notrack=1')} target="_blank" rel="noreferrer" className="font-semibold text-primary underline underline-offset-4">استبعد زياراتي</a></span></p>
-        <p>كيف نعدّ: كل شخص له رقم عشوائي في متصفحه (بدون اسم أو IP)، والزيارة تنتهي بعد ٣٠ دقيقة بدون نشاط، والبوتات ومعاينات واتساب وتويتر ما تنحسب. الدولة والمدينة تقريبية من الشبكة.</p>
-      </div>
     </>
   )
 }

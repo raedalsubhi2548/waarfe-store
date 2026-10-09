@@ -43,7 +43,7 @@ function Nav({ pending, onNavigate, dark }) {
 function SideFoot({ user, dark }) {
   return (
     <div className={cn('grid gap-1 border-t pt-4', dark ? 'border-white/10 [&_a]:text-white/70 [&_a:hover]:bg-white/[0.07] [&_a:hover]:text-white [&>button]:text-white/70' : 'border-border')}>
-      <a href={STORE_ORIGIN} target="_blank" rel="noreferrer" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</a>
+      <a href={STORE_ORIGIN + "/?notrack=1"} target="_blank" rel="noreferrer" className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-sunken hover:text-primary"><ExternalLink className="size-4" />عرض المتجر</a>
       <button onClick={() => api.signOut()} className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-semibold text-muted-foreground hover:bg-danger-soft hover:text-danger"><LogOut className="size-4" />خروج</button>
       <div className={cn('mt-2 flex items-center gap-3 rounded-md p-3', dark ? 'bg-white/[0.06] [&_p:first-child]:text-white' : 'bg-sunken')}>
         <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-display font-semibold text-accent">{(user.name || user.email).charAt(0)}</span>

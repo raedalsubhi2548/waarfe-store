@@ -20,13 +20,14 @@ export const track = (name, params = {}) => { if (on) window.gtag('event', name,
 
 // ---- Our own visitor count (لوحة التحكم ← التقارير) --------------------------------------------------------------
 // Sent to /api/hit on the store's own domain, so ad blockers and missing cookie consent don't hide visitors.
-// The owner's own visits are left out: open the store once with ?notrack=1 on each of your devices (?notrack=0 undoes it).
+// The owner's own visits are left out: «عرض المتجر» in the dashboard opens the store with ?notrack=1, which marks that browser.
 const mine = typeof window !== 'undefined' && (location.hostname === 'rraed.com' || location.hostname === 'www.rraed.com')
 const ls = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v) } catch { return null } }
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, (c) => (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)))
 if (typeof window !== 'undefined') {
   const q = new URLSearchParams(location.search).get('notrack')
   if (q === '1') ls('raed:notrack', '1'); else if (q === '0') ls('raed:notrack', null)
+  if (q) { const u = new URL(location.href); u.searchParams.delete('notrack'); history.replaceState(history.state, '', u.pathname + u.search + u.hash) }
 }
 const counting = () => typeof window !== 'undefined' && (mine || isDemo) && !/^admin\./.test(location.hostname) && ls('raed:notrack') !== '1' && (isDemo || !navigator.webdriver)
 function ids() {
