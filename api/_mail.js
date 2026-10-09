@@ -76,8 +76,17 @@ ${esc(s.name)} · <a href="mailto:${s.email}" style="color:#6b7686">${s.email}</
 </table></td></tr></table></body></html>`
 }
 
-// where the store's notifications go: ORDER_NOTIFY_TO (Vercel), else the email in «مصمم المتجر ← معلومات المتجر»
-export const storeInbox = async () => process.env.ORDER_NOTIFY_TO || (await loadSeller()).email
+// Where the owner's copies go: ORDER_NOTIFY_TO (Vercel) if set, else the email of every admin account
+// (the owner's own login, so it reaches him personally), else the store email from «مصمم المتجر».
+export async function storeInbox() {
+  if (process.env.ORDER_NOTIFY_TO) return process.env.ORDER_NOTIFY_TO
+  try {
+    const { data } = await admin.from('profiles').select('email').eq('role', 'admin')
+    const list = [...new Set((data || []).map((r) => String(r.email || '').trim().toLowerCase()).filter((e) => /^[^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,}$/i.test(e)))].slice(0, 5)
+    if (list.length) return list.join(', ')
+  } catch { /* fall back */ }
+  return (await loadSeller()).email
+}
 
 /** A short plain alert to the store. Throws if sending fails (callers that don't care add .catch). */
 export async function sendAdminAlert(subject, text) {
@@ -111,10 +120,10 @@ export async function sendOrderEmail(orderOrId, ev) {
   const attachments = ev === 'paid' ? [{ filename: `فاتورة-${order.number}.pdf`, content: await invoicePdf(order, s), contentType: 'application/pdf' }] : []
   const from = process.env.MAIL_FROM || `Raed <${process.env.SMTP_USER}>`
   // the store's own copy for new paid orders goes out on its own, so a customer-side failure never hides it
-  const storeCopy = (ev === 'created' || ev === 'paid')
-    ? storeInbox().then((copy) => copy && t.sendMail({ from, to: copy, replyTo: to, subject: `[طلب جديد] #${order.number} · ${money(order.total)} ر.س · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }))
-      .catch((err) => console.error('store copy failed', order.id, err?.message))
-    : null
+  // the owner gets a copy of every email the customer gets; a new paid order is marked clearly
+  const tag = ev === 'paid' ? '🛒 طلب جديد مدفوع' : `نسخة: ${EVENTS[ev].title}`
+  const storeCopy = storeInbox().then((copy) => copy && t.sendMail({ from, to: copy, replyTo: to, subject: `[${tag}] #${order.number} · ${money(order.total)} ر.س · ${order.customer?.name || ''}`, html: html(order, ev, s), attachments }))
+    .catch((err) => console.error('store copy failed', order.id, err?.message))
   try {
     await t.sendMail({ from, to, replyTo: s.email, subject: EVENTS[ev].subject(order), html: html(order, ev, s), attachments })
     await storeCopy
